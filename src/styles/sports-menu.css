@@ -1,0 +1,42 @@
+.sport-dropdown {
+  position: relative;
+}
+
+.sport-menu-button {
+  background: none;
+  border: none;
+  color: white;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.sport-dropdown-content {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+
+  min-width: 170px;
+  background: white;
+  color: black;
+
+  padding: 8px;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  z-index: 1000;
+}
+
+.sport-dropdown:hover .sport-dropdown-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sport-dropdown-item {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  cursor: pointer;
+  white-space: nowrap;
+}

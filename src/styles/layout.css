@@ -1,0 +1,53 @@
+.app {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.layout {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.layout > div {
+  height: 100%;
+}
+
+.content {
+  flex: 1;
+  padding: 30px;
+  background: white;
+  overflow: auto;
+
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.teams-container {
+  flex: 1;
+  min-height: 0;
+}
+
+.territory-tables {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+.territory-tables [data-panel] {
+  min-width: 0;
+}
+
+.resize-handle {
+  width: 8px;
+  min-width: 8px;
+  cursor: col-resize;
+  background: #ddd;
+}
+
+.resize-handle:hover {
+  background: #9ca3af;
+}

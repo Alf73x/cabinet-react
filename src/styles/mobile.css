@@ -1,0 +1,39 @@
+@media (max-width: 768px) {
+  .layout {
+    height: calc(100vh - 60px);
+  }
+
+  .sidebar,
+  .content {
+    width: 100%;
+    height: calc(100vh - 60px);
+  }
+
+  .open-main-btn,
+  .close-main-btn {
+    display: inline-block;
+  }
+
+  .resize-handle {
+    display: none;
+  }
+
+  .mobile-pages {
+    display: flex;
+    width: 200%;
+    height: 100%;
+    transform: translateX(0);
+    transition: transform 0.25s ease;
+  }
+
+  .mobile-pages.main-open {
+    transform: translateX(-50%);
+  }
+
+  .mobile-page {
+    width: 50%;
+    min-width: 50%;
+    height: 100%;
+    overflow: hidden;
+  }
+}

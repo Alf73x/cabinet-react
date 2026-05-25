@@ -1,0 +1,40 @@
+src
+├─ api
+│  ├─ api.ts
+│  ├─ seasonService.ts
+│  └─ treeService.ts
+│
+├─ components
+│  ├─ Sidebar.tsx
+│  ├─ SeasonsTree.tsx
+│  └─ TerritoriesTree.tsx
+│
+├─ App.tsx
+├─ App.css
+├─ main.tsx
+└─ index.css
+
+
+
+
+
+
+
+Логика:
+App.tsx
+└─ Sidebar.tsx
+   ├─ SeasonsTree.tsx
+   │  └─ uses data from getSeasons()
+   │
+   └─ TerritoriesTree.tsx
+      └─ lazy loads data from getTerritories(parentId)
+
+
+API:
+seasonService.ts
+└─ getSeasons()
+   └─ GET /seasons
+
+treeService.ts
+└─ getTerritories(parentId)
+   └─ GET /territories/{parentId}
