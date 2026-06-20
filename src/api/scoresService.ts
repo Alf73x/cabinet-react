@@ -7,7 +7,6 @@ export type ScoreRow = {
   TeamID2: number;
   Score: string;
   Date: string;
-  Color?: string;
 };
 
 export type ScoresResponse = {

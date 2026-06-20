@@ -1,6 +1,7 @@
 import "./ScoresTablePanel.css";
 import { useEffect, useState } from "react";
 import { getScores, type ScoreRow } from "../api/scoresService";
+import { getScoreColor } from "../utils/scoreColor";
 
 type Props = {
   teamId: number | null;
@@ -69,7 +70,12 @@ export default function ScoresTablePanel({ teamId, seasonId }: Props) {
               <td>{row.TeamName2}</td>
               <td
                 className="score-cell"
-                style={{ backgroundColor: row.Color || "transparent" }}
+                style={{
+                  backgroundColor: getScoreColor(
+                    row.Score,
+                    row.TeamID1 === teamId ? "left" : "right",
+                  ),
+                }}
               >
                 {row.Score}
               </td>

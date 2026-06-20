@@ -12,30 +12,54 @@ import { getSports, type SportItem } from "./api/sportsService";
 import TeamsTable from "./components/TeamsTable";
 import { getTeams, type Team } from "./api/teamsTableService";
 import ScoresTablePanel from "./components/ScoresTablePanel";
+import TournamentPanel from "./components/TournamentPanel";
 
 const MOBILE_WIDTH = 768;
 const SPORTS_STORAGE_KEY = "selected-sports";
 const TERRITORY_SELECTED_KEY = "territory-selected-item";
+const ACTIVE_ITEM_KEY = "active-main-item";
+const SEASON_SELECTED_KEY = "season-selected-item";
 
 type SelectedItem = {
   type: "season" | "territory";
   id: string;
 } | null;
 
+function getSavedActiveItem(): SelectedItem {
+  const saved = localStorage.getItem(ACTIVE_ITEM_KEY);
+
+  if (saved) {
+    try {
+      const item = JSON.parse(saved) as SelectedItem;
+
+      if (
+        item &&
+        (item.type === "season" || item.type === "territory") &&
+        typeof item.id === "string"
+      ) {
+        return item;
+      }
+    } catch {
+      localStorage.removeItem(ACTIVE_ITEM_KEY);
+    }
+  }
+
+  const territoryId = localStorage.getItem(TERRITORY_SELECTED_KEY);
+
+  if (territoryId) {
+    return {
+      type: "territory",
+      id: territoryId,
+    };
+  }
+
+  return null;
+}
+
 function App() {
   const [mobileMainOpen, setMobileMainOpen] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<SelectedItem>(() => {
-    const territoryId = localStorage.getItem(TERRITORY_SELECTED_KEY);
-
-    if (territoryId) {
-      return {
-        type: "territory",
-        id: territoryId,
-      };
-    }
-
-    return null;
-  });
+  const [selectedItem, setSelectedItem] =
+    useState<SelectedItem>(getSavedActiveItem);
 
   const [isMobile, setIsMobile] = useState(window.innerWidth <= MOBILE_WIDTH);
 
@@ -53,7 +77,7 @@ function App() {
   const [seasonsLoaded, setSeasonsLoaded] = useState(false);
   const [seasonExpandedItems, setSeasonExpandedItems] = useState<string[]>([]);
   const [seasonSelectedItem, setSeasonSelectedItem] = useState<string | null>(
-    null,
+    () => localStorage.getItem(SEASON_SELECTED_KEY),
   );
   const [seasonFilterText, setSeasonFilterText] = useState("");
 
@@ -129,13 +153,20 @@ function App() {
   }, [territorySelectedItem]);
 
   useEffect(() => {
-    if (territorySelectedItem) {
-      setSelectedItem({
-        type: "territory",
-        id: territorySelectedItem,
-      });
+    if (selectedItem) {
+      localStorage.setItem(ACTIVE_ITEM_KEY, JSON.stringify(selectedItem));
+    } else {
+      localStorage.removeItem(ACTIVE_ITEM_KEY);
     }
-  }, [territorySelectedItem]);
+  }, [selectedItem]);
+
+  useEffect(() => {
+    if (seasonSelectedItem) {
+      localStorage.setItem(SEASON_SELECTED_KEY, seasonSelectedItem);
+    } else {
+      localStorage.removeItem(SEASON_SELECTED_KEY);
+    }
+  }, [seasonSelectedItem]);
 
   useEffect(() => {
     if (!territorySelectedItem || selectedSports.length === 0) {
@@ -216,11 +247,26 @@ function App() {
 
     return "";
   }
+  
+  function findSeasonName(seasons: SeasonItem[], id: string | null): string {
+    if (!id) return "";
+
+    const season = seasons.find((x) => x.ID.toString() === id);
+
+
+
+    return (season?.Season ?? "") + " " + (season?.Name ?? "");
+  }
 
   const territoryTitle = findTerritoryName(
     territoryItems,
     territorySelectedItem,
   );
+
+const seasonTitle =
+  selectedItem?.type === "season"
+    ? findSeasonName(seasons, selectedItem.id)
+    : "";
 
   const mainContent = (
     <main className="content">
@@ -231,18 +277,18 @@ function App() {
         ← Назад
       </button>
 
-      {!selectedItem && <h1>Главная страница</h1>}
+      {!selectedItem && <h5>Главная страница</h5>}
 
       {selectedItem?.type === "season" && (
         <>
-          <h1>Турнир</h1>
-          <p>ID турнира: {selectedItem.id}</p>
+          <h2>{seasonTitle || "Турнир"}</h2>
+
+          <TournamentPanel tournamentId={Number(selectedItem.id)} />
         </>
       )}
-
       {selectedItem?.type === "territory" && (
         <>
-          <h1>{territoryTitle || "Территория"}</h1>
+          <h2>{territoryTitle || "Территория"}</h2>
           {teamsLoading && <div>Загрузка...</div>}
           {!teamsLoading && teams.length === 0 && <div>Нет данных</div>}
 

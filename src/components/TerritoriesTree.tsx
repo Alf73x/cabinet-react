@@ -207,7 +207,6 @@ export default function TerritoriesTree({
 
       setExpandedItems(parentIds);
       onSelectedItemChange?.(initialSelectedItem);
-      onItemClick(initialSelectedItem);
 
       setTimeout(() => {
         scrollToTreeItem(initialSelectedItem);

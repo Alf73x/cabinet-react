@@ -14,7 +14,7 @@ type Props = {
 
 type TreeItem = {
   // Формат, который нужен RichTreeView.
-  id: string;
+  id: string; 
   label: string;
   children?: TreeItem[];
 };
