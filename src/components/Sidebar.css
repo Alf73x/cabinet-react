@@ -39,7 +39,7 @@
   background: #e5e7eb;
   border-radius: 8px;
   padding: 4px;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   flex-shrink: 0;
   min-width: 0;
 }
@@ -90,7 +90,7 @@
 .MuiTreeItem-content {
   min-height: 22px !important;
   padding-top: 2px !important;
-  padding-bottom: 2px !important;
+  padding-bottom: 4px !important;
 }
 
 .MuiTreeItem-label {

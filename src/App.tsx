@@ -247,13 +247,11 @@ function App() {
 
     return "";
   }
-  
+
   function findSeasonName(seasons: SeasonItem[], id: string | null): string {
     if (!id) return "";
 
     const season = seasons.find((x) => x.ID.toString() === id);
-
-
 
     return (season?.Season ?? "") + " " + (season?.Name ?? "");
   }
@@ -263,10 +261,10 @@ function App() {
     territorySelectedItem,
   );
 
-const seasonTitle =
-  selectedItem?.type === "season"
-    ? findSeasonName(seasons, selectedItem.id)
-    : "";
+  const seasonTitle =
+    selectedItem?.type === "season"
+      ? findSeasonName(seasons, selectedItem.id)
+      : "";
 
   const mainContent = (
     <main className="content">
@@ -281,9 +279,10 @@ const seasonTitle =
 
       {selectedItem?.type === "season" && (
         <>
-          <h2>{seasonTitle || "Турнир"}</h2>
-
-          <TournamentPanel tournamentId={Number(selectedItem.id)} />
+          <TournamentPanel
+            tournamentId={Number(selectedItem.id)}
+            title={seasonTitle}
+          />
         </>
       )}
       {selectedItem?.type === "territory" && (
@@ -313,7 +312,7 @@ const seasonTitle =
                         <div className="scores-header">
                           <div className="scores-header-title">
                             {selectedTeamRow.Season}
-                            {" — "}
+                            {" - "}
                             {selectedTeamRow.SeasonName}
                           </div>
 

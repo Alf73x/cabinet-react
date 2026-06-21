@@ -53,8 +53,8 @@
 
 .scores-table th,
 .scores-table td {
- /* border: 1px solid #ddd;*/
-  padding: 2px 2px;
+  padding: 0;
+  border: 1px solid #e5e7eb;
   vertical-align: top;
     text-align: left;
 }
@@ -67,3 +67,13 @@
   text-align: center !important;
   font-weight: 600;
 }
+
+.scores-table th {
+  height: 24px;
+}
+
+.scores-table td {
+  min-width: 54px;
+  vertical-align: top;
+}
+

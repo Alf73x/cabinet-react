@@ -257,7 +257,6 @@ export default function TerritoriesTree({
   }
 
   // Рендеринг
-
   if (items.length === 0) {
     // Если дерево ещё пустое — показываем загрузку.
     return <div>Загрузка...</div>;

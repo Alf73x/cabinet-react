@@ -9,21 +9,63 @@ import TournamentPlainTextView from "./TournamentPlainTextView";
 
 type Props = {
   tournamentId: number;
+  title?: string;
 };
 
-export default function TournamentPanel({ tournamentId }: Props) {
-  const [data, setData] = useState<TournamentResponse | null>(null);
+const tournamentCache = new Map<number, TournamentResponse>();
+const SHOW_AWAY_MATCHES_KEY = "tournament_show_away_matches";
+
+export default function TournamentPanel({ tournamentId, title }: Props) {
+  const [data, setData] = useState<TournamentResponse | null>(
+    () => tournamentCache.get(tournamentId) ?? null,
+  );
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  const [showAwayMatches, setShowAwayMatches] = useState(() => {
+    return localStorage.getItem(SHOW_AWAY_MATCHES_KEY) !== "false";
+  });
+  function handleShowAwayMatchesChange(value: boolean) {
+    setShowAwayMatches(value);
+    localStorage.setItem(SHOW_AWAY_MATCHES_KEY, String(value));
+  }
+
   useEffect(() => {
+    const cachedData = tournamentCache.get(tournamentId);
+
+    if (cachedData) {
+      setData(cachedData);
+      setLoading(false);
+      setError("");
+      return;
+    }
+
+    let cancelled = false;
+
     setLoading(true);
     setError("");
 
     getTournament(tournamentId)
-      .then(setData)
-      .catch((err: Error) => setError(err.message))
-      .finally(() => setLoading(false));
+      .then((response) => {
+        if (cancelled) return;
+
+        tournamentCache.set(tournamentId, response);
+        setData(response);
+      })
+      .catch((err: Error) => {
+        if (!cancelled) {
+          setError(err.message);
+        }
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
   }, [tournamentId]);
 
   if (loading) return <div>Загрузка...</div>;
@@ -31,7 +73,36 @@ export default function TournamentPanel({ tournamentId }: Props) {
   if (!data) return null;
 
   if (data.datatype === 1) {
-    return <TournamentMatrixTable data={data.list[0]} />;
+    return (
+      <>
+        <div className="tournament-header">
+          <h2>{title || "Турнир"}</h2>
+
+          <div className="match-switch">
+            <button
+              className={showAwayMatches ? "active" : ""}
+              onClick={() => handleShowAwayMatchesChange(true)}
+            >
+              Все матчи
+            </button>
+
+            <button
+              className={!showAwayMatches ? "active" : ""}
+              onClick={() => handleShowAwayMatchesChange(false)}
+            >
+              Домашние матчи
+            </button>
+          </div>
+        </div>
+
+        <TournamentMatrixTable
+          data={{
+            ...data.list[0],
+            showAwayMatches,
+          }}
+        />
+      </>
+    );
   }
 
   if (data.datatype === 2) {

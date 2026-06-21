@@ -1,14 +1,20 @@
 const scoreColorByResult = {
   win: "var(--score-win)",
   loss: "var(--score-loss)",
-  winExtra: "var(--score-win-extra)",
-  lossExtra: "var(--score-loss-extra)",
 } as const;
 
 type ScoreSide = "left" | "right";
 
+function normalizeScore(score: string): string {
+  return score
+    .trim()
+    .replace(/\*/g, "")
+    .replace(/\s*[БбОо][Тт]?\s*$/g, "")
+    .trim();
+}
+
 function parseNumericScore(score: string): [number, number] | null {
-  const cleanScore = score.trim().replace(/\*/g, "");
+  const cleanScore = normalizeScore(score);
   const match = cleanScore.match(/^(\d+)\s*:\s*(\d+)$/);
 
   if (!match) {
@@ -19,7 +25,7 @@ function parseNumericScore(score: string): [number, number] | null {
 }
 
 function getLeftSideResult(score: string): "win" | "loss" | "draw" | null {
-  const cleanScore = score.trim().replace(/\*/g, "");
+  const cleanScore = normalizeScore(score);
 
   if (cleanScore === "+:-") return "win";
   if (cleanScore === "-:+") return "loss";
@@ -55,12 +61,8 @@ export function getScoreColor(
       : leftResult === "win"
         ? "loss"
         : "win";
-  const isExtraTime = score.includes("*");
 
-  if (result === "win") {
-    return isExtraTime ? scoreColorByResult.winExtra : scoreColorByResult.win;
-  }
-
-  return isExtraTime ? scoreColorByResult.lossExtra : scoreColorByResult.loss;
+  return result === "win"
+    ? scoreColorByResult.win
+    : scoreColorByResult.loss;
 }
-
