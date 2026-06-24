@@ -1,6 +1,6 @@
 .col-num {
-  width: 40px;
-  min-width: 40px;
+  width: 32px;
+  min-width: 32px;
   max-width: 40px;
   padding: 0 !important;
   text-align: center !important;
@@ -55,7 +55,6 @@
   background: #f3f3f3;
 }
 
-
 .match-switch {
   display: inline-flex;
   background: #f3f4f6;
@@ -103,4 +102,14 @@
 .team-col {
   min-width: 180px;
   width: 180px;
+  padding: 11px;
+  cursor: pointer;
 }
+
+.team-col:hover {
+  text-decoration: underline;
+}
+.matrix-highlight {
+  background-color: rgba(59, 130, 246, 0.08) !important;
+}
+

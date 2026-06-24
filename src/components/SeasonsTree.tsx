@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { RichTreeView } from "@mui/x-tree-view/RichTreeView";
 import type { SeasonItem } from "../api/seasonService";
 
@@ -14,7 +15,7 @@ type Props = {
 
 type TreeItem = {
   // Формат, который нужен RichTreeView.
-  id: string; 
+  id: string;
   label: string;
   children?: TreeItem[];
 };
@@ -55,6 +56,16 @@ function findFirstChildId(items: TreeItem[], parentId: string): string | null {
   return node.children[0].id;
 }
 
+function findParentId(items: TreeItem[], childId: string): string | null {
+  for (const item of items) {
+    if (item.children?.some((child) => child.id === childId)) {
+      return item.id;
+    }
+  }
+
+  return null;
+}
+
 // Компонент
 export default function SeasonsTree({
   seasons,
@@ -72,6 +83,18 @@ export default function SeasonsTree({
   const filteredItems = searchText // Фильтрация. Если строка поиска есть — показываем только те родительские сезоны, где label содержит текст поиска.
     ? items.filter((item) => item.label.toLowerCase().includes(searchText))
     : items;
+
+  const selectedParentId = selectedItem
+    ? findParentId(items, selectedItem)
+    : null;
+
+  useEffect(() => {
+    if (!selectedParentId) return;
+
+    if (!expandedItems.includes(selectedParentId)) {
+      onExpandedItemsChange([...expandedItems, selectedParentId]);
+    }
+  }, [selectedParentId, expandedItems, onExpandedItemsChange]);
 
   return (
     <RichTreeView
@@ -98,8 +121,7 @@ export default function SeasonsTree({
 
         if (id.startsWith("season-")) {
           // Проверяем: это родительский узел сезона?
-          const firstChildId = findFirstChildId(filteredItems, id);// Находим первую дочернюю запись внутри этого сезона
-
+          const firstChildId = findFirstChildId(filteredItems, id); // Находим первую дочернюю запись внутри этого сезона
 
           if (firstChildId) {
             onItemClick(firstChildId);
@@ -110,7 +132,7 @@ export default function SeasonsTree({
         // Если кликнули по дочернему элементу
         onItemClick(id);
       }}
-      aria-label="Seasons tree"  // Это подпись для доступности. Например, для screen reader.
+      aria-label="Seasons tree" // Это подпись для доступности. Например, для screen reader.
     />
   );
 }

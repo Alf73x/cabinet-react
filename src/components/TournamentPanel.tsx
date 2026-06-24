@@ -10,12 +10,17 @@ import TournamentPlainTextView from "./TournamentPlainTextView";
 type Props = {
   tournamentId: number;
   title?: string;
+  onTeamClick?: (team: { teamId: number; teamName: string }) => void;
 };
 
 const tournamentCache = new Map<number, TournamentResponse>();
 const SHOW_AWAY_MATCHES_KEY = "tournament_show_away_matches";
 
-export default function TournamentPanel({ tournamentId, title }: Props) {
+export default function TournamentPanel({
+  tournamentId,
+  title,
+  onTeamClick,
+}: Props) {
   const [data, setData] = useState<TournamentResponse | null>(
     () => tournamentCache.get(tournamentId) ?? null,
   );
@@ -100,6 +105,7 @@ export default function TournamentPanel({ tournamentId, title }: Props) {
             ...data.list[0],
             showAwayMatches,
           }}
+          onTeamClick={onTeamClick}
         />
       </>
     );

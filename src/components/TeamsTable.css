@@ -79,3 +79,11 @@
   overflow: hidden;
   text-overflow: ellipsis;  
 }
+
+.clickable-team {
+  cursor: pointer;
+}
+
+.clickable-team:hover {
+  text-decoration: underline;
+}

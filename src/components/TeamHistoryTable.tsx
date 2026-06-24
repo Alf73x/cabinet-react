@@ -1,17 +1,34 @@
-import "./TeamsTable.css";
+import "../components/TeamsTable.css";
 import { useMemo, useState } from "react";
 import {
   flexRender,
   getCoreRowModel,
-  getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
   type ColumnDef,
-  type ColumnFiltersState,
   type SortingState,
 } from "@tanstack/react-table";
-import type { Team } from "../api/teamsTableService";
+
+export type TeamHistoryItem = {
+  ID: number;
+  Name: string;
+  SeasonID: number;
+  Season: string;
+  SeasonName: string;
+  LeagueRank: string;
+  Place: string;
+  StageIndex: number;
+  Result: string;
+  Games: number;
+  Wins: number;
+  WinsET: number;
+  Draws: number;
+  LossesET: number;
+  Losses: number;
+  Goals_For: number;
+  Goals_Against: number;
+};
 
 declare module "@tanstack/react-table" {
   interface ColumnMeta<TData, TValue> {
@@ -21,36 +38,30 @@ declare module "@tanstack/react-table" {
 }
 
 type Props = {
-  rows: Team[];
-  onRowClick?: (row: Team) => void;
-  onTeamClick?: (teamId: number, teamName: string) => void;
+  rows: TeamHistoryItem[];
+  onRowClick?: (row: TeamHistoryItem) => void;
 };
 
-type TeamGridRow = Team & {
+type GridRow = TeamHistoryItem & {
   gridId: number;
-  Games: number;
+  GoalDiff: number;
 };
 
-const columns: ColumnDef<TeamGridRow>[] = [
-  { accessorKey: "Season", header: "Сезон", size: 80 },
-  { accessorKey: "SeasonName", header: "Турнир", size: 160 },
-  { accessorKey: "TeamName", header: "Команда", size: 120 },
-  { accessorKey: "TeamTerritory", header: "Город", size: 110 },
+const columns: ColumnDef<GridRow>[] = [
+  { accessorKey: "Season", header: "Сезон", size: 70 },
+  { accessorKey: "Name", header: "Команда", size: 150 },
+  { accessorKey: "SeasonName", header: "Турнир", size: 260 },
   {
     accessorKey: "LeagueRank",
     header: "Ранг",
-    size: 55,
+    size: 60,
     meta: { align: "center" },
   },
   {
     accessorKey: "Place",
     header: "Место",
-    size: 80,
-    meta: {
-      align: "center",
-      className: "nowrap-column",
-    },
-    enableColumnFilter: false,
+    size: 140,
+    meta: { align: "center", className: "nowrap-column" },
   },
   {
     accessorKey: "Games",
@@ -67,9 +78,23 @@ const columns: ColumnDef<TeamGridRow>[] = [
     enableColumnFilter: false,
   },
   {
+    accessorKey: "WinsET",
+    header: "ВО",
+    size: 50,
+    meta: { align: "center" },
+    enableColumnFilter: false,
+  },
+  {
     accessorKey: "Draws",
     header: "Н",
     size: 45,
+    meta: { align: "center" },
+    enableColumnFilter: false,
+  },
+  {
+    accessorKey: "LossesET",
+    header: "ПО",
+    size: 50,
     meta: { align: "center" },
     enableColumnFilter: false,
   },
@@ -80,26 +105,49 @@ const columns: ColumnDef<TeamGridRow>[] = [
     meta: { align: "center" },
     enableColumnFilter: false,
   },
+  {
+    accessorKey: "Goals_For",
+    header: "З",
+    size: 50,
+    meta: { align: "center" },
+    enableColumnFilter: false,
+  },
+  {
+    accessorKey: "Goals_Against",
+    header: "ПР",
+    size: 50,
+    meta: { align: "center" },
+    enableColumnFilter: false,
+  },
+  {
+    accessorKey: "GoalDiff",
+    header: "+/-",
+    size: 55,
+    meta: { align: "center" },
+    enableColumnFilter: false,
+  },
 ];
 
-export default function TeamsTable({ rows, onRowClick, onTeamClick }: Props) {
-  const data = useMemo<TeamGridRow[]>(
+export default function TeamHistoryTable({ rows, onRowClick }: Props) {
+  const data = useMemo<GridRow[]>(
     () =>
       rows.map((row, index) => ({
         ...row,
         gridId: index,
-        Games: row.Wins + row.Draws + row.Losses,
+        Games:
+          row.Games ||
+          row.Wins + row.WinsET + row.Draws + row.LossesET + row.Losses,
+        GoalDiff: row.Goals_For - row.Goals_Against,
       })),
     [rows],
   );
 
   const [pagination, setPagination] = useState({
     pageIndex: 0,
-    pageSize: rows.length || 1, // Все по умолчанию
+    pageSize: rows.length || 1,
   });
 
   const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
   const table = useReactTable({
     data,
@@ -107,13 +155,10 @@ export default function TeamsTable({ rows, onRowClick, onTeamClick }: Props) {
     state: {
       pagination,
       sorting,
-      columnFilters,
     },
     onPaginationChange: setPagination,
     onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
   });
@@ -154,23 +199,9 @@ export default function TeamsTable({ rows, onRowClick, onTeamClick }: Props) {
                           header.column.columnDef.header,
                           header.getContext(),
                         )}
-
                         {sorted === "asc" && " ▲"}
                         {sorted === "desc" && " ▼"}
                       </div>
-
-                      {header.column.getCanFilter() && (
-                        <input
-                          className="teams-column-filter"
-                          value={
-                            (header.column.getFilterValue() ?? "") as string
-                          }
-                          onChange={(e) =>
-                            header.column.setFilterValue(e.target.value)
-                          }
-                          onClick={(e) => e.stopPropagation()}
-                        />
-                      )}
                     </th>
                   );
                 })}
@@ -183,32 +214,16 @@ export default function TeamsTable({ rows, onRowClick, onTeamClick }: Props) {
               <tr
                 key={row.original.gridId}
                 onClick={() => onRowClick?.(row.original)}
+                style={{ cursor: "pointer" }}
               >
                 {row.getVisibleCells().map((cell) => {
                   const align = cell.column.columnDef.meta?.align;
-                  const isTeamCell = cell.column.id === "TeamName";
 
                   return (
                     <td
                       key={cell.id}
                       title={String(cell.getValue() ?? "")}
-                      className={
-                        isTeamCell
-                          ? "clickable-team"
-                          : cell.column.columnDef.meta?.className
-                      }
-                      onClick={(e) => {
-                        if (!isTeamCell) {
-                          return; // пусть сработает onRowClick у <tr>
-                        }
-
-                        e.stopPropagation(); // только TeamName/TeamTerritory
-
-                        onTeamClick?.(
-                          row.original.TeamID,
-                          row.original.TeamName,
-                        );
-                      }}
+                      className={cell.column.columnDef.meta?.className}
                       style={{
                         width: cell.column.getSize(),
                         textAlign: align ?? "left",
@@ -277,7 +292,6 @@ export default function TeamsTable({ rows, onRowClick, onTeamClick }: Props) {
           }}
         >
           <option value="all">Все</option>
-
           {[25, 50, 100].map((pageSize) => (
             <option key={pageSize} value={pageSize}>
               {pageSize}

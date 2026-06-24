@@ -105,6 +105,8 @@ export default function Sidebar({
   }
 
   function handleSeasonClick(id: string) {
+    setSeasonSelectedItem(id);
+
     onItemSelected({
       type: "season",
       id,
@@ -114,6 +116,8 @@ export default function Sidebar({
   }
 
   function handleTerritoryClick(id: string) {
+    setTerritorySelectedItem(id);
+
     onItemSelected({
       type: "territory",
       id,
@@ -144,7 +148,7 @@ export default function Sidebar({
     }
 
     loadData();
-  }, [view, seasonsLoaded, setSeasons, setSeasonsLoaded]);
+  }, [view, seasonsLoaded, selectedSports, setSeasons, setSeasonsLoaded]);
 
   useEffect(() => {
     setSeasonsLoaded(false);
@@ -164,7 +168,7 @@ export default function Sidebar({
           className={view === "tree" ? "active" : ""}
           onClick={() => setView("tree")}
         >
-          Дерево
+          Территории
         </button>
       </div>
 

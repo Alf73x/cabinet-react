@@ -1,7 +1,7 @@
 .scores-table-panel {
   height: 100%;
   padding-left: 8px;
-  border-left: 1px solid #ddd;
+   border-left: 1px solid #ddd; 
   overflow: hidden;
 
   display: flex;
@@ -47,14 +47,15 @@
 
 .scores-table {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: collapse; 
   font-size: 12px;
 }
 
 .scores-table th,
 .scores-table td {
-  padding: 0;
-  border: 1px solid #e5e7eb;
+  padding: 2px;
+ /* border: 1px solid #e5e7eb;  */
+  border: 1px solid hsl(216, 24%, 96%);  
   vertical-align: top;
     text-align: left;
 }
