@@ -31,17 +31,17 @@ export type TournamentMatrix = {
 };
 
 export type TournamentCupMatch = {
-  TeamName1: string;
-  TeamID1: number;
-  TeamName2: string;
-  TeamID2: number;
-  Score: string;
-  Date: string;
-  stage: string;
+  teamName1: string;
+  teamId1: number;
+  teamName2: string;
+  teamId2: number;
+  score: string;
+  date: string;
+  stageIndex: number;
 };
 
 export type TournamentPlainText = {
-  plaintext: string;
+  plainText: string;
 };
 
 export type TournamentResponse =

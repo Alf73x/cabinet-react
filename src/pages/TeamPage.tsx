@@ -42,6 +42,18 @@ export default function TeamPage() {
     loadTeam();
   }, [teamId]);
 
+  function openTournament(row: TeamHistoryItem) {
+    const item = {
+      type: "season",
+      id: String(row.SeasonID),
+    };
+
+    localStorage.setItem("active-main-item", JSON.stringify(item));
+    localStorage.setItem("season-selected-item", String(row.SeasonID));
+
+    window.location.href = "/";
+  }
+
   return (
     <div className="app">
       <Navbar />
@@ -62,6 +74,7 @@ export default function TeamPage() {
                       <TeamHistoryTable
                         rows={rows}
                         onRowClick={setSelectedRow}
+                        onTournamentClick={openTournament}
                       />
                     </div>
                   </Panel>
@@ -86,7 +99,7 @@ export default function TeamPage() {
                       </div>
 
                       <ScoresTablePanel
-                         teamId={selectedRow.ID}
+                        teamId={selectedRow.ID}
                         seasonId={selectedRow.SeasonID}
                       />
                     </div>
@@ -94,7 +107,11 @@ export default function TeamPage() {
                 </Group>
               ) : (
                 <div className="teams-table-panel">
-                  <TeamHistoryTable rows={rows} onRowClick={setSelectedRow} />
+                  <TeamHistoryTable
+                    rows={rows}
+                    onRowClick={setSelectedRow}
+                    onTournamentClick={openTournament}
+                  />
                 </div>
               )}
             </div>

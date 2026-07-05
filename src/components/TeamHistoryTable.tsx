@@ -40,6 +40,7 @@ declare module "@tanstack/react-table" {
 type Props = {
   rows: TeamHistoryItem[];
   onRowClick?: (row: TeamHistoryItem) => void;
+  onTournamentClick?: (row: TeamHistoryItem) => void;
 };
 
 type GridRow = TeamHistoryItem & {
@@ -128,7 +129,11 @@ const columns: ColumnDef<GridRow>[] = [
   },
 ];
 
-export default function TeamHistoryTable({ rows, onRowClick }: Props) {
+export default function TeamHistoryTable({
+  rows,
+  onRowClick,
+  onTournamentClick,
+}: Props) {
   const data = useMemo<GridRow[]>(
     () =>
       rows.map((row, index) => ({
@@ -218,12 +223,25 @@ export default function TeamHistoryTable({ rows, onRowClick }: Props) {
               >
                 {row.getVisibleCells().map((cell) => {
                   const align = cell.column.columnDef.meta?.align;
+                  const isTournamentCell = cell.column.id === "SeasonName";
 
                   return (
                     <td
                       key={cell.id}
                       title={String(cell.getValue() ?? "")}
-                      className={cell.column.columnDef.meta?.className}
+                      /* className={cell.column.columnDef.meta?.className} */
+                      className={
+                        isTournamentCell
+                          ? "clickable-team"
+                          : cell.column.columnDef.meta?.className
+                      }
+                      onClick={(e) => {
+                        if (!isTournamentCell) {
+                          return; // let the row click open ScoresTablePanel
+                        }
+                        e.stopPropagation();
+                        onTournamentClick?.(row.original);
+                      }}
                       style={{
                         width: cell.column.getSize(),
                         textAlign: align ?? "left",

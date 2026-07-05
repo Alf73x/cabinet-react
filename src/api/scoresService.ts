@@ -1,12 +1,12 @@
 import { apiGet } from "./api";
 
 export type ScoreRow = {
-  TeamName1: string;
-  TeamID1: number;
-  TeamName2: string;
-  TeamID2: number;
-  Score: string;
-  Date: string;
+  teamName1: string;
+  teamId1: number;
+  teamName2: string;
+  teamId2: number;
+  score: string;
+  date: string;
 };
 
 export type ScoresResponse = {

@@ -6,6 +6,7 @@ import {
 import TournamentMatrixTable from "./TournamentMatrixTable";
 import TournamentCupTable from "./TournamentCupTable";
 import TournamentPlainTextView from "./TournamentPlainTextView";
+import TournamentMatchesList from "./TournamentMatchesList";
 
 type Props = {
   tournamentId: number;
@@ -100,13 +101,24 @@ export default function TournamentPanel({
           </div>
         </div>
 
-        <TournamentMatrixTable
-          data={{
-            ...data.list[0],
-            showAwayMatches,
-          }}
-          onTeamClick={onTeamClick}
-        />
+        <div className="matrix-wrapper">
+          <TournamentMatrixTable
+            data={{
+              ...data.list[0],
+              showAwayMatches,
+            }}
+            onTeamClick={onTeamClick}
+          />
+        </div>
+
+        <div style={{ marginTop: 16 }}>
+          <TournamentMatchesList
+            data={{
+              ...data.list[0],
+              showAwayMatches,
+            }}
+          />
+        </div>
       </>
     );
   }

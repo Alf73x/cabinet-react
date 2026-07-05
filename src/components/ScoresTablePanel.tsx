@@ -64,20 +64,20 @@ export default function ScoresTablePanel({ teamId, seasonId }: Props) {
 
         <tbody>
           {rows.map((row, index) => (
-            <tr key={`${row.Date}-${row.TeamID1}-${row.TeamID2}-${index}`}>
-              <td>{formatDate(row.Date)}</td>
-              <td>{row.TeamName1}</td>
-              <td>{row.TeamName2}</td>
+            <tr key={`${row.date}-${row.teamId1}-${row.teamId2}-${index}`}>
+              <td>{formatDate(row.date)}</td>
+              <td>{row.teamName1}</td>
+              <td>{row.teamName2}</td>
               <td
                 className="score-cell"
                 style={{
                   backgroundColor: getScoreColor(
-                    row.Score,
-                    row.TeamID1 === teamId ? "left" : "right",
+                    row.score,
+                    row.teamId1 === teamId ? "left" : "right",
                   ),
                 }}
               >
-                {row.Score}
+                {row.score}
               </td>
             </tr>
           ))}
