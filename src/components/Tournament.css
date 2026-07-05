@@ -1,14 +1,13 @@
 :root {
   --bg: #ffffff;
   --header-bg: #f3f3f3;
-
   --col-num-width: 40px;
   --team-col-width: 180px;
-
-  --band-row-height: 22px;
-  --header-row-height: 22px;
 }
 
+/* =======================
+   Matrix table
+   ======================= */
 
 .table-scroll {
   width: 100%;
@@ -20,131 +19,78 @@
   box-sizing: border-box;
 }
 
-.matrix-grid {
-  display: grid;
+.scores-table {
+  border-collapse: separate;
+  border-spacing: 0;
   width: max-content;
-  min-width: max-content;
-  align-items: stretch;
+  min-width: 100%;
+  font-size: 12px;
+  color: #4c4563;
 }
 
-.matrix-row {
-  display: contents;
-}
-
-.matrix-cell {
+.scores-table th,
+.scores-table td {
   border-right: 1px solid #e5e7eb;
   border-bottom: 1px solid #e5e7eb;
   background: var(--bg);
   white-space: nowrap;
   box-sizing: border-box;
-  min-height: 24px;
-  padding: 2px 5px;
-  font-size: 12px;
-  color: #4c4563;
 }
 
-.matrix-band-row .matrix-cell {
-  height: var(--band-row-height);
-  min-height: var(--band-row-height);
+.scores-table thead th {
+  height: 24px;
   padding: 0 4px;
   background: var(--header-bg);
-}
-
-.matrix-header-row .matrix-cell {
-  height: var(--header-row-height);
-  min-height: var(--header-row-height);
-  padding: 0 4px;
-  background: var(--header-bg);
-}
-
-.band-header,
-.matrix-header-cell {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
   text-align: center;
-  font-size: 12px;
+  vertical-align: middle;
   font-weight: 600;
-  line-height: 1;
+}
 
-  background: var(--header-bg);
-  border-top: 1px solid #e5e7eb;
-  border-left: 1px solid #e5e7eb;
+.band-header {
+  height: 22px;
+  background: var(--header-bg) !important;
+  text-align: center;
+  vertical-align: middle;
+  font-weight: 600;
 }
 
 .col-num {
   width: var(--col-num-width);
   min-width: var(--col-num-width);
   max-width: var(--col-num-width);
-  text-align: center;
-  padding-left: 0 !important;
-  padding-right: 0 !important;
+  padding: 0 !important;
+  text-align: center !important;
 }
 
 .team-col {
   width: var(--team-col-width);
   min-width: var(--team-col-width);
   max-width: var(--team-col-width);
+  padding: 4px 6px;
 
-  white-space: normal;
+  white-space: normal !important;
   word-break: normal;
   overflow-wrap: break-word;
-
   line-height: 1.2;
 }
 
+.result-header {
+  width: 64px;
+  min-width: 64px;
+  max-width: 64px;
+  text-align: center;
+}
+
 .result-col {
-  min-height: 26px;
-  display: flex;
-  flex-direction: column;
+  width: 64px;
+  min-width: 64px;
+  max-width: 64px;
   padding: 0;
-}
-
-.sticky-col-1 {
-  position: sticky;
-  left: 0;
-  z-index: 60;
-  background: var(--bg);
-}
-
-.sticky-col-2 {
-  position: sticky;
-  left: var(--col-num-width);
-  z-index: 60;
-  background: var(--bg);
-  box-shadow: 4px 0 6px -4px rgba(0, 0, 0, 0.22);
-}
-
-.sticky-team-band {
-  position: sticky;
-  left: 0;
-  z-index: 100 !important;
-  background: var(--header-bg);
-  box-shadow: 4px 0 6px -4px rgba(0, 0, 0, 0.22);
-}
-
-.matrix-header-row .sticky-col-1,
-.matrix-header-row .sticky-col-2 {
-  z-index: 95;
-  background: var(--header-bg);
-}
-
-.matrix-body-row .sticky-col-1,
-.matrix-body-row .sticky-col-2 {
-  z-index: 50;
-}
-
-.matrix-diagonal {
-  background: #f3f3f3;
-}
-
-.matrix-highlight {
-  background-color: rgba(59, 130, 246, 0.08) !important;
+  text-align: center;
+  vertical-align: top;
 }
 
 .score-cell {
-  flex: 1;
   min-height: 22px;
   line-height: 22px;
 
@@ -157,15 +103,57 @@
   padding: 0;
 }
 
+.matrix-diagonal {
+  background: #f3f3f3 !important;
+}
+
+.matrix-highlight {
+  background-color: rgba(59, 130, 246, 0.08) !important;
+}
+
+.sticky-col-1 {
+  position: sticky;
+  left: 0;
+  z-index: 20;
+  background: var(--bg);
+}
+
+.sticky-col-2 {
+  position: sticky;
+  left: var(--col-num-width);
+  z-index: 20;
+  background: var(--bg);
+  box-shadow: 4px 0 6px -4px rgba(0, 0, 0, 0.22);
+}
+
+.scores-table thead .sticky-col-1,
+.scores-table thead .sticky-col-2 {
+  z-index: 30;
+  background: var(--header-bg);
+}
+
+.scores-table tbody .sticky-col-1,
+.scores-table tbody .sticky-col-2 {
+  background: var(--bg);
+}
+
 .team-col:hover {
   text-decoration: underline;
   cursor: pointer;
 }
 
+/* =======================
+   Tooltip
+   ======================= */
+
 .match-tooltip {
   font-size: 12px;
   line-height: 1.6;
 }
+
+/* =======================
+   Switch
+   ======================= */
 
 .match-switch {
   display: inline-flex;
@@ -200,6 +188,10 @@
     0 1px 4px rgba(0, 0, 0, 0.06);
 }
 
+/* =======================
+   Header
+   ======================= */
+
 .tournament-header {
   display: flex;
   justify-content: space-between;
@@ -211,8 +203,9 @@
   margin: 0;
 }
 
-
-
+/* =======================
+   Matches list
+   ======================= */
 
 .matches-list {
   margin-top: 16px;
