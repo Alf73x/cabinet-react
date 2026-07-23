@@ -1,5 +1,7 @@
 import "./Tournament.css";
+import { useMemo, useState } from "react";
 import type { TournamentMatrix } from "../api/tournamentService";
+import { getScoreColor } from "../utils/scoreColor";
 
 type MatchListItem = {
   teamId: number;
@@ -19,33 +21,109 @@ export default function TournamentMatchesList({ data }: Props) {
   const teams = data?.teams ?? [];
   const matches = (data?.matches ?? []) as MatchListItem[];
 
+  const [team1Filter, setTeam1Filter] = useState<number | "all">("all");
+  const [team2Filter, setTeam2Filter] = useState<number | "all">("all");
+
   const teamsById = new Map(teams.map((t) => [t.id, t.name]));
 
-  const sortedMatches = [...matches].sort((a, b) => {
-    const tourA = a.tour ?? 0;
-    const tourB = b.tour ?? 0;
+  const sortedMatches = useMemo(() => {
+    return [...matches]
+      .filter((m) => {
+        const hasTeam1 =
+          team1Filter === "all" ||
+          m.teamId === team1Filter ||
+          m.opponentId === team1Filter;
 
-    if (tourA !== tourB) return tourA - tourB;
+        const hasTeam2 =
+          team2Filter === "all" ||
+          m.teamId === team2Filter ||
+          m.opponentId === team2Filter;
 
-    return (a.date ?? "").localeCompare(b.date ?? "");
-  });
+        return hasTeam1 && hasTeam2;
+      })
+      .sort((a, b) => {
+        const tourA = a.tour ?? 0;
+        const tourB = b.tour ?? 0;
+
+        if (tourA !== tourB) {
+          return tourA - tourB;
+        }
+
+        return (a.date ?? "").localeCompare(b.date ?? "");
+      });
+  }, [matches, team1Filter, team2Filter]);
 
   function formatDate(date: string) {
-    // "2012.10.17" -> "17.10.2012"
     const parts = date.split(".");
     if (parts.length !== 3) return date;
 
     return `${parts[2]}.${parts[1]}.${parts[0]}`;
   }
 
+  if (matches.length === 0) {
+    return null;
+  }
+
+  const sortedTeams = useMemo(() => {
+    return [...teams].sort((a, b) =>
+      a.name.localeCompare(b.name, "ru", {
+        sensitivity: "base",
+      }),
+    );
+  }, [teams]);
+
   return (
     <div className="matches-list">
-      <h3>Матчи</h3>
+      <div className="matches-list-header">
+        <div className="matches-filters">
+          <select
+            value={team1Filter}
+            onChange={(e) =>
+              setTeam1Filter(
+                e.target.value === "all" ? "all" : Number(e.target.value),
+              )
+            }
+          >
+            <option value="all">Команда 1</option>
+
+            {sortedTeams.map((team) => (
+              <option key={team.id} value={team.id}>
+                {team.name}
+              </option>
+            ))}
+          </select>
+
+          <select
+            value={team2Filter}
+            onChange={(e) =>
+              setTeam2Filter(
+                e.target.value === "all" ? "all" : Number(e.target.value),
+              )
+            }
+          >
+            <option value="all">Команда 2</option>
+
+            {sortedTeams.map((team) => (
+              <option key={team.id} value={team.id}>
+                {team.name}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      {sortedMatches.length === 0 && (
+        <div className="matches-empty">
+          Матчи по выбранным фильтрам не найдены
+        </div>
+      )}
 
       {sortedMatches.map((m, index) => {
         const teamName = teamsById.get(m.teamId) ?? String(m.teamId);
         const opponentName =
           teamsById.get(m.opponentId) ?? String(m.opponentId);
+
+        const scoreColor = getScoreColor(m.score);
 
         return (
           <div
@@ -53,13 +131,16 @@ export default function TournamentMatchesList({ data }: Props) {
             className="match-row"
           >
             <span className="match-date">{formatDate(m.date ?? "")}</span>
-            <span className="match-tour">{m.tour ?? ""} тур</span>
+
+            <span className="match-tour">
+              {m.tour && m.tour > 0 ? `${m.tour} тур` : ""}
+            </span>
 
             <span className="match-team">{teamName}</span>
 
             <span
               className="match-score"
-              style={{ backgroundColor: m.color ?? "transparent" }}
+              style={{ backgroundColor: scoreColor ?? "transparent" }}
             >
               {m.score}
             </span>

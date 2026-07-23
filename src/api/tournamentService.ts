@@ -5,11 +5,15 @@ export type TournamentDataType = 1 | 2 | 3;
 export type TournamentMatrixTeam = {
   id: number;
   place: number;
+  stageIndex: number;
+  resultIndex: number;
+  resultIndex2: number;
   name: string;
   games: number;
   points: number;
   wins: number;
   otWins: number;
+  draws: number;
   otLosses: number;
   losses: number;
   goalsFor: number;
@@ -28,6 +32,7 @@ export type TournamentMatrix = {
   teams: TournamentMatrixTeam[];
   matches: TournamentMatrixMatch[];
   showAwayMatches: boolean;
+  viewMode?: string;
 };
 
 export type TournamentCupMatch = {
@@ -40,14 +45,29 @@ export type TournamentCupMatch = {
   stageIndex: number;
 };
 
+
 export type TournamentPlainText = {
   plainText: string;
+};
+
+
+export type TournamentPoints = {
+  win: number;
+  winEt: number;
+  draw: number;
+  lossEt: number;
+  loss: number;
+  na: number;
 };
 
 export type TournamentResponse =
   | {
       status: "OK";
       datatype: 1;
+      tableFormat: number;
+      resultOf: number;
+      points: TournamentPoints;
+      roundStandings?: string;
       list: TournamentMatrix[];
     }
   | {

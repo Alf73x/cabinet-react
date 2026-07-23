@@ -1,12 +1,26 @@
 import "./Tournament.css";
 import { useState } from "react";
 import Tooltip from "@mui/material/Tooltip";
-import type { TournamentMatrix } from "../api/tournamentService";
+import type {
+  TournamentMatrix,
+  TournamentPoints,
+} from "../api/tournamentService";
 import { getScoreColor } from "../utils/scoreColor";
 import { reverseScore, compactScore } from "../utils/score";
+import { stageIndexToText } from "../utils/cupstages";
+import { placeToText } from "../utils/place";
+import { getRoundStandingColor } from "../utils/resultIndex";
+import {
+  getSportTableIndexColor,
+  tableResultToText,
+} from "../utils/resultIndex";
 
 type Props = {
   data: TournamentMatrix;
+  roundStandings?: string;
+  tableFormat: number;
+  resultOf: number;
+  points: TournamentPoints;
   onTeamClick?: (team: { teamId: number; teamName: string }) => void;
 };
 
@@ -23,19 +37,65 @@ const BASE_STAT_FIELDS = [
   { title: "+/-", field: "diff" },
 ];
 
-export default function TournamentMatrixTable({ data, onTeamClick }: Props) {
+function parseRoundStandings(value?: string) {
+  if (!value) {
+    return {
+      rounds: [] as number[],
+      placesByTeamId: new Map<number, number[]>(),
+    };
+  }
+
+  const rows = value
+    .split(";")
+    .map((row) => row.trim())
+    .filter(Boolean);
+
+  const rounds = rows[0].split(",").map(Number).slice(1);
+
+  const placesByTeamId = new Map<number, number[]>();
+
+  for (const row of rows.slice(1)) {
+    const values = row.split(",").map(Number);
+    placesByTeamId.set(values[0], values.slice(1));
+  }
+
+  return { rounds, placesByTeamId };
+}
+
+export default function TournamentMatrixTable({
+  data,
+  roundStandings,
+  tableFormat,
+  resultOf,
+  points,
+  onTeamClick,
+}: Props) {
   const teams = data?.teams ?? [];
   const matches = data?.matches ?? [];
 
   const showAwayMatches = data.showAwayMatches ?? true;
 
-  const showResults = (data as any).showResults ?? true;
-  const showHomeStats = (data as any).showHomeStats ?? true;
-  const showAwayStats = (data as any).showAwayStats ?? true;
+  const viewMode = data.viewMode ?? "full";
 
-  const showWinsOt = (data as any).showWinsOt ?? false;
-  const showDraws = (data as any).showDraws ?? true;
-  const showLossesOt = (data as any).showLossesOt ?? false;
+  const showRoundStandings = viewMode === "table2score";
+
+  const { rounds, placesByTeamId } = parseRoundStandings(roundStandings);
+
+  const showResults =
+    !showRoundStandings &&
+    viewMode !== "table1" &&
+    ((data as any).showResults ?? true);
+
+  const showHomeStats =
+    viewMode === "full" && ((data as any).showHomeStats ?? true);
+  const showAwayStats =
+    viewMode === "full" && ((data as any).showAwayStats ?? true);
+
+  const showWinsOt = tableFormat === 5;
+  const showDraws = points.draw !== 0;
+  const showLossesOt = tableFormat === 5;
+
+  const showStage = resultOf > 0;
 
   const [openTooltip, setOpenTooltip] = useState<string | null>(null);
   const [hoverCell, setHoverCell] = useState<{
@@ -60,6 +120,8 @@ export default function TournamentMatrixTable({ data, onTeamClick }: Props) {
       return showAwayMatches && m.teamId === opponent.id;
     });
   });
+
+  const showResultBand = showResults && visibleColumnTeams.length > 0;
 
   function cx(...classes: Array<string | false | null | undefined>) {
     return classes.filter(Boolean).join(" ");
@@ -140,13 +202,18 @@ export default function TournamentMatrixTable({ data, onTeamClick }: Props) {
       <table className="scores-table">
         <thead>
           <tr>
-            <th className="band-header" colSpan={2}>
+            <th className="band-header" colSpan={showStage ? 3 : 2}>
               Команда
             </th>
 
-            {showResults && (
+            {showResultBand && (
               <th className="band-header" colSpan={visibleColumnTeams.length}>
                 Результаты
+              </th>
+            )}
+            {showRoundStandings && rounds.length > 0 && (
+              <th className="band-header" colSpan={rounds.length}>
+                Потуровая таблица
               </th>
             )}
 
@@ -169,9 +236,10 @@ export default function TournamentMatrixTable({ data, onTeamClick }: Props) {
 
           <tr>
             <th className="col-num sticky-col-1">М</th>
+            {showStage && <th className="stage-col">Стадия</th>}
             <th className="team-col sticky-col-2">Название</th>
 
-            {showResults &&
+            {showResultBand &&
               visibleColumnTeams.map((team, index) => (
                 <th
                   key={team.id}
@@ -182,9 +250,28 @@ export default function TournamentMatrixTable({ data, onTeamClick }: Props) {
                     index === visibleColumnTeams.length - 1 && "band-end",
                   )}
                 >
-                  <Tooltip title={team.name} arrow placement="top" disableInteractive>
+                  <Tooltip
+                    title={team.name}
+                    arrow
+                    placement="top"
+                    disableInteractive
+                  >
                     <span style={{ cursor: "default" }}>{team.place}</span>
                   </Tooltip>
+                </th>
+              ))}
+
+            {showRoundStandings &&
+              rounds.map((round, index) => (
+                <th
+                  key={round}
+                  className={cx(
+                    "round-standing-header",
+                    index === 0 && "band-start",
+                    index === rounds.length - 1 && "band-end",
+                  )}
+                >
+                  {round}
                 </th>
               ))}
 
@@ -195,126 +282,204 @@ export default function TournamentMatrixTable({ data, onTeamClick }: Props) {
         </thead>
 
         <tbody>
-          {teams.map((team) => (
-            <tr key={team.id}>
-              <td
-                className={cx(
-                  "col-num sticky-col-1",
-                  hoverCell?.rowId === team.id && "matrix-highlight",
-                )}
-              >
-                {team.place}
-              </td>
+          {teams.map((team) => {
+            const resultIndex = team.resultIndex ?? 0;
+            const resultIndex2 = team.resultIndex2 ?? 0;
 
-              <td
-                className={cx(
-                  "team-col sticky-col-2",
-                  hoverCell?.rowId === team.id && "matrix-highlight",
-                )}
-                onClick={() =>
-                  onTeamClick?.({
-                    teamId: team.id,
-                    teamName: team.name,
-                  })
-                }
-              >
-                {team.name}
-              </td>
+            const placeColor = getSportTableIndexColor(
+              resultIndex2 > 0 ? resultIndex2 : resultIndex,
+              "transparent",
+            );
 
-              {showResults &&
-                visibleColumnTeams.map((opponent, colIndex) => (
-                  <td
-                    key={opponent.id}
-                    className={cx(
-                      "result-col",
-                      team.id === opponent.id && "matrix-diagonal",
-                      (hoverCell?.rowId === team.id ||
-                        hoverCell?.colId === opponent.id) &&
-                        "matrix-highlight",
-                      colIndex === 0 && "band-start",
-                      colIndex === visibleColumnTeams.length - 1 && "band-end",
-                    )}
-                    onMouseEnter={() =>
-                      setHoverCell({
-                        rowId: team.id,
-                        colId: opponent.id,
-                      })
-                    }
-                    onMouseLeave={() => setHoverCell(null)}
+            const placeHint = [
+              resultIndex > 0 ? tableResultToText(resultIndex) : "",
+              resultIndex2 > 0 ? tableResultToText(resultIndex2) : "",
+            ]
+              .filter(Boolean)
+              .join("; ");
+
+            const placeTooltipColor =
+              placeColor === "transparent" ? "#ffffff" : placeColor;
+
+            return (
+              <tr key={team.id}>
+                <td
+                  className={cx(
+                    "col-num sticky-col-1",
+                    hoverCell?.rowId === team.id && "matrix-highlight",
+                  )}
+                  style={{ backgroundColor: placeColor }}
+                >
+                  <Tooltip
+                    title={placeHint}
+                    arrow
+                    placement="top"
+                    disableHoverListener={!placeHint}
+                    slotProps={{
+                      tooltip: {
+                        sx: {
+                          bgcolor: placeTooltipColor,
+                          color: "#000",
+                          border: "1px solid #d0d0d0",
+                          boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+                          fontSize: "12px",
+                          lineHeight: 1.5,
+                          p: "4px 8px",
+                        },
+                      },
+                      arrow: {
+                        sx: {
+                          color: placeTooltipColor,
+                        },
+                      },
+                    }}
                   >
-                    {team.id === opponent.id
-                      ? null
-                      : getMatches(team.id, opponent.id).map((m, index) => {
-                          const side = m.teamId === team.id ? "left" : "right";
-                          const tooltipId = `${team.id}-${opponent.id}-${index}`;
+                    <div className="place-cell-tooltip">
+                      {placeToText(team.place)}
+                    </div>
+                  </Tooltip>
+                </td>
 
-                          const scoreColor = getScoreColor(m.score, side);
-                          const tooltipColor =
-                            scoreColor === "transparent"
-                              ? "#ffffff"
-                              : scoreColor;
-
-                          const visibleScore =
-                            m.teamId === team.id
-                              ? compactScore(m.score)
-                              : compactScore(reverseScore(m.score));
-
-                          return (
-                            <Tooltip
-                              key={tooltipId}
-                              open={openTooltip === tooltipId}
-                              onClose={() => setOpenTooltip(null)}
-                              disableHoverListener
-                              disableFocusListener
-                              disableTouchListener
-                              title={getMatchHint(m)}
-                              arrow
-                              placement="top"
-                              slotProps={{
-                                tooltip: {
-                                  sx: {
-                                    bgcolor: tooltipColor,
-                                    color: "#000000",
-                                    border: "1px solid #d0d0d0",
-                                    boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
-                                    p: "2px 6px",
-                                    fontSize: "12px",
-                                    lineHeight: 1.6,
-                                    minHeight: "unset",
-                                  },
-                                },
-                                arrow: {
-                                  sx: {
-                                    color: tooltipColor,
-                                  },
-                                },
-                              }}
-                            >
-                              <div
-                                className="score-cell"
-                                onClick={() =>
-                                  setOpenTooltip(
-                                    openTooltip === tooltipId
-                                      ? null
-                                      : tooltipId,
-                                  )
-                                }
-                                onMouseLeave={() => setOpenTooltip(null)}
-                                style={{ backgroundColor: scoreColor }}
-                              >
-                                {visibleScore}
-                              </div>
-                            </Tooltip>
-                          );
-                        })}
+                {showStage && (
+                  <td className="stage-col">
+                    {stageIndexToText(team.stageIndex)}
                   </td>
-                ))}
+                )}
 
-              {renderStatCells(team, "")}
-              {showHomeStats && renderStatCells(team, "home")}
-              {showAwayStats && renderStatCells(team, "away")}
-            </tr>
-          ))}
+                <td
+                  className={cx(
+                    "team-col sticky-col-2",
+                    hoverCell?.rowId === team.id && "matrix-highlight",
+                  )}
+                  onClick={() =>
+                    onTeamClick?.({
+                      teamId: team.id,
+                      teamName: team.name,
+                    })
+                  }
+                >
+                  {team.name}
+                </td>
+
+                {showResultBand &&
+                  visibleColumnTeams.map((opponent, colIndex) => (
+                    <td
+                      key={opponent.id}
+                      className={cx(
+                        "result-col",
+                        team.id === opponent.id && "matrix-diagonal",
+                        (hoverCell?.rowId === team.id ||
+                          hoverCell?.colId === opponent.id) &&
+                          "matrix-highlight",
+                        colIndex === 0 && "band-start",
+                        colIndex === visibleColumnTeams.length - 1 &&
+                          "band-end",
+                      )}
+                      onMouseEnter={() =>
+                        setHoverCell({
+                          rowId: team.id,
+                          colId: opponent.id,
+                        })
+                      }
+                      onMouseLeave={() => setHoverCell(null)}
+                    >
+                      {team.id === opponent.id
+                        ? null
+                        : getMatches(team.id, opponent.id).map((m, index) => {
+                            const side =
+                              m.teamId === team.id ? "left" : "right";
+                            const tooltipId = `${team.id}-${opponent.id}-${index}`;
+
+                            const scoreColor = getScoreColor(m.score, side);
+                            const tooltipColor =
+                              scoreColor === "transparent"
+                                ? "#ffffff"
+                                : scoreColor;
+
+                            const visibleScore =
+                              m.teamId === team.id
+                                ? compactScore(m.score)
+                                : compactScore(reverseScore(m.score));
+
+                            return (
+                              <Tooltip
+                                key={tooltipId}
+                                open={openTooltip === tooltipId}
+                                onClose={() => setOpenTooltip(null)}
+                                disableHoverListener
+                                disableFocusListener
+                                disableTouchListener
+                                title={getMatchHint(m)}
+                                arrow
+                                placement="top"
+                                slotProps={{
+                                  tooltip: {
+                                    sx: {
+                                      bgcolor: tooltipColor,
+                                      color: "#000000",
+                                      border: "1px solid #d0d0d0",
+                                      boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+                                      p: "2px 6px",
+                                      fontSize: "12px",
+                                      lineHeight: 1.6,
+                                      minHeight: "unset",
+                                    },
+                                  },
+                                  arrow: {
+                                    sx: {
+                                      color: tooltipColor,
+                                    },
+                                  },
+                                }}
+                              >
+                                <div
+                                  className="score-cell"
+                                  onClick={() =>
+                                    setOpenTooltip(
+                                      openTooltip === tooltipId
+                                        ? null
+                                        : tooltipId,
+                                    )
+                                  }
+                                  onMouseLeave={() => setOpenTooltip(null)}
+                                  style={{ backgroundColor: scoreColor }}
+                                >
+                                  {visibleScore}
+                                </div>
+                              </Tooltip>
+                            );
+                          })}
+                    </td>
+                  ))}
+
+                {showRoundStandings &&
+                  rounds.map((round, index) => {
+                    const teamPlaces = placesByTeamId.get(team.id);
+                    const roundPlace = teamPlaces?.[index] ?? 0;
+
+                    return (
+                      <td
+                        key={`${team.id}-${round}`}
+                        className={cx(
+                          "round-standing-cell",
+                          index === 0 && "band-start",
+                          index === rounds.length - 1 && "band-end",
+                        )}
+                        style={{
+                          backgroundColor: getRoundStandingColor(roundPlace),
+                        }}
+                      >
+                        {roundPlace === 0 ? "" : Math.abs(roundPlace)}
+                      </td>
+                    );
+                  })}
+
+                {renderStatCells(team, "")}
+                {showHomeStats && renderStatCells(team, "home")}
+                {showAwayStats && renderStatCells(team, "away")}
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>

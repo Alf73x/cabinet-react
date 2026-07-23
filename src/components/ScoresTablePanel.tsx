@@ -53,21 +53,31 @@ export default function ScoresTablePanel({ teamId, seasonId }: Props) {
   return (
     <div className="scores-table-content">
       <table className="scores-table">
+        <colgroup>
+          <col className="scores-col-date" />
+          <col className="scores-col-team" />
+          <col className="scores-col-team" />
+          <col className="scores-col-score" />
+        </colgroup>
+
         <thead>
           <tr>
-            <th>Дата</th>
-            <th>Команда 1</th>
-            <th>Команда 2</th>
-            <th>Счет</th>
+            <th className="date-cell">Дата</th>
+            <th className="team-name-cell">Команда 1</th>
+            <th className="team-name-cell">Команда 2</th>
+            <th className="score-cell-header">Счет</th>
           </tr>
         </thead>
 
         <tbody>
           {rows.map((row, index) => (
             <tr key={`${row.date}-${row.teamId1}-${row.teamId2}-${index}`}>
-              <td>{formatDate(row.date)}</td>
-              <td>{row.teamName1}</td>
-              <td>{row.teamName2}</td>
+              <td className="date-cell">{formatDate(row.date)}</td>
+
+              <td className="team-name-cell">{row.teamName1}</td>
+
+              <td className="team-name-cell">{row.teamName2}</td>
+
               <td
                 className="score-cell"
                 style={{

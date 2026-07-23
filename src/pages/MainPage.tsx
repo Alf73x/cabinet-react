@@ -14,7 +14,7 @@ import { getSports, type SportItem } from "../api/sportsService";
 import TeamsTable from "../components/TeamsTable";
 import { getTeams, type Team } from "../api/teamsTableService";
 import ScoresTablePanel from "../components/ScoresTablePanel";
-import TournamentPanel from "../components/TournamentPanel";
+import Tournament from "../components/Tournament";
 import Navbar from "../components/Navbar";
 
 const MOBILE_WIDTH = 768;
@@ -75,7 +75,6 @@ function MainPage() {
 
   const [sidebarWidth, setSidebarWidth] = useState(() => {
     const saved = Number(localStorage.getItem("sidebar-width"));
-    console.log("LOAD:", saved);
     if (!saved || saved < 180 || saved > 600) {
       return 240;
     }
@@ -298,7 +297,7 @@ function MainPage() {
       {!selectedItem && <h5>Главная страница</h5>}
 
       {selectedItem?.type === "season" && (
-        <TournamentPanel
+        <Tournament
           tournamentId={Number(selectedItem.id)}
           title={seasonTitle}
           onTeamClick={(team) =>

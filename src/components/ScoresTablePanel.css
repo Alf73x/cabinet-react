@@ -1,20 +1,24 @@
 .scores-table-panel {
   height: 100%;
+  min-width: 0;
+  min-height: 0;
   padding-left: 8px;
-   border-left: 1px solid #ddd; 
+
+  border-left: 1px solid #ddd;
   overflow: hidden;
 
   display: flex;
   flex-direction: column;
-  min-height: 0;
 }
 
 .scores-header {
   display: flex;
   align-items: center;
   gap: 6px;
+
   margin-bottom: 8px;
   flex-shrink: 0;
+
   font-size: 14px;
   line-height: 1.35;
 }
@@ -22,14 +26,20 @@
 .scores-header-title {
   flex: 1;
   min-width: 0;
+
   white-space: normal;
-  word-break: break-word;
+  overflow-wrap: anywhere;
+  word-break: normal;
+
   font-weight: bold;
 }
 
 .close-scores-btn {
+  flex-shrink: 0;
+
   border: none;
   background: transparent;
+
   cursor: pointer;
   font-size: 18px;
 }
@@ -40,41 +50,150 @@
 
 .scores-table-content {
   flex: 1;
+  min-width: 0;
   min-height: 0;
+
   overflow-y: auto;
   overflow-x: hidden;
 }
 
 .scores-table {
   width: 100%;
-  border-collapse: collapse; 
+  max-width: 100%;
+
+  border-collapse: collapse;
+  table-layout: fixed;
+
   font-size: 12px;
+}
+
+/* Fixed-width columns */
+.scores-col-date {
+  width: 72px;
+}
+
+.scores-col-score {
+  width: 50px;
+}
+
+/* Two team columns share the remaining space */
+.scores-col-team {
+  width: calc((100% - 122px) / 2);
 }
 
 .scores-table th,
 .scores-table td {
-  padding: 2px;
- /* border: 1px solid #e5e7eb;  */
-  border: 1px solid hsl(216, 24%, 96%);  
-  vertical-align: top;
-    text-align: left;
-}
+  padding: 3px 4px;
 
-.scores-table th {
-  background: #f3f3f3;
-}
+  border: 1px solid hsl(216, 24%, 96%);
 
-.score-cell {
-  text-align: center !important;
-  font-weight: 600;
+  text-align: left;
+  vertical-align: middle;
+
+  box-sizing: border-box;
 }
 
 .scores-table th {
   height: 24px;
+
+  background: #f3f3f3;
+
+  font-weight: 600;
 }
 
-.scores-table td {
-  min-width: 54px;
-  vertical-align: top;
+.date-cell {
+  white-space: nowrap;
+  text-align: center !important;
 }
 
+.team-name-cell {
+  min-width: 0;
+
+  white-space: normal !important;
+  overflow-wrap: anywhere;
+  word-break: normal;
+
+  line-height: 1.25;
+  vertical-align: middle;
+}
+
+.score-cell,
+.score-cell-header {
+  white-space: nowrap;
+  text-align: center !important;
+}
+
+.scores-table td.score-cell {
+  display: table-cell !important;
+  padding: 3px 4px !important;
+
+  text-align: center !important;
+  vertical-align: middle !important;
+
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+
+/* Modern scrollbar */
+.scores-table-content {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(140, 150, 170, 0.35) transparent;
+}
+
+.scores-table-content::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.scores-table-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scores-table-content::-webkit-scrollbar-thumb {
+  background: rgba(140, 150, 170, 0.35);
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background-clip: padding-box;
+}
+
+.scores-table-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(140, 150, 170, 0.6);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+.scores-table-content::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+@media (max-width: 700px) {
+  .scores-table-panel {
+    padding-left: 4px;
+  }
+
+  .scores-col-date {
+    width: 70px;
+  }
+
+  .scores-col-score {
+    width: 46px;
+  }
+
+  .scores-col-team {
+    width: calc((100% - 116px) / 2);
+  }
+
+  .scores-table {
+    font-size: 11px;
+  }
+
+  .scores-table th,
+  .scores-table td {
+    padding: 3px;
+  }
+
+  .team-name-cell {
+    line-height: 1.2;
+  }
+}
