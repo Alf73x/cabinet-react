@@ -1,44 +1,90 @@
 // src/api.ts
 
 const API_URL = import.meta.env.VITE_API_URL;
+
 const USER = import.meta.env.VITE_API_USER;
 const PASSWORD = import.meta.env.VITE_API_PASSWORD;
 
-const AUTH =
-  "Basic " + btoa(`${USER}:${PASSWORD}`);
+const BASIC_AUTH =
+  USER && PASSWORD
+    ? "Basic " + btoa(`${USER}:${PASSWORD}`)
+    : null;
 
-export async function apiGet<T>(url: string): Promise<T> {
-  const response = await fetch(`${API_URL}${url}`, {
-    method: "GET",
-    headers: {
-      Authorization: AUTH,
-      "Content-Type": "application/json",
-    },
-  });
+const TOKEN_KEY = "cabinet_access_token";
 
-  if (!response.ok) {
-    throw new Error(`HTTP ${response.status}`);
-  }
-
-  return await response.json();
+function getJwtToken(): string | null {
+  return localStorage.getItem(TOKEN_KEY);
 }
 
-export async function apiPost<T>(
+type AuthType = "jwt" | "basic" | "none";
+
+function createHeaders(   authType: AuthType,): HeadersInit {
+  const headers: Record<string, string> = {
+    Accept: "application/json",
+    "Content-Type": "application/json",
+  };
+
+  if (authType === "jwt") {
+    const token = getJwtToken();
+
+    if (token) {
+      headers.Authorization = `Bearer ${token}`;
+    }
+  }
+
+  if (authType === "basic" && BASIC_AUTH) {
+    headers.Authorization = BASIC_AUTH;
+  }
+
+  return headers;
+}
+
+async function parseResponse<T>(
+  response: Response,
+): Promise<T> {
+  if (!response.ok) {
+    let message = `HTTP ${response.status}`;
+
+    try {
+      const data = await response.json();
+
+      if (typeof data.error === "string") {
+        message = data.error;
+      } else if (typeof data.message === "string") {
+        message = data.message;
+      }
+    } catch {
+      // Ответ сервера не является JSON.
+    }
+
+    throw new Error(message);
+  }
+
+  return response.json() as Promise<T>;
+}
+
+export async function apiGet<T>(
   url: string,
-  data: any
+  authType: AuthType = "jwt",
 ): Promise<T> {
   const response = await fetch(`${API_URL}${url}`, {
+    method: "GET",
+    headers: createHeaders(authType),
+  });
+
+  return parseResponse<T>(response);
+}
+
+export async function apiPost<TResponse>(
+  url: string,
+  data: unknown,
+  authType: AuthType = "jwt",
+): Promise<TResponse> {
+  const response = await fetch(`${API_URL}${url}`, {
     method: "POST",
-    headers: {
-      Authorization: AUTH,
-      "Content-Type": "application/json",
-    },
+    headers: createHeaders(authType),
     body: JSON.stringify(data),
   });
 
-  if (!response.ok) {
-    throw new Error(`HTTP ${response.status}`);
-  }
-
-  return await response.json();
+  return parseResponse<TResponse>(response);
 }

@@ -13,6 +13,7 @@ function formatDate(value: string) {
 }
 
 export default function TournamentCupTable({ rows }: Props) {
+  const safeRows = rows ?? [];
   return (
     <table className="scores-table">
       <thead>
@@ -26,7 +27,7 @@ export default function TournamentCupTable({ rows }: Props) {
       </thead>
 
       <tbody>
-        {rows.map((row, index) => {
+        {safeRows.map((row, index) => {
           const scoreType = getSportScoreType(row.score);
           const scoreColor = getScoreColor("2:1");
 

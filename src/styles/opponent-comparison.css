@@ -1,0 +1,374 @@
+.opponent-comparison-page {
+  box-sizing: border-box;
+  min-height: 0;
+  flex: 1;
+  padding: 8px 18px;
+
+  overflow: visible;
+
+  color: #172033;
+  background: #ffffff;
+}
+
+.opponent-comparison-header {
+  margin-bottom: 6px;
+  border-bottom: 1px solid #d6dbe3;
+}
+
+.opponent-comparison-header h1 {
+  margin: 0 0 6px;
+
+  font-size: 21px;
+  font-weight: 500;
+}
+
+/* Все элементы находятся в одной строке */
+.comparison-toolbar {
+  display: grid;
+  grid-template-columns:
+    260px
+    30px
+    260px
+    125px
+    auto
+    1fr;
+  align-items: end;
+  gap: 6px;
+
+  padding: 7px 12px;
+  overflow: visible;
+
+  background: #f8fafc;
+  border: 1px solid #d6dbe3;
+  border-radius: 5px;
+}
+
+.comparison-field {
+  position: relative;
+
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 3px;
+
+  overflow: visible;
+
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.team-combobox {
+  position: relative;
+
+  width: 100%;
+  min-width: 0;
+}
+
+.team-combobox__input-wrapper {
+  position: relative;
+
+  width: 100%;
+}
+
+.team-combobox input {
+  box-sizing: border-box;
+  width: 100%;
+  height: 30px;
+  padding: 0 28px 0 8px;
+
+  color: #172033;
+  background: #ffffff;
+  border: 1px solid #aeb7c4;
+  border-radius: 3px;
+
+  font: inherit;
+  font-weight: 400;
+}
+
+.team-combobox__clear {
+  position: absolute;
+  top: 50%;
+  right: 3px;
+
+  width: 22px;
+  height: 22px;
+  padding: 0;
+
+  color: #64748b;
+  background: transparent;
+  border: none;
+
+  font-size: 17px;
+  line-height: 20px;
+  cursor: pointer;
+
+  transform: translateY(-50%);
+}
+
+.team-combobox__dropdown {
+  position: absolute;
+  top: calc(100% + 2px);
+  right: 0;
+  left: 0;
+  z-index: 5000;
+
+  max-height: 500px;
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  background: #ffffff;
+  border: 1px solid #aeb7c4;
+  border-radius: 3px;
+
+  box-shadow: 0 5px 14px rgb(0 0 0 / 18%);
+}
+
+.team-combobox__option {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 7px 9px;
+
+  overflow: hidden;
+
+  color: #172033;
+  background: #ffffff;
+  border: none;
+  border-bottom: 1px solid #eef2f7;
+
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.team-combobox__option:hover,
+.team-combobox__option:focus {
+  background: #edf6ff;
+  outline: none;
+}
+
+.team-combobox__empty {
+  padding: 10px;
+
+  color: #64748b;
+  font-size: 13px;
+}
+
+.comparison-swap-button {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+
+  color: #0876c9;
+  background: #ffffff;
+  border: 1px solid #aeb7c4;
+  border-radius: 3px;
+
+  font-size: 17px;
+  line-height: 28px;
+  cursor: pointer;
+}
+
+.comparison-swap-button:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.comparison-filter-dropdown {
+  position: relative;
+
+  align-self: end;
+  justify-self: start;
+}
+
+.comparison-filter-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+
+  box-sizing: border-box;
+  width: 125px;
+  height: 30px;
+  padding: 0 9px;
+
+  color: #172033;
+  background: #ffffff;
+  border: 1px solid #aeb7c4;
+  border-radius: 4px;
+
+  white-space: nowrap;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.comparison-filter-trigger:hover {
+  background: #f8fafc;
+}
+
+.comparison-filter-arrow {
+  color: #64748b;
+  font-size: 11px;
+}
+
+.comparison-filter-popup {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  z-index: 5000;
+
+  min-width: 170px;
+  padding: 5px 0;
+
+  background: #ffffff;
+  border: 1px solid #cbd2dc;
+  border-radius: 6px;
+
+  box-shadow: 0 6px 18px rgb(0 0 0 / 16%);
+}
+
+.comparison-filter-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+
+  width: 100%;
+  padding: 7px 10px;
+
+  color: #172033;
+  background: transparent;
+  border: none;
+
+  text-align: left;
+  white-space: nowrap;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.comparison-filter-item:hover {
+  background: #edf6ff;
+}
+
+.comparison-filter-check {
+  width: 14px;
+  flex: 0 0 14px;
+
+  color: #2563eb;
+  font-weight: 600;
+}
+
+.comparison-start-button {
+  display: flex;
+  align-items: center;
+  align-self: end;
+  justify-content: center;
+  justify-self: start;
+  gap: 4px;
+
+  width: auto;
+  height: 30px;
+  padding: 0 10px;
+
+  color: #172033;
+  background: #ffffff;
+  border: 1px solid #aeb7c4;
+  border-radius: 3px;
+
+  white-space: nowrap;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.comparison-start-button span {
+  color: #20934b;
+  font-size: 15px;
+}
+
+.comparison-start-button:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.comparison-error {
+  margin-top: 8px;
+  padding: 8px 10px;
+
+  color: #a61b1b;
+  background: #fff1f1;
+  border: 1px solid #efb7b7;
+  border-radius: 4px;
+
+  font-size: 13px;
+}
+
+.comparison-hint {
+  margin-top: 8px;
+  padding: 8px 10px;
+
+  color: #64748b;
+  background: #f8fafc;
+  border: 1px solid #d6dbe3;
+  border-radius: 4px;
+
+  font-size: 13px;
+}
+
+.comparison-results {
+  margin-top: 10px;
+}
+
+/*
+  На средней ширине всё ещё остаётся на одной строке.
+  Комбобоксы немного уменьшаются.
+*/
+@media (max-width: 1000px) {
+  .comparison-toolbar {
+    grid-template-columns:
+      minmax(180px, 230px)
+      30px
+      minmax(180px, 230px)
+      125px
+      auto
+      1fr;
+  }
+}
+
+/*
+  На мобильной ширине элементы переходят в одну колонку.
+  Этот блок можно удалить, если абсолютно на любой ширине
+  всё должно оставаться в одной строке.
+*/
+@media (max-width: 700px) {
+  .opponent-comparison-page {
+    padding: 10px;
+  }
+
+  .comparison-toolbar {
+    grid-template-columns: 1fr;
+    align-items: stretch;
+  }
+
+  .comparison-swap-button {
+    justify-self: center;
+
+    transform: rotate(90deg);
+  }
+
+  .comparison-filter-dropdown,
+  .comparison-start-button {
+    justify-self: stretch;
+  }
+
+  .comparison-filter-trigger,
+  .comparison-start-button {
+    width: 100%;
+  }
+
+  .comparison-filter-popup {
+    right: 0;
+    left: 0;
+
+    width: auto;
+  }
+}

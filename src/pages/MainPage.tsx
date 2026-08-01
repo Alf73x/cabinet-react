@@ -10,15 +10,15 @@ import Sidebar from "../components/Sidebar";
 
 import type { SeasonItem } from "../api/seasonService";
 import type { MuiTreeItem } from "../components/TerritoriesTree";
-import { getSports, type SportItem } from "../api/sportsService";
 import TeamsTable from "../components/TeamsTable";
 import { getTeams, type Team } from "../api/teamsTableService";
 import ScoresTablePanel from "../components/ScoresTablePanel";
 import Tournament from "../components/Tournament";
 import Navbar from "../components/Navbar";
 
+import { useSports } from "../context/SportsContext";
+
 const MOBILE_WIDTH = 768;
-const SPORTS_STORAGE_KEY = "selected-sports";
 const TERRITORY_SELECTED_KEY = "territory-selected-item";
 const ACTIVE_ITEM_KEY = "active-main-item";
 const SEASON_SELECTED_KEY = "season-selected-item";
@@ -67,6 +67,12 @@ function getSavedActiveItem(): SelectedItem {
 }
 
 function MainPage() {
+const {
+    sports,
+    selectedSports,
+    toggleSport,
+} = useSports();
+
   const [mobileMainOpen, setMobileMainOpen] = useState(false);
   const [selectedItem, setSelectedItem] =
     useState<SelectedItem>(getSavedActiveItem);
@@ -104,22 +110,7 @@ function MainPage() {
     return localStorage.getItem(TERRITORY_SELECTED_KEY);
   });
 
-  const [sports, setSports] = useState<SportItem[]>([]);
-  const [selectedSports, setSelectedSports] = useState<number[]>(() => {
-    const saved = localStorage.getItem(SPORTS_STORAGE_KEY);
-
-    if (!saved) {
-      return [];
-    }
-
-    try {
-      return JSON.parse(saved);
-    } catch {
-      return [];
-    }
-  });
-
-  const [teams, setTeams] = useState<Team[]>([]);
+    const [teams, setTeams] = useState<Team[]>([]);
   const [teamsLoading, setTeamsLoading] = useState(false);
 
   const [selectedTeamRow, setSelectedTeamRow] = useState<Team | null>(null);
@@ -135,22 +126,6 @@ function MainPage() {
     window.addEventListener("resize", handleResize);
 
     return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  useEffect(() => {
-    getSports()
-      .then((items) => {
-        setSports(items);
-
-        const saved = localStorage.getItem(SPORTS_STORAGE_KEY);
-
-        if (!saved) {
-          const allIds = items.map((x) => x.ID);
-          setSelectedSports(allIds);
-          localStorage.setItem(SPORTS_STORAGE_KEY, JSON.stringify(allIds));
-        }
-      })
-      .catch(console.error);
   }, []);
 
   useEffect(() => {
@@ -210,6 +185,7 @@ function MainPage() {
     loadTeams(territorySelectedItem);
   }, [territorySelectedItem, selectedSports]);
 
+
   const sidebar = (
     <Sidebar
       onOpenMain={() => setMobileMainOpen(true)}
@@ -237,18 +213,6 @@ function MainPage() {
       selectedSports={selectedSports}
     />
   );
-
-  function toggleSport(id: number) {
-    setSelectedSports((prev) => {
-      const next = prev.includes(id)
-        ? prev.filter((x) => x !== id)
-        : [...prev, id];
-
-      localStorage.setItem(SPORTS_STORAGE_KEY, JSON.stringify(next));
-
-      return next;
-    });
-  }
 
   function findTerritoryName(items: MuiTreeItem[], id: string | null): string {
     if (!id) return "";
