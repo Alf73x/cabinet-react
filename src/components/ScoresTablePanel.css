@@ -126,10 +126,8 @@
 .scores-table td.score-cell {
   display: table-cell !important;
   padding: 3px 4px !important;
-
   text-align: center !important;
   vertical-align: middle !important;
-
   font-weight: 400;
   white-space: nowrap;
 }

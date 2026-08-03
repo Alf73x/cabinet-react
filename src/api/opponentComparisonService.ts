@@ -34,6 +34,39 @@ export interface OpponentOption {
   sportName?: string;
 }
 
+export type ComparisonStats = {
+  games: number;
+  wins: number;
+  winsET: number;
+  draws: number;
+  lossesET: number;
+  losses: number;
+  goalsFor: number;
+  goalsAgainst: number;
+};
+
+export type OpponentComparisonItem = {
+  team1: string;
+  team2: string;
+  team1_id: number;
+  team2_id: number;
+  total: ComparisonStats;
+  home: ComparisonStats;
+  away: ComparisonStats;
+};
+
+export type OpponentComparisonResponse = {
+  status: string;
+  data: {
+    list: OpponentComparisonItem[];
+    totals: {
+      total: ComparisonStats;
+      home: ComparisonStats;
+      away: ComparisonStats;
+    };
+  };
+};
+
 const OPPONENT_OPTIONS_KEY = "opponent-options";
 
 export async function getOpponentOptions(
@@ -92,26 +125,41 @@ export function getSavedOpponentOptions(): OpponentOption[] {
   }
 }
 
-export type OpponentComparisonResponse = unknown;
-
 export async function getComparison(
   opponent1: OpponentOption,
   opponent2: OpponentOption,
   competitionFilter: CompetitionFilter,
-  sportIds: number[],
+  sportIDs: number[],
+  leagueRanks: number[],
 ): Promise<OpponentComparisonResponse> {
+  const backendCompetitionFilter =
+    competitionFilter === "championship"
+      ? "league"
+      : competitionFilter;
+
   const params = new URLSearchParams({
     opponent1Type: opponent1.type,
     opponent1Id: opponent1.id.toString(),
-
     opponent2Type: opponent2.type,
     opponent2Id: opponent2.id.toString(),
-
-    competitionFilter,
-    sport_ids: sportIds.join(","),
+    competitionFilter: backendCompetitionFilter,
   });
 
-  const url = `/opponent_comparison?${params.toString()}`;
+  if (sportIDs.length > 0) {
+    params.set("sport_ids", sportIDs.join(","));
+  }
 
-  return apiGet<OpponentComparisonResponse>(url);
+  if (leagueRanks.length > 0) {
+    params.set("league_ranks", leagueRanks.join(","));
+  }
+
+  const result = await apiGet<OpponentComparisonResponse>(
+    `/opponent_comparison?${params.toString()}`,
+  );
+
+  if (result.status !== "OK") {
+    throw new Error("Failed to load comparison");
+  }
+
+  return result;
 }

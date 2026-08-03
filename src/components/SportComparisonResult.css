@@ -1,0 +1,151 @@
+.comparison-result {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr);
+	width: 100%;
+	gap: 16px;
+	margin-top: 16px;
+	align-items: start;
+}
+
+.comparison-result--details-open {
+	grid-template-columns: minmax(0, 2fr) minmax(320px, 1fr);
+}
+
+.comparison-table-container {
+	width: 100%;
+	min-width: 0;
+	max-height: 600px;
+	overflow: auto;
+	border: 1px solid #d0d0d0;
+	border-radius: 4px;
+}
+
+.comparison-table {
+	width: 100%;
+	min-width: 720px;
+	border-collapse: collapse;
+	table-layout: fixed;
+	font-size: 14px;
+}
+
+.comparison-team-column {
+	width: 25%;
+}
+
+.comparison-stat-column {
+	width: 6%;
+}
+
+.comparison-goals-column {
+	width: 14%;
+}
+
+.comparison-table th,
+.comparison-table td {
+	padding: 8px 10px;
+	border-bottom: 1px solid #e0e0e0;
+	text-align: center;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.comparison-table th:first-child,
+.comparison-table th:nth-child(2),
+.comparison-table td:first-child,
+.comparison-table td:nth-child(2) {
+	text-align: left;
+}
+
+.comparison-table thead th {
+	position: sticky;
+	top: 0;
+	z-index: 1;
+	background: #f5f5f5;
+	font-weight: 600;
+}
+
+.comparison-table tbody tr:not(.totals-row) {
+	cursor: pointer;
+}
+
+.comparison-table tbody tr:not(.totals-row):hover {
+	background: #f3f7fb;
+}
+
+.comparison-table tbody tr.selected {
+	background: #dcecff;
+}
+
+.comparison-table tbody tr.selected:hover {
+	background: #dcecff;
+}
+
+.comparison-table .totals-row {
+	position: sticky;
+	bottom: 0;
+	z-index: 1;
+	background: #f5f5f5;
+	font-weight: 700;
+}
+
+.comparison-matches-container {
+	min-width: 0;
+	max-height: 600px;
+	overflow: auto;
+}
+
+.comparison-matches {
+	padding: 16px;
+	border: 1px solid #d0d0d0;
+	border-radius: 4px;
+	background: #fff;
+}
+
+.comparison-matches-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	margin-bottom: 16px;
+}
+
+.comparison-matches h3 {
+	margin: 0;
+}
+
+.comparison-matches-close {
+	width: 28px;
+	height: 28px;
+	padding: 0;
+	border: 1px solid #c7c7c7;
+	border-radius: 4px;
+	background: #fff;
+	font-size: 20px;
+	line-height: 1;
+	cursor: pointer;
+}
+
+.comparison-matches-close:hover {
+	background: #f0f0f0;
+}
+
+.comparison-match-teams {
+	font-weight: 600;
+	margin-bottom: 16px;
+}
+
+.comparison-match-ids {
+	font-size: 13px;
+	color: #666;
+}
+
+@media (max-width: 1000px) {
+	.comparison-result--details-open {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.comparison-matches-container {
+		max-height: none;
+	}
+}

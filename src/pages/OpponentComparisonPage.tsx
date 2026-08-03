@@ -4,12 +4,14 @@ import "../styles/opponent-comparison.css";
 
 import Navbar from "../components/Navbar";
 import TeamComboBox from "../components/TeamComboBox";
+import SportComparisonResult from "../components/SportComparisonResult";
 
 import {
   getOpponentOptions,
   getComparison,
   type OpponentOption,
   type CompetitionFilter,
+  type OpponentComparisonResponse,
 } from "../api/opponentComparisonService";
 
 import { useSports } from "../context/SportsContext";
@@ -18,13 +20,10 @@ export default function OpponentComparisonPage() {
   const { selectedSports, sportsLoading } = useSports();
 
   const [options, setOptions] = useState<OpponentOption[]>([]);
-
   const [team1, setTeam1] = useState<OpponentOption | null>(null);
-
   const [team2, setTeam2] = useState<OpponentOption | null>(null);
 
   const [optionsLoading, setOptionsLoading] = useState(false);
-
   const [optionsError, setOptionsError] = useState("");
 
   const [competitionFilter, setCompetitionFilter] =
@@ -32,23 +31,27 @@ export default function OpponentComparisonPage() {
 
   const [filterMenuOpen, setFilterMenuOpen] = useState(false);
 
-  useEffect(() => {
-    console.log("OpponentComparisonPage:", {
-      selectedSports,
-      sportsLoading,
-    });
+  const [leagueRanks, setLeagueRanks] = useState<number[]>([]);
+  const [leagueMenuOpen, setLeagueMenuOpen] = useState(false);
 
+  const [comparisonResult, setComparisonResult] =
+    useState<OpponentComparisonResponse | null>(null);
+
+  const [comparisonLoading, setComparisonLoading] = useState(false);
+  const [comparisonError, setComparisonError] = useState("");
+
+  useEffect(() => {
     setTeam1(null);
     setTeam2(null);
 
+    setComparisonResult(null);
+    setComparisonError("");
+
     if (sportsLoading) {
-      console.log("Sports are still loading");
       return;
     }
 
     if (selectedSports.length === 0) {
-      console.log("No selected sports");
-
       setOptions([]);
       setOptionsError("");
       setOptionsLoading(false);
@@ -57,16 +60,12 @@ export default function OpponentComparisonPage() {
 
     let cancelled = false;
 
-    async function loadOptions() {
+    async function loadOptions(): Promise<void> {
       try {
         setOptionsLoading(true);
         setOptionsError("");
 
-        console.log("Calling getOpponentOptions:", selectedSports);
-
         const items = await getOpponentOptions(selectedSports);
-
-        console.log("getOpponentOptions returned:", items.length, items);
 
         if (!cancelled) {
           setOptions(items);
@@ -104,6 +103,18 @@ export default function OpponentComparisonPage() {
     other: "Прочее",
   };
 
+  const competitionFilterOptions: Array<[CompetitionFilter, string]> = [
+    ["all", "Все матчи"],
+    ["cup", "Кубок"],
+    ["championship", "Чемпионат"],
+    ["other", "Прочее"],
+  ];
+
+  const leagueRankOptions = [1, 2, 3, 4, 5, 6];
+
+  const leagueRanksLabel =
+    leagueRanks.length === 0 ? "Все лиги" : leagueRanks.join(", ");
+
   const isSameOpponent =
     team1 !== null &&
     team2 !== null &&
@@ -112,26 +123,67 @@ export default function OpponentComparisonPage() {
 
   const canCompare = team1 !== null && team2 !== null && !isSameOpponent;
 
+  function handleCompetitionFilterChange(value: CompetitionFilter): void {
+    setCompetitionFilter(value);
+    setFilterMenuOpen(false);
+
+    if (value !== "championship") {
+      setLeagueRanks([]);
+      setLeagueMenuOpen(false);
+    }
+  }
+
+  function handleLeagueRankToggle(rank: number): void {
+    setLeagueRanks((current) => {
+      if (current.includes(rank)) {
+        return current.filter((item) => item !== rank);
+      }
+
+      return [...current, rank].sort((a, b) => a - b);
+    });
+  }
+
   async function handleCompare(): Promise<void> {
     if (!team1 || !team2 || isSameOpponent) {
       return;
     }
 
-    try {
-      const result = await getComparison(team1, team2, competitionFilter, selectedSports);
+    setFilterMenuOpen(false);
+    setLeagueMenuOpen(false);
 
-      console.log("Comparison result:", result);
+    try {
+      setComparisonLoading(true);
+      setComparisonError("");
+      setComparisonResult(null);
+
+      const result = await getComparison(
+        team1,
+        team2,
+        competitionFilter,
+        selectedSports,
+        leagueRanks,
+      );
+
+      setComparisonResult(result);
     } catch (err) {
       console.error("Comparison failed:", err);
+
+      setComparisonResult(null);
+
+      setComparisonError(
+        err instanceof Error ? err.message : "Не удалось выполнить сравнение",
+      );
+    } finally {
+      setComparisonLoading(false);
     }
   }
-  
-  const handleSwapTeams = () => {
+
+  function handleSwapTeams(): void {
     const oldTeam1 = team1;
 
     setTeam1(team2);
     setTeam2(oldTeam1);
-  };
+  }
 
   return (
     <div className="app">
@@ -181,7 +233,10 @@ export default function OpponentComparisonPage() {
             <button
               type="button"
               className="comparison-filter-trigger"
-              onClick={() => setFilterMenuOpen((prev) => !prev)}
+              onClick={() => {
+                setFilterMenuOpen((current) => !current);
+                setLeagueMenuOpen(false);
+              }}
             >
               {competitionFilterLabels[competitionFilter]}
 
@@ -190,22 +245,12 @@ export default function OpponentComparisonPage() {
 
             {filterMenuOpen && (
               <div className="comparison-filter-popup">
-                {(
-                  [
-                    ["all", "Все матчи"],
-                    ["cup", "Кубок"],
-                    ["championship", "Чемпионат"],
-                    ["other", "Прочее"],
-                  ] as Array<[CompetitionFilter, string]>
-                ).map(([value, label]) => (
+                {competitionFilterOptions.map(([value, label]) => (
                   <button
                     key={value}
                     type="button"
                     className="comparison-filter-item"
-                    onClick={() => {
-                      setCompetitionFilter(value);
-                      setFilterMenuOpen(false);
-                    }}
+                    onClick={() => handleCompetitionFilterChange(value)}
                   >
                     <span className="comparison-filter-check">
                       {competitionFilter === value ? "✓" : ""}
@@ -218,14 +263,65 @@ export default function OpponentComparisonPage() {
             )}
           </div>
 
+          {competitionFilter === "championship" && (
+            <div className="comparison-league-dropdown">
+              <button
+                type="button"
+                className="comparison-league-trigger"
+                onClick={() => {
+                  setLeagueMenuOpen((current) => !current);
+                  setFilterMenuOpen(false);
+                }}
+              >
+                <span className="comparison-league-title">Лига:</span>
+
+                <span className="comparison-league-value">
+                  {leagueRanksLabel}
+                </span>
+
+                <span className="comparison-filter-arrow">▾</span>
+              </button>
+
+              {leagueMenuOpen && (
+                <div className="comparison-league-popup">
+                  <button
+                    type="button"
+                    className="comparison-league-item"
+                    onClick={() => setLeagueRanks([])}
+                  >
+                    <span className="comparison-league-check">
+                      {leagueRanks.length === 0 ? "✓" : ""}
+                    </span>
+                    Все лиги
+                  </button>
+
+                  {leagueRankOptions.map((rank) => (
+                    <button
+                      key={rank}
+                      type="button"
+                      className="comparison-league-item"
+                      onClick={() => handleLeagueRankToggle(rank)}
+                    >
+                      <span className="comparison-league-check">
+                        {leagueRanks.includes(rank) ? "✓" : ""}
+                      </span>
+                      Лига {rank}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
           <button
             type="button"
             className="comparison-start-button"
             onClick={handleCompare}
-            disabled={!canCompare}
+            disabled={!canCompare || comparisonLoading}
           >
             <span>▶</span>
-            Сравнить
+
+            {comparisonLoading ? "Сравнение..." : "Сравнить"}
           </button>
         </section>
 
@@ -247,7 +343,19 @@ export default function OpponentComparisonPage() {
           )}
 
         <section className="comparison-results">
-          {/* Здесь позже будет таблица результатов. */}
+          {comparisonLoading && (
+            <div className="comparison-hint">Выполняется сравнение...</div>
+          )}
+
+          {comparisonError && (
+            <div className="comparison-error">
+              Ошибка сравнения: {comparisonError}
+            </div>
+          )}
+
+          {!comparisonLoading && !comparisonError && (
+            <SportComparisonResult result={comparisonResult} />
+          )}
         </section>
       </main>
     </div>

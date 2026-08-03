@@ -138,17 +138,8 @@ export function SportsProvider({
             (sport) => sport.ID,
           );
 
-          console.log(
-            "SportsContext: selecting all sports",
-            allIds,
-          );
-
           setSelectedSports(allIds);
         } else {
-          console.log(
-            "SportsContext: restoring sports",
-            actualIds,
-          );
 
           setSelectedSports(actualIds);
         }

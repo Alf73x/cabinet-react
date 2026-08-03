@@ -6,9 +6,7 @@ const USER = import.meta.env.VITE_API_USER;
 const PASSWORD = import.meta.env.VITE_API_PASSWORD;
 
 const BASIC_AUTH =
-  USER && PASSWORD
-    ? "Basic " + btoa(`${USER}:${PASSWORD}`)
-    : null;
+  USER && PASSWORD ? "Basic " + btoa(`${USER}:${PASSWORD}`) : null;
 
 const TOKEN_KEY = "cabinet_access_token";
 
@@ -18,7 +16,7 @@ function getJwtToken(): string | null {
 
 type AuthType = "jwt" | "basic" | "none";
 
-function createHeaders(   authType: AuthType,): HeadersInit {
+function createHeaders(authType: AuthType): HeadersInit {
   const headers: Record<string, string> = {
     Accept: "application/json",
     "Content-Type": "application/json",
@@ -39,9 +37,7 @@ function createHeaders(   authType: AuthType,): HeadersInit {
   return headers;
 }
 
-async function parseResponse<T>(
-  response: Response,
-): Promise<T> {
+async function parseResponse<T>(response: Response): Promise<T> {
   if (!response.ok) {
     let message = `HTTP ${response.status}`;
 
@@ -67,12 +63,21 @@ export async function apiGet<T>(
   url: string,
   authType: AuthType = "jwt",
 ): Promise<T> {
+  console.log("API_URL:", API_URL);
+  console.log("Full URL:", `${API_URL}${url}`);
+
   const response = await fetch(`${API_URL}${url}`, {
     method: "GET",
     headers: createHeaders(authType),
   });
 
-  return parseResponse<T>(response);
+  console.log("Response status:", response.status, response.statusText);
+
+  const result = await parseResponse<T>(response);
+
+  console.log("Parsed response:", result);
+
+  return result;
 }
 
 export async function apiPost<TResponse>(
