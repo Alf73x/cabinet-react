@@ -1,4 +1,4 @@
-import { apiGet } from "./api";
+import { apiGet  } from "./api";
 
 export type OpponentOptionType = "territory" | "team";
 
@@ -162,4 +162,39 @@ export async function getComparison(
   }
 
   return result;
+}
+
+export type ComparisonMatch = {
+  teamName1: string;
+  teamId1: number;
+  teamName2: string;
+  teamId2: number;
+  score: string;
+  date: string;
+};
+
+type ComparisonMatchesResponse = {
+  status: string;
+  error?: string;
+  data: ComparisonMatch[];
+};
+
+export async function getComparisonMatches(
+  team1Id: number,
+  team2Id: number,
+): Promise<ComparisonMatch[]> {
+  const params = new URLSearchParams({
+    team1_id: String(team1Id),
+    team2_id: String(team2Id),
+  });
+
+  const response = await apiGet<ComparisonMatchesResponse>(
+    `/opponent_comparison/matches?${params.toString()}`,
+  );
+
+  if (response.status !== "OK") {
+    throw new Error(response.error || "Не удалось загрузить матчи");
+  }
+
+  return response.data ?? [];
 }

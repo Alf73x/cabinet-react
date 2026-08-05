@@ -3,9 +3,6 @@
   --header-bg: #f3f3f3;
   --col-num-width: 40px;
   --team-col-width: 180px;
-
-  --score-win: rgb(219, 253, 231);   /* #DBFDE7 */
-  --score-loss: rgb(255, 242, 242);  /* #FFF2F2 */
 }
 
 
@@ -38,6 +35,8 @@
    ======================= */
 
 .matrix-wrapper .table-scroll {
+  position: relative;
+  overflow: auto;
   width: 100%;
   min-width: 0;
   overflow: auto;
@@ -183,6 +182,9 @@
 
   text-align: center;
   vertical-align: top;
+
+  position: relative;
+  z-index: auto;
 }
 
 /* =======================
@@ -212,26 +214,6 @@
   Аналогично для loss и draw.
 */
 
-.matrix-wrapper .score-cell.score-win,
-.matrix-wrapper .score-cell.win,
-.matrix-wrapper .score-win,
-.matrix-wrapper .win-score {
-  color: var(--score-win-color);
-}
-
-.matrix-wrapper .score-cell.score-loss,
-.matrix-wrapper .score-cell.loss,
-.matrix-wrapper .score-loss,
-.matrix-wrapper .loss-score {
-  color: var(--score-loss-color);
-}
-
-.matrix-wrapper .score-cell.score-draw,
-.matrix-wrapper .score-cell.draw,
-.matrix-wrapper .score-draw,
-.matrix-wrapper .draw-score {
-  color: var(--score-draw-color);
-}
 
 
 /* Одиночный счёт заполняет всю высоту ячейки */
@@ -251,25 +233,6 @@
   line-height: normal;
 }
 
-/*
-  Если цветовой класс установлен непосредственно на td.
-*/
-
-.matrix-wrapper td.score-win,
-.matrix-wrapper td.win {
-  color: var(--score-win-color);
-}
-
-.matrix-wrapper td.score-loss,
-.matrix-wrapper td.loss {
-  color: var(--score-loss-color);
-}
-
-.matrix-wrapper td.score-draw,
-.matrix-wrapper td.draw {
-  color: var(--score-draw-color);
-}
-
 /* =======================
    Matrix states
    ======================= */
@@ -278,40 +241,70 @@
   background: #f3f3f3 !important;
 }
 
-.matrix-wrapper .matrix-highlight {
-  background: rgba(59, 130, 246, 0.08) !important;
+.matrix-wrapper .scores-table tbody td.sticky-col-1.matrix-highlight,
+.matrix-wrapper .scores-table tbody td.sticky-col-2.matrix-highlight {
+  background-color: #eef6ff !important;
 }
 
 /* =======================
    Sticky columns
    ======================= */
 
-.matrix-wrapper .sticky-col-1 {
+.matrix-wrapper .scores-table th.sticky-col-1,
+.matrix-wrapper .scores-table td.sticky-col-1,
+.matrix-wrapper .scores-table th.sticky-col-2,
+.matrix-wrapper .scores-table td.sticky-col-2 {
   position: sticky;
-  left: 0;
-  z-index: 20;
-
-  background: var(--bg);
+  isolation: isolate;
+  background-color: #fff;
 }
 
-.matrix-wrapper .sticky-col-2 {
-  position: sticky;
-  left: var(--col-num-width);
-  z-index: 20;
+.matrix-wrapper .scores-table th.sticky-col-1,
+.matrix-wrapper .scores-table td.sticky-col-1 {
+  left: 0;
+}
 
-  background: var(--bg);
+.matrix-wrapper .scores-table th.sticky-col-2,
+.matrix-wrapper .scores-table td.sticky-col-2 {
+  left: var(--col-num-width);
   box-shadow: 4px 0 6px -4px rgba(0, 0, 0, 0.22);
 }
 
-.matrix-wrapper .scores-table thead .sticky-col-1,
-.matrix-wrapper .scores-table thead .sticky-col-2 {
-  z-index: 30;
-  background: var(--header-bg);
+/* Ячейки тела выше прокручиваемых результатов */
+.matrix-wrapper .scores-table tbody td.sticky-col-1,
+.matrix-wrapper .scores-table tbody td.sticky-col-2 {
+  z-index: 20;
 }
 
-.matrix-wrapper .scores-table tbody .sticky-col-1,
-.matrix-wrapper .scores-table tbody .sticky-col-2 {
-    background-color: transparent;
+/* Заголовок выше тела */
+.matrix-wrapper .scores-table thead th.sticky-col-1,
+.matrix-wrapper .scores-table thead th.sticky-col-2 {
+  z-index: 30;
+  background-color: var(--header-bg);
+}
+
+/* Непрозрачная подложка на всю площадь sticky-ячейки */
+.matrix-wrapper .scores-table tbody td.sticky-col-1::before,
+.matrix-wrapper .scores-table tbody td.sticky-col-2::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-color: inherit;
+}
+
+/* Верхняя объединённая ячейка «Команда» */
+.matrix-wrapper .scores-table thead th.sticky-team-band {
+  position: sticky;
+  left: 0;
+  z-index: 40;
+
+  width: calc(var(--col-num-width) + var(--team-col-width));
+  min-width: calc(var(--col-num-width) + var(--team-col-width));
+  max-width: calc(var(--col-num-width) + var(--team-col-width));
+
+  background-color: var(--header-bg) !important;
+  box-shadow: 4px 0 6px -4px rgba(0, 0, 0, 0.22);
 }
 
 /* =======================
@@ -541,7 +534,7 @@
   min-width: 0;
 
   box-sizing: border-box;
-  font-size: 13px;
+  font-size: 12px;
 }
 
 .matches-list h3 {
@@ -568,7 +561,6 @@
 
 .match-team {
   min-width: 0;
-
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -670,6 +662,16 @@
   box-shadow: 0 0 0 3px rgba(125, 162, 214, 0.15);
 }
 
+/* Верхний объединенный заголовок */
+.scores-table .sticky-team-band {
+    position: sticky;
+    left: 0;
+    z-index: 60;
+
+    background: var(--header-bg);
+    box-shadow: 4px 0 6px -4px rgba(0,0,0,.22);
+}
+
 /* =======================
    Mobile
    ======================= */
@@ -748,3 +750,5 @@
     right: 0;
   }
 }
+
+

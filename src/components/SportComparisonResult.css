@@ -1,28 +1,112 @@
+html,
+body,
+#root {
+	height: 100%;
+	margin: 0;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+.app {
+	height: 100vh;
+	min-height: 0;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+}
+
+/*
+  Navbar занимает свою естественную высоту.
+  Рабочая область получает всё оставшееся место.
+*/
+.opponent-comparison-page {
+	flex: 1 1 auto;
+	min-height: 0;
+
+	display: flex;
+	flex-direction: column;
+
+	padding: 8px 16px 12px;
+	overflow: hidden;
+}
+
+/* Панель выбора соперников не растягивается */
+.comparison-toolbar {
+	flex: 0 0 auto;
+
+	display: flex;
+	align-items: flex-end;
+	gap: 8px;
+
+	width: 100%;
+	padding: 10px 12px;
+
+	border: 1px solid #d0d7df;
+	border-radius: 4px;
+	background: #f7f9fb;
+}
+
+/*
+  Блок результатов занимает всю оставшуюся высоту
+  под панелью фильтров.
+*/
+.comparison-results {
+	flex: 1 1 auto;
+	min-height: 0;
+
+	display: flex;
+	flex-direction: column;
+
+	margin-top: 16px;
+	overflow: hidden;
+}
+
+/*
+  Корневой блок компонента SportComparisonResult.
+  Он занимает всю высоту comparison-results.
+*/
 .comparison-result {
+	flex: 1 1 auto;
+	min-height: 0;
+	height: 100%;
+	width: 100%;
+
 	display: grid;
 	grid-template-columns: minmax(0, 1fr);
-	width: 100%;
 	gap: 16px;
-	margin-top: 16px;
-	align-items: start;
+	align-items: stretch;
+
+	margin-top: 0;
+	overflow: hidden;
 }
 
 .comparison-result--details-open {
 	grid-template-columns: minmax(0, 2fr) minmax(320px, 1fr);
 }
 
+/*
+  Скролл только внутри таблицы,
+  а не у всей страницы.
+*/
 .comparison-table-container {
 	width: 100%;
 	min-width: 0;
-	max-height: 600px;
+	min-height: 0;
+	height: 100%;
+
 	overflow: auto;
+
 	border: 1px solid #d0d0d0;
 	border-radius: 4px;
+	background: #fff;
 }
 
 .comparison-table {
 	width: 100%;
 	min-width: 720px;
+
 	border-collapse: collapse;
 	table-layout: fixed;
 	font-size: 14px;
@@ -44,6 +128,7 @@
 .comparison-table td {
 	padding: 8px 10px;
 	border-bottom: 1px solid #e0e0e0;
+
 	text-align: center;
 	white-space: nowrap;
 	overflow: hidden;
@@ -57,14 +142,17 @@
 	text-align: left;
 }
 
+/* Закреплённая шапка таблицы */
 .comparison-table thead th {
 	position: sticky;
 	top: 0;
-	z-index: 1;
+	z-index: 3;
+
 	background: #f5f5f5;
 	font-weight: 600;
 }
 
+/* Обычные строки */
 .comparison-table tbody tr:not(.totals-row) {
 	cursor: pointer;
 }
@@ -81,22 +169,37 @@
 	background: #dcecff;
 }
 
+/* Закреплённая строка Итого */
 .comparison-table .totals-row {
 	position: sticky;
 	bottom: 0;
-	z-index: 1;
+	z-index: 2;
+
 	background: #f5f5f5;
 	font-weight: 700;
 }
 
+.comparison-table .totals-row td {
+	background: #f5f5f5;
+	border-top: 1px solid #cfcfcf;
+	border-bottom: 0;
+}
+
+/*
+  Правая панель матчей при выбранной строке.
+*/
 .comparison-matches-container {
 	min-width: 0;
-	max-height: 600px;
+	min-height: 0;
+	height: 100%;
+
 	overflow: auto;
 }
 
 .comparison-matches {
+	min-height: 100%;
 	padding: 16px;
+
 	border: 1px solid #d0d0d0;
 	border-radius: 4px;
 	background: #fff;
@@ -107,6 +210,7 @@
 	align-items: center;
 	justify-content: space-between;
 	gap: 12px;
+
 	margin-bottom: 16px;
 }
 
@@ -118,9 +222,11 @@
 	width: 28px;
 	height: 28px;
 	padding: 0;
+
 	border: 1px solid #c7c7c7;
 	border-radius: 4px;
 	background: #fff;
+
 	font-size: 20px;
 	line-height: 1;
 	cursor: pointer;
@@ -131,8 +237,8 @@
 }
 
 .comparison-match-teams {
-	font-weight: 600;
 	margin-bottom: 16px;
+	font-weight: 600;
 }
 
 .comparison-match-ids {
@@ -140,12 +246,85 @@
 	color: #666;
 }
 
+/* Сообщения об ошибках и загрузке */
+.comparison-error,
+.comparison-hint {
+	flex: 0 0 auto;
+	margin-bottom: 8px;
+}
+
+
+.comparison-matches-table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 13px;
+}
+
+.comparison-matches-table th,
+.comparison-matches-table td {
+	padding: 7px 8px;
+	border-bottom: 1px solid #e0e0e0;
+	text-align: left;
+}
+
+.comparison-matches-table th {
+	position: sticky;
+	top: 0;
+	background: #f5f5f5;
+	font-weight: 600;
+}
+
+.comparison-matches-table td:last-child,
+.comparison-matches-table th:last-child {
+	width: 65px;
+	text-align: center;
+	font-weight: 600;
+	white-space: nowrap;
+}
+
+/*
+  На узком экране правая панель переходит вниз,
+  а страница снова получает обычный вертикальный скролл.
+*/
 @media (max-width: 1000px) {
+	.app {
+		height: auto;
+		min-height: 100vh;
+		overflow: visible;
+	}
+
+	.opponent-comparison-page {
+		flex: none;
+		min-height: calc(100vh - 60px);
+		overflow: visible;
+	}
+
+	.comparison-results {
+		flex: none;
+		overflow: visible;
+	}
+
+	.comparison-result {
+		height: auto;
+		overflow: visible;
+	}
+
 	.comparison-result--details-open {
 		grid-template-columns: minmax(0, 1fr);
 	}
 
+	.comparison-table-container {
+		height: auto;
+		max-height: calc(100vh - 220px);
+	}
+
 	.comparison-matches-container {
+		height: auto;
 		max-height: none;
+		overflow: visible;
+	}
+
+	.comparison-matches {
+		min-height: 0;
 	}
 }

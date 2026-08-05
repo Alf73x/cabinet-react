@@ -189,7 +189,7 @@ export default function OpponentComparisonPage() {
     <div className="app">
       <Navbar pageTitle="Сравнение соперников" />
 
-      <main className="opponent-comparison-page">
+       <main className="opponent-comparison-page comparison-page">
         <section className="comparison-toolbar">
           <label className="comparison-field">
             <span>Соперник 1</span>

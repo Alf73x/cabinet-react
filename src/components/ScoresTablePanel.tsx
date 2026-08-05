@@ -1,7 +1,7 @@
 import "./ScoresTablePanel.css";
 import { useEffect, useState } from "react";
 import { getScores, type ScoreRow } from "../api/scoresService";
-import { getScoreColor } from "../utils/scoreColor";
+import { getScoreClass } from "../utils/scoreColor";
 
 type Props = {
   teamId: number | null;
@@ -79,13 +79,10 @@ export default function ScoresTablePanel({ teamId, seasonId }: Props) {
               <td className="team-name-cell">{row.teamName2}</td>
 
               <td
-                className="score-cell"
-                style={{
-                  backgroundColor: getScoreColor(
-                    row.score,
-                    row.teamId1 === teamId ? "left" : "right",
-                  ),
-                }}
+                className={`score-cell ${getScoreClass(
+                  row.score,
+                  row.teamId1 === teamId ? "left" : "right",
+                )}`}
               >
                 {row.score}
               </td>

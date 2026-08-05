@@ -1,5 +1,4 @@
 import type { TournamentCupMatch } from "../api/tournamentService";
-import { getScoreColor } from "../utils/scoreColor";
 import { stageIndexToText } from "../utils/cupstages";
 import { getSportScoreType, ScoreType } from "../utils/score";
 
@@ -29,27 +28,23 @@ export default function TournamentCupTable({ rows }: Props) {
       <tbody>
         {safeRows.map((row, index) => {
           const scoreType = getSportScoreType(row.score);
-          const scoreColor = getScoreColor("2:1");
-
           return (
             <tr key={index}>
               <td>{stageIndexToText(row.stageIndex)}</td>
               <td>{formatDate(row.date)}</td>
 
               <td
-                style={{
-                  backgroundColor:
-                    scoreType === ScoreType.Win ? scoreColor : undefined,
-                }}
+                className={
+                  scoreType === ScoreType.Win ? "score-cell score-win" : ""
+                }
               >
                 {row.teamName1}
               </td>
 
               <td
-                style={{
-                  backgroundColor:
-                    scoreType === ScoreType.Loose ? scoreColor : undefined,
-                }}
+                className={
+                  scoreType === ScoreType.Loose ? "score-cell score-win" : ""
+                }
               >
                 {row.teamName2}
               </td>

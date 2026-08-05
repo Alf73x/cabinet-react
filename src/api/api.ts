@@ -1,6 +1,6 @@
 // src/api.ts
 
-const API_URL = import.meta.env.VITE_API_URL;
+export  const API_URL = import.meta.env.VITE_API_URL;
 
 const USER = import.meta.env.VITE_API_USER;
 const PASSWORD = import.meta.env.VITE_API_PASSWORD;
@@ -63,19 +63,12 @@ export async function apiGet<T>(
   url: string,
   authType: AuthType = "jwt",
 ): Promise<T> {
-  console.log("API_URL:", API_URL);
-  console.log("Full URL:", `${API_URL}${url}`);
-
   const response = await fetch(`${API_URL}${url}`, {
     method: "GET",
     headers: createHeaders(authType),
   });
 
-  console.log("Response status:", response.status, response.statusText);
-
   const result = await parseResponse<T>(response);
-
-  console.log("Parsed response:", result);
 
   return result;
 }

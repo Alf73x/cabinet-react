@@ -1,0 +1,47 @@
+:root {
+  --score-win-color: #008000;
+  --score-loss-color: #d32f2f;
+  --score-draw-color: #666666;
+
+  --score-win-bg: rgb(219, 253, 231);
+  --score-loss-bg: rgb(255, 242, 242);
+  --score-draw-bg: transparent;
+}
+
+.score-win {
+  color: var(--score-win-color);
+}
+
+.score-loss {
+  color: var(--score-loss-color);
+}
+
+.score-draw {
+  color: var(--score-draw-color);
+}
+
+/* Только фон для ячеек */
+.score-cell.score-win {
+  background-color: var(--score-win-bg);
+}
+
+.score-cell.score-loss {
+  background-color: var(--score-loss-bg);
+}
+
+.score-cell.score-draw {
+  background-color: var(--score-draw-bg);
+}
+
+
+.score-bg-win {
+  background-color: var(--score-win-bg);
+}
+
+.score-bg-loss {
+  background-color: var(--score-loss-bg);
+}
+
+.score-bg-draw {
+  background-color: var(--score-draw-bg);
+}

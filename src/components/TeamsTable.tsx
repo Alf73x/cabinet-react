@@ -28,7 +28,7 @@ type Props = {
 
 type TeamGridRow = Team & {
   gridId: number;
-  Games: number;
+  games: number;
 };
 
 const columns: ColumnDef<TeamGridRow>[] = [
@@ -53,28 +53,28 @@ const columns: ColumnDef<TeamGridRow>[] = [
     enableColumnFilter: false,
   },
   {
-    accessorKey: "Games",
+    accessorKey: "games",
     header: "И",
     size: 45,
     meta: { align: "center" },
     enableColumnFilter: false,
   },
   {
-    accessorKey: "Wins",
+    accessorKey: "wins",
     header: "В",
     size: 45,
     meta: { align: "center" },
     enableColumnFilter: false,
   },
   {
-    accessorKey: "Draws",
+    accessorKey: "draws",
     header: "Н",
     size: 45,
     meta: { align: "center" },
     enableColumnFilter: false,
   },
   {
-    accessorKey: "Losses",
+    accessorKey: "losses",
     header: "П",
     size: 45,
     meta: { align: "center" },
@@ -88,7 +88,7 @@ export default function TeamsTable({ rows, onRowClick, onTeamClick }: Props) {
       rows.map((row, index) => ({
         ...row,
         gridId: index,
-        Games: row.Wins + row.Draws + row.Losses,
+        games: row.wins + row.winsET + row.draws + row.lossesET + row.losses,
       })),
     [rows],
   );

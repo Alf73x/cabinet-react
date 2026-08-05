@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import "./SportComparisonResult.css";
 
-import type {
-  OpponentComparisonResponse,
-  OpponentComparisonItem,
+import {
+  getComparisonMatches,
+  type ComparisonMatch,
+  type OpponentComparisonItem,
+  type OpponentComparisonResponse,
 } from "../api/opponentComparisonService";
 
 type Props = {
@@ -14,8 +16,15 @@ export default function SportComparisonResult({ result }: Props) {
   const [selectedItem, setSelectedItem] =
     useState<OpponentComparisonItem | null>(null);
 
+  const [matches, setMatches] = useState<ComparisonMatch[]>([]);
+  const [matchesLoading, setMatchesLoading] = useState(false);
+  const [matchesError, setMatchesError] = useState("");
+
   useEffect(() => {
     setSelectedItem(null);
+    setMatches([]);
+    setMatchesError("");
+    setMatchesLoading(false);
   }, [result]);
 
   if (!result) {
@@ -24,8 +33,49 @@ export default function SportComparisonResult({ result }: Props) {
 
   const totals = result.data.totals.total;
 
-  function handleRowClick(item: OpponentComparisonItem): void {
+  async function handleRowClick(item: OpponentComparisonItem): Promise<void> {
     setSelectedItem(item);
+    setMatches([]);
+    setMatchesError("");
+
+    try {
+      setMatchesLoading(true);
+
+      const loadedMatches = await getComparisonMatches(
+        item.team1_id,
+        item.team2_id,
+      );
+
+      setMatches(loadedMatches);
+    } catch (err) {
+      console.error("getComparisonMatches failed:", err);
+
+      setMatchesError(
+        err instanceof Error ? err.message : "Не удалось загрузить матчи",
+      );
+    } finally {
+      setMatchesLoading(false);
+    }
+  }
+
+  function handleCloseMatches(): void {
+    setSelectedItem(null);
+    setMatches([]);
+    setMatchesError("");
+    setMatchesLoading(false);
+  }
+
+  function getScoreClass(match: ComparisonMatch, team1Id: number): string {
+    const [g1, g2] = match.score.split(":").map(Number);
+
+    const team1IsHome = match.teamId1 === team1Id;
+
+    const scored = team1IsHome ? g1 : g2;
+    const missed = team1IsHome ? g2 : g1;
+
+    if (scored > missed) return "score-win";
+    if (scored < missed) return "score-loss";
+    return "score-draw";
   }
 
   return (
@@ -74,7 +124,7 @@ export default function SportComparisonResult({ result }: Props) {
                 <tr
                   key={`${item.team1_id}-${item.team2_id}`}
                   className={selected ? "selected" : ""}
-                  onClick={() => handleRowClick(item)}
+                  onClick={() => void handleRowClick(item)}
                 >
                   <td>{item.team1}</td>
                   <td>{item.team2}</td>
@@ -117,7 +167,7 @@ export default function SportComparisonResult({ result }: Props) {
               <button
                 type="button"
                 className="comparison-matches-close"
-                onClick={() => setSelectedItem(null)}
+                onClick={handleCloseMatches}
                 title="Закрыть"
               >
                 ×
@@ -129,15 +179,67 @@ export default function SportComparisonResult({ result }: Props) {
               <div>{selectedItem.team2}</div>
             </div>
 
-            <div className="comparison-match-ids">
-              <div>team1_id: {selectedItem.team1_id}</div>
-              <div>team2_id: {selectedItem.team2_id}</div>
-            </div>
+            {matchesLoading && (
+              <div className="comparison-hint">Загрузка матчей...</div>
+            )}
 
-            {/* Здесь будет загрузка и список матчей */}
+            {matchesError && (
+              <div className="comparison-error">{matchesError}</div>
+            )}
+
+            {!matchesLoading && !matchesError && matches.length === 0 && (
+              <div className="comparison-hint">Матчи не найдены.</div>
+            )}
+            {!matchesLoading && matches.length > 0 && (
+              <table className="comparison-matches-table">
+                <thead>
+                  <tr>
+                    <th>Дата</th>
+                    <th>Команда 1</th>
+                    <th>Команда 2</th>
+                    <th>Счёт</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {matches.map((match, index) => (
+                    <tr
+                      key={`${match.teamId1}-${match.teamId2}-${match.date}-${index}`}
+                    >
+                      <td>{formatMatchDate(match.date)}</td>
+                      <td>{match.teamName1}</td>
+                      <td>{match.teamName2}</td>
+                      <td
+                        className={getScoreClass(match, selectedItem.team1_id)}
+                      >
+                        {match.score}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
           </div>
+          opponent_comparison/matches?team1_id=1&team2_id=1116. (Причина: в
+          заголовке CORS «Access-Control-Allow-Credentials» ожидалось «true»).
         </aside>
       )}
     </div>
   );
+}
+
+function formatMatchDate(value: string): string {
+  if (!value) {
+    return "";
+  }
+
+  if (/^\d{8}$/.test(value)) {
+    return `${value.slice(6, 8)}.${value.slice(4, 6)}.${value.slice(0, 4)}`;
+  }
+
+  if (/^\d{4}-\d{2}-\d{2}/.test(value)) {
+    return `${value.slice(8, 10)}.${value.slice(5, 7)}.${value.slice(0, 4)}`;
+  }
+
+  return value;
 }

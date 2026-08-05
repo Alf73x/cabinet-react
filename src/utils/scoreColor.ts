@@ -1,6 +1,7 @@
-const scoreColorByResult = {
-  win: "var(--score-win)",
-  loss: "var(--score-loss)",
+const scoreClassByResult = {
+  win: "score-win",
+  loss: "score-loss",
+  draw: "score-draw",
 } as const;
 
 type ScoreSide = "left" | "right";
@@ -45,14 +46,18 @@ function getLeftSideResult(score: string): "win" | "loss" | "draw" | null {
   return "draw";
 }
 
-export function getScoreColor(
+export function getScoreClass(
   score: string,
   side: ScoreSide = "left",
 ): string {
   const leftResult = getLeftSideResult(score);
 
-  if (!leftResult || leftResult === "draw") {
-    return "transparent";
+  if (!leftResult) {
+    return "";
+  }
+
+  if (leftResult === "draw") {
+    return scoreClassByResult.draw;
   }
 
   const result =
@@ -62,7 +67,57 @@ export function getScoreColor(
         ? "loss"
         : "win";
 
-  return result === "win"
-    ? scoreColorByResult.win
-    : scoreColorByResult.loss;
+  return scoreClassByResult[result];
+}
+
+export function getScoreBackground(
+  score: string,
+  side: ScoreSide = "left",
+): string {
+  const scoreClass = getScoreClass(score, side);
+
+  switch (scoreClass) {
+    case "score-win":
+      return "var(--score-win-bg)";
+
+    case "score-loss":
+      return "var(--score-loss-bg)";
+
+    case "score-draw":
+      return "var(--score-draw-bg)";
+
+    default:
+      return "transparent";
+  }
+}
+
+
+const scoreBgClassByResult = {
+  win: "score-bg-win",
+  loss: "score-bg-loss",
+  draw: "score-bg-draw",
+} as const;
+
+export function getScoreBackgroundClass(
+  score: string,
+  side: ScoreSide = "left",
+): string {
+  const leftResult = getLeftSideResult(score);
+
+  if (!leftResult) {
+    return "";
+  }
+
+  if (leftResult === "draw") {
+    return scoreBgClassByResult.draw;
+  }
+
+  const result =
+    side === "left"
+      ? leftResult
+      : leftResult === "win"
+        ? "loss"
+        : "win";
+
+  return scoreBgClassByResult[result];
 }

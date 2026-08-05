@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 
 import type { TournamentMatrix } from "../api/tournamentService";
 
-import { getScoreColor } from "../utils/scoreColor";
+import { getScoreBackgroundClass } from "../utils/scoreColor";
 
 type MatchListItem = {
   teamId: number;
@@ -24,16 +24,12 @@ export default function TournamentMatchesList({ data }: Props) {
   const teams = data?.teams ?? [];
   const matches = (data?.matches ?? []) as MatchListItem[];
 
-  const [team1Filter, setTeam1Filter] =
-    useState<number | "all">("all");
+  const [team1Filter, setTeam1Filter] = useState<number | "all">("all");
 
-  const [team2Filter, setTeam2Filter] =
-    useState<number | "all">("all");
+  const [team2Filter, setTeam2Filter] = useState<number | "all">("all");
 
   const teamsById = useMemo(() => {
-    return new Map(
-      teams.map((team) => [team.id, team.name]),
-    );
+    return new Map(teams.map((team) => [team.id, team.name]));
   }, [teams]);
 
   const sortedTeams = useMemo(() => {
@@ -67,9 +63,7 @@ export default function TournamentMatchesList({ data }: Props) {
           return tourA - tourB;
         }
 
-        return (a.date ?? "").localeCompare(
-          b.date ?? "",
-        );
+        return (a.date ?? "").localeCompare(b.date ?? "");
       });
   }, [matches, team1Filter, team2Filter]);
 
@@ -101,15 +95,10 @@ export default function TournamentMatchesList({ data }: Props) {
               )
             }
           >
-            <option value="all">
-              Команда 1
-            </option>
+            <option value="all">Команда 1</option>
 
             {sortedTeams.map((team) => (
-              <option
-                key={team.id}
-                value={team.id}
-              >
+              <option key={team.id} value={team.id}>
                 {team.name}
               </option>
             ))}
@@ -125,15 +114,10 @@ export default function TournamentMatchesList({ data }: Props) {
               )
             }
           >
-            <option value="all">
-              Команда 2
-            </option>
+            <option value="all">Команда 2</option>
 
             {sortedTeams.map((team) => (
-              <option
-                key={team.id}
-                value={team.id}
-              >
+              <option key={team.id} value={team.id}>
                 {team.name}
               </option>
             ))}
@@ -148,49 +132,29 @@ export default function TournamentMatchesList({ data }: Props) {
       )}
 
       {sortedMatches.map((match, index) => {
-        const teamName =
-          teamsById.get(match.teamId) ??
-          String(match.teamId);
+        const teamName = teamsById.get(match.teamId) ?? String(match.teamId);
 
         const opponentName =
-          teamsById.get(match.opponentId) ??
-          String(match.opponentId);
+          teamsById.get(match.opponentId) ?? String(match.opponentId);
 
-        const scoreColor =
-          getScoreColor(match.score);
+        const scoreBgClass = getScoreBackgroundClass(match.score);
 
         return (
           <div
             key={`${match.teamId}-${match.opponentId}-${match.tour}-${index}`}
             className="match-row"
           >
-            <span className="match-date">
-              {formatDate(match.date ?? "")}
-            </span>
+            <span className="match-date">{formatDate(match.date ?? "")}</span>
 
             <span className="match-tour">
-              {match.tour && match.tour > 0
-                ? `${match.tour} тур`
-                : ""}
+              {match.tour && match.tour > 0 ? `${match.tour} тур` : ""}
             </span>
 
-            <span className="match-team">
-              {teamName}
-            </span>
+            <span className="match-team">{teamName}</span>
 
-            <span
-              className="match-score"
-              style={{
-                backgroundColor:
-                  scoreColor ?? "transparent",
-              }}
-            >
-              {match.score}
-            </span>
+            <span className={`match-score ${scoreBgClass}`}>{match.score}</span>
 
-            <span className="match-team">
-              {opponentName}
-            </span>
+            <span className="match-team">{opponentName}</span>
           </div>
         );
       })}

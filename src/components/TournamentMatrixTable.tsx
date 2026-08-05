@@ -5,7 +5,10 @@ import type {
   TournamentMatrix,
   TournamentPoints,
 } from "../api/tournamentService";
-import { getScoreColor } from "../utils/scoreColor";
+import {
+  getScoreBackground,
+  getScoreBackgroundClass,
+} from "../utils/scoreColor";
 import { reverseScore, compactScore } from "../utils/score";
 import { stageIndexToText } from "../utils/cupstages";
 import { placeToText } from "../utils/place";
@@ -202,7 +205,10 @@ export default function TournamentMatrixTable({
       <table className="scores-table">
         <thead>
           <tr>
-            <th className="band-header" colSpan={showStage ? 3 : 2}>
+            <th
+              className="band-header sticky-team-band"
+              colSpan={showStage ? 3 : 2}
+            >
               Команда
             </th>
 
@@ -308,7 +314,10 @@ export default function TournamentMatrixTable({
                     "col-num sticky-col-1",
                     hoverCell?.rowId === team.id && "matrix-highlight",
                   )}
-                  style={{ backgroundColor: placeColor }}
+                  style={{
+                    backgroundColor:
+                      placeColor === "transparent" ? "#ffffff" : placeColor,
+                  }}
                 >
                   <Tooltip
                     title={placeHint}
@@ -390,11 +399,12 @@ export default function TournamentMatrixTable({
                               m.teamId === team.id ? "left" : "right";
                             const tooltipId = `${team.id}-${opponent.id}-${index}`;
 
-                            const scoreColor = getScoreColor(m.score, side);
-                            const tooltipColor =
-                              scoreColor === "transparent"
-                                ? "#ffffff"
-                                : scoreColor;
+                            const scoreBackgroundClass =
+                              getScoreBackgroundClass(m.score, side);
+                            const scoreBackground = getScoreBackground(
+                              m.score,
+                              side,
+                            );
 
                             const visibleScore =
                               m.teamId === team.id
@@ -415,7 +425,7 @@ export default function TournamentMatrixTable({
                                 slotProps={{
                                   tooltip: {
                                     sx: {
-                                      bgcolor: tooltipColor,
+                                      bgcolor: scoreBackground,
                                       color: "#000000",
                                       border: "1px solid #d0d0d0",
                                       boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
@@ -427,13 +437,14 @@ export default function TournamentMatrixTable({
                                   },
                                   arrow: {
                                     sx: {
-                                      color: tooltipColor,
+                                      color: scoreBackground,
                                     },
                                   },
                                 }}
                               >
                                 <div
-                                  className="score-cell"
+                                  className={`score-cell ${scoreBackgroundClass}`}
+                                  //className="score-cell score-bg-win"
                                   onClick={() =>
                                     setOpenTooltip(
                                       openTooltip === tooltipId
@@ -442,7 +453,6 @@ export default function TournamentMatrixTable({
                                     )
                                   }
                                   onMouseLeave={() => setOpenTooltip(null)}
-                                  style={{ backgroundColor: scoreColor }}
                                 >
                                   {visibleScore}
                                 </div>

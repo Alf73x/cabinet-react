@@ -13,14 +13,14 @@ export interface Team {
   Place: number;
   StageIndex: number;
   Result: string;
-  Games: number;
-  Wins: number;
-  WinsET: number;
-  Draws: number;
-  LossesET: number;
-  Losses: number;
-  Goals_For: number;
-  Goals_Against: number;
+  games: number;
+  wins: number;
+  winsET: number;
+  draws: number;
+  lossesET: number;
+  losses: number;
+  goalsFor: number;
+  goalsAgainst: number;
   WinnerID: number;
   Options: string;
 }

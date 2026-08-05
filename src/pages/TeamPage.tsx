@@ -20,8 +20,7 @@ export default function TeamPage() {
   const [rows, setRows] = useState<TeamHistoryItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [selectedRow, setSelectedRow] =
-    useState<TeamHistoryItem | null>(null);
+  const [selectedRow, setSelectedRow] = useState<TeamHistoryItem | null>(null);
   const [teamInfo, setTeamInfo] = useState<TeamInfo | null>(null);
 
   useEffect(() => {

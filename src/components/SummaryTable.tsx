@@ -1,34 +1,20 @@
-import "../components/TeamsTable.css";
-import { useMemo, useState } from "react";
+import "./SummaryTable.css";
+
+import { useState } from "react";
+
 import {
   flexRender,
   getCoreRowModel,
+  getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
   type ColumnDef,
+  type ColumnFiltersState,
   type SortingState,
 } from "@tanstack/react-table";
 
-export type TeamHistoryItem = {
-  ID: number;
-  Name: string;
-  SeasonID: number;
-  Season: string;
-  SeasonName: string;
-  LeagueRank: string;
-  Place: string;
-  StageIndex: number;
-  Result: string;
-  games: number;
-  wins: number;
-  winsET: number;
-  draws: number;
-  lossesET: number;
-  losses: number;
-  goalsFor: number;
-  goalsAgainst: number;
-};
+import type { SummaryTableRow } from "../api/summaryTablesService";
 
 declare module "@tanstack/react-table" {
   interface ColumnMeta<TData, TValue> {
@@ -37,139 +23,150 @@ declare module "@tanstack/react-table" {
   }
 }
 
-type Props = {
-  rows: TeamHistoryItem[];
-  onRowClick?: (row: TeamHistoryItem) => void;
-  onTournamentClick?: (row: TeamHistoryItem) => void;
-};
-
-type GridRow = TeamHistoryItem & {
-  gridId: number;
-  goalDiff: number;
-};
-
-const columns: ColumnDef<GridRow>[] = [
-  { accessorKey: "Season", header: "Сезон", size: 70 },
-  { accessorKey: "Name", header: "Команда", size: 150 },
-  { accessorKey: "SeasonName", header: "Турнир", size: 260 },
+const columns: ColumnDef<SummaryTableRow>[] = [
   {
-    accessorKey: "LeagueRank",
-    header: "Ранг",
-    size: 60,
+    id: "rowNumber",
+    header: "№",
+    size: 45,
     meta: { align: "center" },
+    enableColumnFilter: false,
+    enableSorting: false,
+    cell: ({ row }) => row.index + 1,
   },
   {
-    accessorKey: "Place",
-    header: "Место",
-    size: 140,
-    meta: { align: "center", className: "nowrap-column" },
+    accessorKey: "teamName",
+    header: "Команда",
+    size: 220,
+  },
+  {
+    accessorKey: "territoryName",
+    header: "Город/Регион",
+    size: 150,
+  },
+  {
+    accessorKey: "countryName",
+    header: "Страна",
+    size: 120,
   },
   {
     accessorKey: "games",
-    header: "И",
-    size: 45,
+    header: "Игры",
+    size: 60,
     meta: { align: "center" },
+    enableColumnFilter: false,
   },
   {
     accessorKey: "wins",
-    header: "В",
-    size: 45,
+    header: "Победы",
+    size: 70,
     meta: { align: "center" },
+    enableColumnFilter: false,
   },
   {
     accessorKey: "winsET",
-    header: "ВО",
-    size: 50,
+    header: "Победы*",
+    size: 70,
     meta: { align: "center" },
+    enableColumnFilter: false,
   },
   {
     accessorKey: "draws",
-    header: "Н",
-    size: 45,
+    header: "Ничьи",
+    size: 65,
     meta: { align: "center" },
+    enableColumnFilter: false,
   },
   {
     accessorKey: "lossesET",
-    header: "ПО",
-    size: 50,
+    header: "Поражения*",
+    size: 85,
     meta: { align: "center" },
+    enableColumnFilter: false,
   },
   {
     accessorKey: "losses",
-    header: "П",
-    size: 45,
+    header: "Поражения",
+    size: 80,
     meta: { align: "center" },
+    enableColumnFilter: false,
+  },
+  {
+    accessorKey: "winPercent",
+    header: "Победы %",
+    size: 80,
+    meta: { align: "center" },
+    enableColumnFilter: false,
+  },
+  {
+    accessorKey: "lossPercent",
+    header: "Поражения %",
+    size: 90,
+    meta: { align: "center" },
+    enableColumnFilter: false,
   },
   {
     accessorKey: "goalsFor",
-    header: "З",
-    size: 50,
+    header: "Забито",
+    size: 70,
     meta: { align: "center" },
+    enableColumnFilter: false,
   },
   {
     accessorKey: "goalsAgainst",
-    header: "ПР",
-    size: 50,
+    header: "Пропущено",
+    size: 85,
     meta: { align: "center" },
+    enableColumnFilter: false,
   },
   {
     accessorKey: "goalDiff",
     header: "+/-",
-    size: 55,
+    size: 65,
     meta: { align: "center" },
+    enableColumnFilter: false,
   },
 ];
 
-export default function TeamHistoryTable({
-  rows,
-  onRowClick,
-  onTournamentClick,
-}: Props) {
-const data = useMemo<GridRow[]>(
-  () =>
-    rows.map((row, index) => ({
-      ...row,
-      gridId: index,
-      games:
-        row.games ??
-        row.wins +
-          row.winsET +
-          row.draws +
-          row.lossesET +
-          row.losses,
-      goalDiff: row.goalsFor - row.goalsAgainst,
-    })),
-  [rows],
-);
+type Props = {
+  rows: SummaryTableRow[];
+  onTeamClick?: (teamId: number, teamName: string) => void;
+};
 
+export default function SummaryTable({ rows, onTeamClick }: Props) {
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: rows.length || 1,
   });
 
   const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] =
+    useState<ColumnFiltersState>([]);
 
   const table = useReactTable({
-    data,
+    data: rows,
     columns,
     state: {
       pagination,
       sorting,
+      columnFilters,
     },
     onPaginationChange: setPagination,
     onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
   });
 
   const filteredRowsCount = table.getFilteredRowModel().rows.length;
-  const isAllRows = table.getState().pagination.pageSize >= filteredRowsCount;
+  const isAllRows =
+    table.getState().pagination.pageSize >= filteredRowsCount;
 
   return (
-    <div className="teams-table-wrap">
-      <div className="teams-table-scroll">
-        <table className="teams-table">
+    <div className="summary-table-wrap">
+      <div className="summary-table-scroll">
+        <table className="summary-table">
           <thead>
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
@@ -199,9 +196,23 @@ const data = useMemo<GridRow[]>(
                           header.column.columnDef.header,
                           header.getContext(),
                         )}
+
                         {sorted === "asc" && " ▲"}
                         {sorted === "desc" && " ▼"}
                       </div>
+
+                      {header.column.getCanFilter() && (
+                        <input
+                          className="summary-column-filter"
+                          value={
+                            (header.column.getFilterValue() ?? "") as string
+                          }
+                          onChange={(e) =>
+                            header.column.setFilterValue(e.target.value)
+                          }
+                          onClick={(e) => e.stopPropagation()}
+                        />
+                      )}
                     </th>
                   );
                 })}
@@ -211,31 +222,29 @@ const data = useMemo<GridRow[]>(
 
           <tbody>
             {table.getRowModel().rows.map((row) => (
-              <tr
-                key={row.original.gridId}
-                onClick={() => onRowClick?.(row.original)}
-                style={{ cursor: "pointer" }}
-              >
+              <tr key={`${row.original.teamId}-${row.id}`}>
                 {row.getVisibleCells().map((cell) => {
                   const align = cell.column.columnDef.meta?.align;
-                  const isTournamentCell = cell.column.id === "SeasonName";
+                  const isTeamCell = cell.column.id === "teamName";
 
                   return (
                     <td
                       key={cell.id}
                       title={String(cell.getValue() ?? "")}
-                      /* className={cell.column.columnDef.meta?.className} */
                       className={
-                        isTournamentCell
+                        isTeamCell
                           ? "clickable-team"
                           : cell.column.columnDef.meta?.className
                       }
-                      onClick={(e) => {
-                        if (!isTournamentCell) {
-                          return; // let the row click open ScoresTablePanel
+                      onClick={() => {
+                        if (!isTeamCell) {
+                          return;
                         }
-                        e.stopPropagation();
-                        onTournamentClick?.(row.original);
+
+                        onTeamClick?.(
+                          row.original.teamId,
+                          row.original.teamName,
+                        );
                       }}
                       style={{
                         width: cell.column.getSize(),
@@ -255,7 +264,7 @@ const data = useMemo<GridRow[]>(
         </table>
       </div>
 
-      <div className="teams-pagination">
+      <div className="summary-pagination">
         <button
           onClick={() => table.setPageIndex(0)}
           disabled={isAllRows || !table.getCanPreviousPage()}
@@ -293,7 +302,11 @@ const data = useMemo<GridRow[]>(
         </button>
 
         <select
-          value={isAllRows ? "all" : table.getState().pagination.pageSize}
+          value={
+            isAllRows
+              ? "all"
+              : table.getState().pagination.pageSize
+          }
           onChange={(e) => {
             table.setPageIndex(0);
 
@@ -305,6 +318,7 @@ const data = useMemo<GridRow[]>(
           }}
         >
           <option value="all">Все</option>
+
           {[25, 50, 100].map((pageSize) => (
             <option key={pageSize} value={pageSize}>
               {pageSize}
