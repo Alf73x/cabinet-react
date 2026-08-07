@@ -34,17 +34,52 @@ export function getSeasonRootId(
   return Number.isInteger(rootId) && rootId > 0 ? rootId : null;
 }
 
-export async function getSeasons(
+interface ApiSeasonNamesResponse {
+  status: string;
+  list: string[];
+}
+
+export async function getSeasonNames(
   selectedSports: number[],
-): Promise<SeasonItem[]> {
-  /*const data = await apiGet<ApiResponse<SeasonItem>>("/seasons"); */
+): Promise<string[]> {
   const sportIdsParam = selectedSports.join(",");
 
   const url =
     sportIdsParam.length > 0
-      ? `/seasons?sport_ids=${encodeURIComponent(sportIdsParam)}`
-      : "/seasons";
+      ? `/seasons?names=1&sport_ids=${encodeURIComponent(sportIdsParam)}`
+      : "/seasons?names=1";
+
+  const data = await apiGet<ApiSeasonNamesResponse>(url);
+
+  return data.list;
+}
+
+export async function getSeasons(
+  selectedSports: number[],
+  seasonFilter: string = "",
+): Promise<SeasonItem[]> {
+  const params = new URLSearchParams();
+
+  // Передаём выбранные виды спорта
+  if (selectedSports.length > 0) {
+    params.set("sport_ids", selectedSports.join(","));
+  }
+
+  // Если указан сезон — REST вернёт только турниры этого сезона
+  if (seasonFilter) {
+    params.set("season_filter", seasonFilter);
+  }
+
+  const query = params.toString();
+
+  const url = query
+    ? `/seasons?${query}`
+    : "/seasons";
 
   const data = await apiGet<ApiResponse<SeasonItem>>(url);
-  return data.list;
+
+console.log("getSeasons url:", url);
+console.log("getSeasons response:", data);
+
+  return data.list; // ВАЖНО
 }

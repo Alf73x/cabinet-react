@@ -1,21 +1,16 @@
 import { useEffect } from "react";
 import { RichTreeView } from "@mui/x-tree-view/RichTreeView";
-import {
-  TreeItem,
-  type TreeItemProps,
-} from "@mui/x-tree-view/TreeItem";
+import { TreeItem, type TreeItemProps } from "@mui/x-tree-view/TreeItem";
 import { useTreeItemModel } from "@mui/x-tree-view/hooks";
 
-import {
-  getSeasonRootId,
-  type SeasonItem,
-} from "../api/seasonService";
+import { getSeasonRootId, type SeasonItem } from "../api/seasonService";
 
 import type { SportItem } from "../api/sportsService";
 
 type Props = {
   // Компонент сам не хранит состояние. Всё состояние приходит снаружи
   seasons: SeasonItem[];
+  seasonNames: string[];
   sports: SportItem[];
   selectedSports: number[];
 
@@ -26,6 +21,7 @@ type Props = {
   onExpandedItemsChange: (ids: string[]) => void;
   onSelectedItemChange: (id: string | null) => void;
   onItemClick: (id: string) => void;
+  onSeasonClick: (season: string) => Promise<void>;
 };
 
 type TreeItem = {
@@ -64,47 +60,42 @@ function CustomTreeItem(props: TreeItemProps) {
     </span>
   );
 
-  return (
-    <TreeItem
-      {...props}
-      label={label}
-    />
-  );
+  return <TreeItem {...props} label={label} />;
 }
 
 function buildSeasonsTree(
+  seasonNames: string[],
   data: SeasonItem[],
   sports: SportItem[],
   showSportName: boolean,
 ): TreeItem[] {
-  const map = new Map<string, SeasonItem[]>(); // Создаётся Map. Она группирует записи по сезону
-
   const sportsById = new Map<number, string>(); // Создаём Map для быстрого поиска названия спорта по ID
 
   sports.forEach((sport) => {
     sportsById.set(sport.ID, sport.Name); // Например: 1 -> "Хоккей", 2 -> "Футбол"
   });
 
+  const rowsBySeason = new Map<string, SeasonItem[]>(); // Группируем уже загруженные турниры по сезону
+
   data.forEach((item) => {
-    // Цикл группировки по сезону
+    const season = item.season || "Без сезона";
 
-    const season = item.season || "Без сезона"; // Берём сезон. Если item.season пустой, используем "Без сезона"
-
-    if (!map.has(season)) {
-      map.set(season, []); // Если такого сезона ещё нет — создаём пустой массив
+    if (!rowsBySeason.has(season)) {
+      rowsBySeason.set(season, []);
     }
 
-    map.get(season)!.push(item); // Добавляем запись в массив этого сезона
+    rowsBySeason.get(season)!.push(item);
   });
 
-  return Array.from(map.entries()).map(([season, rows]) => {
-    // Для каждого сезона создаём отдельное дерево турниров
+  return seasonNames.map((season) => {
+    // Создаём узел каждого сезона даже если его турниры ещё не загружены
+
+    const rows = rowsBySeason.get(season) ?? []; // Получаем уже загруженные турниры этого сезона
 
     const nodesById = new Map<number, TreeItem>(); // Здесь будут все узлы турниров этого сезона по их ID
 
     rows.forEach((row) => {
       // Сначала создаём все узлы турниров
-      // Это важно, потому что дочерний турнир может находиться в массиве раньше родительского
 
       const sportName = sportsById.get(row.sport_id); // Находим название спорта текущего турнира
 
@@ -114,9 +105,9 @@ function buildSeasonsTree(
           : row.name; // Если выбран только один спорт — оставляем старое название
 
       nodesById.set(row.id, {
-        id: row.id.toString(), // RichTreeView работает с id как со строками
-        label: label, // Название турнира с названием спорта или без него
-        iconIndex: row.icon_index, // Индекс дополнительной иконки из class_season.icon_index
+        id: row.id.toString(),
+        label,
+        iconIndex: row.icon_index,
         children: [],
       });
     });
@@ -126,10 +117,10 @@ function buildSeasonsTree(
     rows.forEach((row) => {
       // Второй проход: распределяем турниры по родительским узлам
 
-      const node = nodesById.get(row.id); // Получаем ранее созданный узел текущего турнира
+      const node = nodesById.get(row.id);
 
       if (!node) {
-        return; // Защитная проверка. В нормальной ситуации такого быть не должно
+        return;
       }
 
       const rootId = getSeasonRootId(row.options_1); // Читаем Root=XYZ из options_1
@@ -137,47 +128,43 @@ function buildSeasonsTree(
       const parentNode =
         rootId !== null
           ? nodesById.get(rootId)
-          : undefined; // Ищем родительский турнир по ID
+          : undefined;
 
       if (parentNode && rootId !== row.id) {
-        // Родитель найден, и запись не ссылается сама на себя
-
-        parentNode.children ??= []; // На всякий случай создаём массив children
-        parentNode.children.push(node); // Добавляем текущий турнир как дочерний
+        parentNode.children ??= [];
+        parentNode.children.push(node);
       } else {
-        // Root не указан, родитель не найден или Root указывает на саму запись
-
-        rootItems.push(node); // Показываем турнир на обычном уровне внутри сезона
+        rootItems.push(node);
       }
     });
 
     nodesById.forEach((node) => {
       // Удаляем пустые children
-      // Иначе RichTreeView может считать обычный элемент родительским узлом
 
       if (node.children?.length === 0) {
         delete node.children;
       }
     });
 
+    const children =
+      rootItems.length > 0
+        ? rootItems // Турниры сезона уже загружены
+        : [
+            {
+              id: `loading-${season}`,
+              label: "Загрузка...",
+            },
+          ]; // Турниры ещё не загружены — служебный элемент нужен, чтобы MUI показал стрелку
+
     return {
-      // Возвращаем родительский узел сезона
-
-      id: `season-${season}`, // Префикс season- отличает сезон от ID турнира
-      label: season, // Название сезона
-
-      // Для самого сезона iconIndex не задаём
-      // Поэтому дополнительная иконка будет только у турниров
-
-      children: rootItems, // Турниры верхнего уровня и их вложенные элементы
+      id: `season-${season}`,
+      label: season,
+      children,
     };
   });
 }
 
-function findTreeItem(
-  items: TreeItem[],
-  itemId: string,
-): TreeItem | null {
+function findTreeItem(items: TreeItem[], itemId: string): TreeItem | null {
   for (const item of items) {
     if (item.id === itemId) {
       return item; // Нужный узел найден
@@ -186,10 +173,7 @@ function findTreeItem(
     if (item.children) {
       // Продолжаем поиск во вложенных элементах
 
-      const foundItem = findTreeItem(
-        item.children,
-        itemId,
-      );
+      const foundItem = findTreeItem(item.children, itemId);
 
       if (foundItem) {
         return foundItem;
@@ -237,10 +221,7 @@ function findParentId(
     if (item.children) {
       // Если у текущего узла есть дети — продолжаем поиск глубже
 
-      const parentId = findParentId(
-        item.children,
-        childId,
-      );
+      const parentId = findParentId(item.children, childId);
 
       if (parentId) {
         return parentId; // Родитель найден во вложенном уровне
@@ -254,6 +235,7 @@ function findParentId(
 // Компонент
 export default function SeasonsTree({
   seasons,
+  seasonNames,
   sports,
   selectedSports,
   filterText,
@@ -262,10 +244,12 @@ export default function SeasonsTree({
   onExpandedItemsChange,
   onSelectedItemChange,
   onItemClick,
+  onSeasonClick,
 }: Props) {
   const items = buildSeasonsTree(
     // Из плоского массива seasons строим дерево
 
+    seasonNames,
     seasons,
     sports,
     selectedSports.length > 1,
@@ -274,11 +258,11 @@ export default function SeasonsTree({
   const searchText = filterText.trim().toLowerCase(); // Подготовка текста поиска
 
   const filteredItems = searchText
-    // Фильтрация.
-    // Если строка поиска есть — показываем только те родительские сезоны,
-    // где label содержит текст поиска
+    ? // Фильтрация.
+      // Если строка поиска есть — показываем только те родительские сезоны,
+      // где label содержит текст поиска
 
-    ? items.filter((item) =>
+      items.filter((item) =>
         item.label.toLowerCase().includes(searchText),
       )
     : items;
@@ -307,9 +291,32 @@ export default function SeasonsTree({
   return (
     <RichTreeView
       items={filteredItems}
+      sx={{
+        "& .MuiTreeItem-label": {
+          fontFamily: "Arial, sans-serif",
+          fontSize: "12px",
+          fontWeight: 400,
+          lineHeight: 1.25,
+        },
+
+        "& .season-tree-label": {
+          fontFamily: "inherit",
+          fontSize: "inherit",
+          fontWeight: "inherit",
+          lineHeight: "inherit",
+        },
+
+        "& .season-tree-label-text": {
+          fontFamily: "inherit",
+          fontSize: "inherit",
+          fontWeight: "inherit",
+          lineHeight: "inherit",
+        },
+      }}
       slots={{
         // Используем свой TreeItem только для добавления дополнительной иконки
         // Стандартная стрелка MUI остаётся без изменений
+
         item: CustomTreeItem,
       }}
       expandedItems={expandedItems} // Какие узлы раскрыты
@@ -318,7 +325,7 @@ export default function SeasonsTree({
       onExpandedItemsChange={(_, ids) =>
         onExpandedItemsChange(ids)
       }
-      onItemClick={(event, id) => {
+      onItemClick={async (event, id) => {
         const target = event.target as HTMLElement;
 
         // Click on expand arrow =>
@@ -341,26 +348,30 @@ export default function SeasonsTree({
           return;
         }
 
-        onSelectedItemChange(id);
-
         if (id.startsWith("season-")) {
-          // Проверяем: это родительский узел сезона?
+          // Получаем название сезона из id вида season-2024-2025
 
-          const firstChildId =
-            findFirstChildId(
-              filteredItems,
-              id,
-            ); // Находим первую дочернюю запись внутри этого сезона
+          const season = id.substring(
+            "season-".length,
+          );
 
-          if (firstChildId) {
-            onItemClick(firstChildId);
-          }
+          // Если сезон ещё не был загружен — Sidebar сначала загрузит его
+          // и раскроет соответствующий узел
+
+          await onSeasonClick(season);
+
+          return;
+        }
+
+        if (id.startsWith("loading-")) {
+          // Служебный элемент "Загрузка..." никогда не должен открывать main
 
           return;
         }
 
         // Если кликнули по турниру
 
+        onSelectedItemChange(id);
         onItemClick(id);
       }}
       aria-label="Seasons tree" // Это подпись для доступности. Например, для screen reader
@@ -373,36 +384,51 @@ export default function SeasonsTree({
 
 Компонент делает так:
 
-1. Получает плоский список сезонов.
-2. Группирует записи по Season.
+1. Получает список названий сезонов.
+
+2. Получает уже загруженные турниры.
+
 3. Делает дерево:
 
    сезон
      турнир
        дочерний турнир через Root=XYZ
 
-4. Если выбрано больше одного спорта:
+4. Незагруженный сезон временно имеет дочерний элемент:
+
+   Загрузка...
+
+   Это нужно, чтобы RichTreeView показывал стрелку раскрытия.
+
+5. При раскрытии сезона Sidebar загружает только турниры этого сезона.
+
+6. Если выбрано больше одного спорта:
    добавляет к названию турнира название спорта.
 
    Например:
    Хоккей. КХЛ
    Футбол. Премьер лига
 
-5. Если у турнира задан icon_index:
+7. Если у турнира задан icon_index:
    сохраняет его в TreeItem.
 
-6. CustomTreeItem показывает:
+8. CustomTreeItem показывает:
 
    стандартная стрелка MUI
    дополнительная иконка
    название турнира
 
-7. Стандартная стрелка MUI остаётся и продолжает
+9. Стандартная стрелка MUI остаётся и продолжает
    отвечать только за expand/collapse.
 
-8. При клике на сезон выбирает первый конечный турнир внутри сезона.
+10. При клике на незагруженный сезон:
+    сначала вызывается onSeasonClick(season).
 
-9. При клике на турнир вызывает onItemClick(id).
+11. Служебный элемент loading-* никогда не передаётся
+    в onItemClick.
+
+12. При клике на реальный турнир:
+    вызывается onItemClick(id).
 
 Главное: SeasonsTree — это controlled component.
 Он сам не хранит expandedItems и selectedItem,

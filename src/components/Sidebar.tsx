@@ -1,7 +1,10 @@
 import "./Sidebar.css";
 import { useEffect, useRef, useState } from "react";
-import { getSeasons, type SeasonItem } from "../api/seasonService";
-
+import {
+  getSeasonNames,
+  getSeasons,
+  type SeasonItem,
+} from "../api/seasonService";
 import SeasonsTree from "./SeasonsTree";
 import TerritoriesTree from "./TerritoriesTree";
 import type { MuiTreeItem } from "./TerritoriesTree";
@@ -26,6 +29,10 @@ type Props = {
 
   seasons: SeasonItem[];
   setSeasons: React.Dispatch<React.SetStateAction<SeasonItem[]>>;
+
+  seasonNames: string[];
+  setSeasonNames: React.Dispatch<React.SetStateAction<string[]>>;
+
   seasonsLoaded: boolean;
   setSeasonsLoaded: React.Dispatch<React.SetStateAction<boolean>>;
 
@@ -68,6 +75,8 @@ export default function Sidebar({
 
   seasons,
   setSeasons,
+  seasonNames,
+  setSeasonNames,
   seasonsLoaded,
   setSeasonsLoaded,
 
@@ -92,6 +101,10 @@ export default function Sidebar({
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const [loadedSeasonNames, setLoadedSeasonNames] = useState<Set<string>>(
+    new Set(),
+  );
 
   const filterText = view === "seasons" ? seasonFilter : territoryFilter;
 
@@ -140,9 +153,10 @@ export default function Sidebar({
         setLoading(true);
         setError("");
 
-        const data = await getSeasons(selectedSports);
+        const data = await getSeasonNames(selectedSports); // Загружаем только список сезонов
 
-        setSeasons(data);
+        setSeasonNames(data);
+        setSeasons([]); // Турниры пока не загружаем
         setSeasonsLoaded(true);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Ошибка загрузки");
@@ -152,7 +166,14 @@ export default function Sidebar({
     }
 
     loadData();
-  }, [view, seasonsLoaded, selectedSports, setSeasons, setSeasonsLoaded]);
+  }, [
+    view,
+    seasonsLoaded,
+    selectedSports,
+    setSeasonNames,
+    setSeasons,
+    setSeasonsLoaded,
+  ]);
 
   const selectedSportsKey = [...selectedSports].sort((a, b) => a - b).join(",");
 
@@ -164,36 +185,73 @@ export default function Sidebar({
     }
 
     previousSportsKey.current = selectedSportsKey;
+
+    setLoadedSeasonNames(new Set()); // Сезоны для нового набора спортов ещё не загружены
+    setSeasons([]); // Удаляем турниры старого набора спортов
     setSeasonsLoaded(false);
-  }, [selectedSportsKey, setSeasonsLoaded]);
+  }, [selectedSportsKey, setSeasons, setSeasonsLoaded]);
 
-  useEffect(() => {
-    async function loadData() {
-      if (view !== "seasons" || seasonsLoaded) {
-        return;
-      }
-
-      try {
-        setLoading(true);
-        setError("");
-
-        const sportIds = selectedSportsKey
-          ? selectedSportsKey.split(",").map(Number)
-          : [];
-
-        const data = await getSeasons(sportIds);
-
-        setSeasons(data);
-        setSeasonsLoaded(true);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Ошибка загрузки");
-      } finally {
-        setLoading(false);
-      }
+  async function loadSeason(season: string) {
+    // Если этот сезон уже загружен — повторный запрос не нужен
+    if (loadedSeasonNames.has(season)) {
+      return;
     }
 
-    void loadData();
-  }, [view, seasonsLoaded, selectedSportsKey, setSeasons, setSeasonsLoaded]);
+    try {
+      setError("");
+
+      const data = await getSeasons(selectedSports, season); // Загружаем только выбранный сезон
+
+      setSeasons((prev) => [
+        ...prev.filter((item) => item.season !== season), // Убираем старые данные этого сезона
+        ...data, // Добавляем загруженный сезон
+      ]);
+
+      setLoadedSeasonNames((prev) => {
+        const next = new Set(prev);
+        next.add(season); // Запоминаем, что сезон уже загружен
+        return next;
+      });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Ошибка загрузки сезона");
+    }
+  }
+
+  useEffect(() => {
+    if (!seasonsLoaded) {
+      return; // Сначала должен загрузиться список названий сезонов
+    }
+
+    for (const id of seasonExpandedItems) {
+      if (!id.startsWith("season-")) {
+        continue; // Нас интересуют только корневые узлы сезонов
+      }
+
+      const season = id.substring("season-".length);
+
+      if (!seasonNames.includes(season)) {
+        continue; // Такого сезона нет для текущего выбранного спорта
+      }
+
+      if (!loadedSeasonNames.has(season)) {
+        void loadSeason(season); // Загружаем турниры сохранённого раскрытого сезона
+      }
+    }
+  }, [seasonsLoaded, seasonNames, seasonExpandedItems]);
+
+  async function handleSeasonNodeClick(season: string) {
+    // Если сезон ещё не загружен — сначала загружаем его
+    if (!loadedSeasonNames.has(season)) {
+      await loadSeason(season);
+    }
+
+    // Раскрываем сезон
+    const seasonId = `season-${season}`;
+
+    if (!seasonExpandedItems.includes(seasonId)) {
+      setSeasonExpandedItems([...seasonExpandedItems, seasonId]);
+    }
+  }
 
   return (
     <aside className="sidebar">
@@ -239,14 +297,31 @@ export default function Sidebar({
           {!loading && !error && (
             <SeasonsTree
               seasons={seasons}
+              seasonNames={seasonNames}
               sports={sports}
               selectedSports={selectedSports}
               filterText={seasonFilter}
               expandedItems={seasonExpandedItems}
               selectedItem={seasonSelectedItem}
-              onExpandedItemsChange={setSeasonExpandedItems}
+              onExpandedItemsChange={(ids) => {
+                setSeasonExpandedItems(ids);
+
+                // Ищем вновь раскрытые узлы сезонов
+                for (const id of ids) {
+                  if (!id.startsWith("season-")) {
+                    continue;
+                  }
+
+                  const season = id.substring("season-".length);
+
+                  if (!loadedSeasonNames.has(season)) {
+                    void loadSeason(season);
+                  }
+                }
+              }}
               onSelectedItemChange={setSeasonSelectedItem}
               onItemClick={handleSeasonClick}
+              onSeasonClick={handleSeasonNodeClick}
             />
           )}
         </div>

@@ -67,11 +67,7 @@ function getSavedActiveItem(): SelectedItem {
 }
 
 function MainPage() {
-const {
-    sports,
-    selectedSports,
-    toggleSport,
-} = useSports();
+  const { sports, selectedSports, toggleSport } = useSports();
 
   const [mobileMainOpen, setMobileMainOpen] = useState(false);
   const [selectedItem, setSelectedItem] =
@@ -90,12 +86,33 @@ const {
 
   const [seasons, setSeasons] = useState<SeasonItem[]>([]);
   const [seasonsLoaded, setSeasonsLoaded] = useState(false);
-  const [seasonExpandedItems, setSeasonExpandedItems] = useState<string[]>([]);
+  const [seasonNames, setSeasonNames] = useState<string[]>([]);
+  const [seasonExpandedItems, setSeasonExpandedItems] = useState<string[]>(
+    () => {
+      const saved = localStorage.getItem("season-expanded-items");
+      if (!saved) {
+        return [];
+      }
+      try {
+        return JSON.parse(saved) as string[];
+      } catch {
+        return [];
+      }
+    },
+  );
+
+  useEffect(() => {
+    localStorage.setItem(
+      "season-expanded-items",
+      JSON.stringify(seasonExpandedItems),
+    );
+  }, [seasonExpandedItems]);
+
   const [seasonSelectedItem, setSeasonSelectedItem] = useState<string | null>(
     () => localStorage.getItem(SEASON_SELECTED_KEY),
   );
   const [seasonFilterText, setSeasonFilterText] = useState("");
- 
+
   const [territoryItems, setTerritoryItems] = useState<MuiTreeItem[]>([]);
   const [territoryExpandedItems, setTerritoryExpandedItems] = useState<
     string[]
@@ -110,7 +127,7 @@ const {
     return localStorage.getItem(TERRITORY_SELECTED_KEY);
   });
 
-    const [teams, setTeams] = useState<Team[]>([]);
+  const [teams, setTeams] = useState<Team[]>([]);
   const [teamsLoading, setTeamsLoading] = useState(false);
 
   const [selectedTeamRow, setSelectedTeamRow] = useState<Team | null>(null);
@@ -185,7 +202,6 @@ const {
     loadTeams(territorySelectedItem);
   }, [territorySelectedItem, selectedSports]);
 
-
   const sidebar = (
     <Sidebar
       onOpenMain={() => setMobileMainOpen(true)}
@@ -196,6 +212,8 @@ const {
       setTerritoryFilter={setTerritoryFilterText}
       seasons={seasons}
       setSeasons={setSeasons}
+      seasonNames={seasonNames}
+      setSeasonNames={setSeasonNames}
       seasonsLoaded={seasonsLoaded}
       setSeasonsLoaded={setSeasonsLoaded}
       seasonExpandedItems={seasonExpandedItems}
