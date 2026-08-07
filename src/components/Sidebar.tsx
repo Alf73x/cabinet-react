@@ -1,10 +1,12 @@
 import "./Sidebar.css";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getSeasons, type SeasonItem } from "../api/seasonService";
 
 import SeasonsTree from "./SeasonsTree";
 import TerritoriesTree from "./TerritoriesTree";
 import type { MuiTreeItem } from "./TerritoriesTree";
+
+import type { SportItem } from "../api/sportsService";
 
 type ViewMode = "seasons" | "tree";
 
@@ -46,6 +48,7 @@ type Props = {
   setTerritorySelectedItem: React.Dispatch<React.SetStateAction<string | null>>;
 
   selectedSports: number[];
+  sports: SportItem[];
 };
 
 function getSavedView(): ViewMode {
@@ -83,6 +86,7 @@ export default function Sidebar({
   setTerritorySelectedItem,
 
   selectedSports,
+  sports,
 }: Props) {
   const [view, setViewState] = useState<ViewMode>(getSavedView);
 
@@ -150,9 +154,46 @@ export default function Sidebar({
     loadData();
   }, [view, seasonsLoaded, selectedSports, setSeasons, setSeasonsLoaded]);
 
+  const selectedSportsKey = [...selectedSports].sort((a, b) => a - b).join(",");
+
+  const previousSportsKey = useRef(selectedSportsKey);
+
   useEffect(() => {
+    if (previousSportsKey.current === selectedSportsKey) {
+      return;
+    }
+
+    previousSportsKey.current = selectedSportsKey;
     setSeasonsLoaded(false);
-  }, [selectedSports, setSeasonsLoaded]);
+  }, [selectedSportsKey, setSeasonsLoaded]);
+
+  useEffect(() => {
+    async function loadData() {
+      if (view !== "seasons" || seasonsLoaded) {
+        return;
+      }
+
+      try {
+        setLoading(true);
+        setError("");
+
+        const sportIds = selectedSportsKey
+          ? selectedSportsKey.split(",").map(Number)
+          : [];
+
+        const data = await getSeasons(sportIds);
+
+        setSeasons(data);
+        setSeasonsLoaded(true);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Ошибка загрузки");
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    void loadData();
+  }, [view, seasonsLoaded, selectedSportsKey, setSeasons, setSeasonsLoaded]);
 
   return (
     <aside className="sidebar">
@@ -198,6 +239,8 @@ export default function Sidebar({
           {!loading && !error && (
             <SeasonsTree
               seasons={seasons}
+              sports={sports}
+              selectedSports={selectedSports}
               filterText={seasonFilter}
               expandedItems={seasonExpandedItems}
               selectedItem={seasonSelectedItem}

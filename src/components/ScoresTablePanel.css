@@ -27,11 +27,12 @@
   flex: 1;
   min-width: 0;
 
+  font-size: 15px;
+  font-weight: 600;
+  color: #2f3745;
+
   white-space: normal;
   overflow-wrap: anywhere;
-  word-break: normal;
-
-  font-weight: bold;
 }
 
 .close-scores-btn {
@@ -83,22 +84,28 @@
 
 .scores-table th,
 .scores-table td {
-  padding: 3px 4px;
+  padding: 4px 5px;
 
-  border: 1px solid hsl(216, 24%, 96%);
+  border-bottom: 1px solid #edf1f5;
+  border-left: none;
+  border-right: none;
+  border-top: none;
 
   text-align: left;
   vertical-align: middle;
-
   box-sizing: border-box;
 }
 
 .scores-table th {
-  height: 24px;
+  position: sticky;
+  top: 0;
+  z-index: 2;
 
-  background: #f3f3f3;
-
+  background: #fafbfc;
+  color: #4b5563;
   font-weight: 600;
+
+  border-bottom: 1px solid #e5e9ef;
 }
 
 .date-cell {
@@ -121,6 +128,7 @@
 .score-cell-header {
   white-space: nowrap;
   text-align: center !important;
+  
 }
 
 .scores-table td.score-cell {
@@ -165,6 +173,13 @@
   background: transparent;
 }
 
+.scores-table tbody td {
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: #444;
+}
+
 @media (max-width: 700px) {
   .scores-table-panel {
     padding-left: 4px;
@@ -195,3 +210,6 @@
     line-height: 1.2;
   }
 }
+
+
+

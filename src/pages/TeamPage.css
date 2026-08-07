@@ -1,0 +1,86 @@
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+}
+
+.app.team-page {
+  height: 100vh;
+  min-height: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  overflow: hidden;
+}
+
+.team-page-content {
+  flex: 1;
+  min-height: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  overflow: hidden;
+  padding: 24px 10px 10px;
+  box-sizing: border-box;
+}
+
+.team-page-title {
+  flex-shrink: 0;
+
+  margin: 0 0 16px;
+
+  font-size: 26px;
+  font-weight: 600;
+  line-height: 1.2;
+  color: #273142;
+}
+
+.team-page-body {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.team-page .territory-tables {
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.team-page .teams-table-panel,
+.team-page .scores-table-panel {
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* react-resizable-panels */
+.team-page [data-panel-group] {
+  height: 100%;
+  min-height: 0;
+}
+
+.team-page [data-panel] {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.team-page .scores-table-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+.team-page .scores-header {
+  flex-shrink: 0;
+}
+
+.team-page .resize-handle {
+  width: 4px;
+  cursor: col-resize;
+}

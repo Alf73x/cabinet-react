@@ -3,10 +3,12 @@ import { useMemo, useState } from "react";
 import {
   flexRender,
   getCoreRowModel,
+  getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
   type ColumnDef,
+  type ColumnFiltersState,
   type SortingState,
 } from "@tanstack/react-table";
 
@@ -63,60 +65,70 @@ const columns: ColumnDef<GridRow>[] = [
     header: "Место",
     size: 140,
     meta: { align: "center", className: "nowrap-column" },
+     enableColumnFilter: false,    
   },
   {
     accessorKey: "games",
     header: "И",
     size: 45,
     meta: { align: "center" },
+    enableColumnFilter: false,    
   },
   {
     accessorKey: "wins",
     header: "В",
     size: 45,
     meta: { align: "center" },
+    enableColumnFilter: false,    
   },
   {
     accessorKey: "winsET",
     header: "ВО",
     size: 50,
     meta: { align: "center" },
+    enableColumnFilter: false,    
   },
   {
     accessorKey: "draws",
     header: "Н",
     size: 45,
     meta: { align: "center" },
+    enableColumnFilter: false,    
   },
   {
     accessorKey: "lossesET",
     header: "ПО",
     size: 50,
     meta: { align: "center" },
+    enableColumnFilter: false,    
   },
   {
     accessorKey: "losses",
     header: "П",
     size: 45,
     meta: { align: "center" },
+    enableColumnFilter: false,    
   },
   {
     accessorKey: "goalsFor",
     header: "З",
     size: 50,
     meta: { align: "center" },
+    enableColumnFilter: false,    
   },
   {
     accessorKey: "goalsAgainst",
     header: "ПР",
     size: 50,
     meta: { align: "center" },
+    enableColumnFilter: false,    
   },
   {
     accessorKey: "goalDiff",
     header: "+/-",
     size: 55,
     meta: { align: "center" },
+    enableColumnFilter: false,    
   },
 ];
 
@@ -125,22 +137,18 @@ export default function TeamHistoryTable({
   onRowClick,
   onTournamentClick,
 }: Props) {
-const data = useMemo<GridRow[]>(
-  () =>
-    rows.map((row, index) => ({
-      ...row,
-      gridId: index,
-      games:
-        row.games ??
-        row.wins +
-          row.winsET +
-          row.draws +
-          row.lossesET +
-          row.losses,
-      goalDiff: row.goalsFor - row.goalsAgainst,
-    })),
-  [rows],
-);
+  const data = useMemo<GridRow[]>(
+    () =>
+      rows.map((row, index) => ({
+        ...row,
+        gridId: index,
+        games:
+          row.games ??
+          row.wins + row.winsET + row.draws + row.lossesET + row.losses,
+        goalDiff: row.goalsFor - row.goalsAgainst,
+      })),
+    [rows],
+  );
 
   const [pagination, setPagination] = useState({
     pageIndex: 0,
@@ -149,16 +157,21 @@ const data = useMemo<GridRow[]>(
 
   const [sorting, setSorting] = useState<SortingState>([]);
 
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+
   const table = useReactTable({
     data,
     columns,
     state: {
       pagination,
       sorting,
+      columnFilters,
     },
     onPaginationChange: setPagination,
     onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
   });
@@ -199,9 +212,23 @@ const data = useMemo<GridRow[]>(
                           header.column.columnDef.header,
                           header.getContext(),
                         )}
+
                         {sorted === "asc" && " ▲"}
                         {sorted === "desc" && " ▼"}
                       </div>
+
+                      {header.column.getCanFilter() && (
+                        <input
+                          className="teams-column-filter"
+                          value={
+                            (header.column.getFilterValue() ?? "") as string
+                          }
+                          onChange={(e) =>
+                            header.column.setFilterValue(e.target.value)
+                          }
+                          onClick={(e) => e.stopPropagation()}
+                        />
+                      )}
                     </th>
                   );
                 })}

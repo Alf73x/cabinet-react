@@ -31,9 +31,41 @@
 
 .tree-filter {
   width: 100%;
-  min-width: 0;
+  height: 30px;
+  padding: 4px 10px 4px 30px;
+
+  border: 1px solid #d6dbe3;
+  border-radius: 7px;
+
+  background:
+    #fff
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23808a99' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.3-4.3'/%3E%3C/svg%3E")
+    no-repeat 9px center;
+
+  color: #374151;
+  font-size: 12px;
+
+  outline: none;
+  box-sizing: border-box;
+
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    background-color 0.15s ease;
 }
 
+.tree-filter::placeholder {
+  color: #9aa3af;
+}
+
+.tree-filter:hover {
+  border-color: #b9c2cf;
+}
+
+.tree-filter:focus {
+  border-color: #8ca9cc;
+  box-shadow: 0 0 0 2px rgba(100, 140, 190, 0.12);
+}
 .toggle {
   display: flex;
   background: #e5e7eb;
@@ -96,6 +128,57 @@
 .MuiTreeItem-label {
   font-size: 12px !important;
   line-height: 20px;
+}
+
+
+.season-tree-label {
+  display: inline-flex;
+  gap: 4px;
+
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.2;
+
+  align-items: baseline;
+}
+
+.season-tree-label-text {
+  font: inherit;
+}
+
+.season-tree-icon {
+  display: inline-block;
+
+  width: 12px;
+  height: 12px;
+  flex: 0 0 12px;
+
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 12px 12px;
+
+  vertical-align: baseline;
+}
+
+.season-tree-icon-0 {
+  background-image: url("/icons/season-0.svg");
+}
+
+.season-tree-icon-1 {
+  background-image: url("/icons/season-1.svg");
+}
+
+.season-tree-icon-2 {
+  background-image: url("/icons/season-2.svg");
+}
+
+.season-tree-icon-3 {
+  background-image: url("/icons/season-3.svg");
+}
+
+.season-tree-icon-4 {
+  background-image: url("/icons/season-4.svg");
 }
 
 

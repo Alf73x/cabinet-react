@@ -95,7 +95,7 @@ const {
     () => localStorage.getItem(SEASON_SELECTED_KEY),
   );
   const [seasonFilterText, setSeasonFilterText] = useState("");
-
+ 
   const [territoryItems, setTerritoryItems] = useState<MuiTreeItem[]>([]);
   const [territoryExpandedItems, setTerritoryExpandedItems] = useState<
     string[]
@@ -211,6 +211,7 @@ const {
       territorySelectedItem={territorySelectedItem}
       setTerritorySelectedItem={setTerritorySelectedItem}
       selectedSports={selectedSports}
+      sports={sports}
     />
   );
 
@@ -234,9 +235,9 @@ const {
   function findSeasonName(seasons: SeasonItem[], id: string | null): string {
     if (!id) return "";
 
-    const season = seasons.find((x) => x.ID.toString() === id);
+    const season = seasons.find((x) => x.id.toString() === id);
 
-    return (season?.Season ?? "") + " " + (season?.Name ?? "");
+    return (season?.season ?? "") + " " + (season?.name ?? "");
   }
 
   const territoryTitle = findTerritoryName(

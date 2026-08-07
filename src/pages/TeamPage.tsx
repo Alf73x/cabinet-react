@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import "./TeamPage.css";
 import {
   Group,
   Panel,
@@ -79,81 +80,73 @@ export default function TeamPage() {
     window.location.href = "/";
   }
 
-  return (
-    <div className="app">
-      <Navbar />
+return (
+  <div className="app team-page">
+    <Navbar />
 
-      <main className="content">
-        <h2>{teamInfo?.name ?? ""}</h2>
+    <main className="content team-page-content">
+      <h2 className="team-page-title">{teamInfo?.name ?? ""}</h2>
 
-        {loading && <div>Загрузка...</div>}
+      {loading && <div>Загрузка...</div>}
 
-        {error && (
-          <div>
-            Ошибка: {error}
-          </div>
-        )}
+      {error && <div>Ошибка: {error}</div>}
 
-        {!loading && !error && rows.length === 0 && (
-          <div>Нет данных</div>
-        )}
+      {!loading && !error && rows.length === 0 && <div>Нет данных</div>}
 
-        {!loading && !error && rows.length > 0 && (
-          <div style={{ flex: 1, minHeight: 0 }}>
-            <div className="territory-tables">
-              {selectedRow ? (
-                <Group orientation="horizontal">
-                  <Panel defaultSize={65} minSize={30}>
-                    <div className="teams-table-panel">
-                      <TeamHistoryTable
-                        rows={rows}
-                        onRowClick={setSelectedRow}
-                        onTournamentClick={openTournament}
-                      />
-                    </div>
-                  </Panel>
+      {!loading && !error && rows.length > 0 && (
+        <div className="team-page-body">
+          <div className="territory-tables">
+            {selectedRow ? (
+              <Group orientation="horizontal">
+                <Panel defaultSize={65} minSize={30}>
+                  <div className="teams-table-panel">
+                    <TeamHistoryTable
+                      rows={rows}
+                      onRowClick={setSelectedRow}
+                      onTournamentClick={openTournament}
+                    />
+                  </div>
+                </Panel>
 
-                  <Separator className="resize-handle" />
+                <Separator className="resize-handle" />
 
-                  <Panel defaultSize={35} minSize={20}>
-                    <div className="scores-table-panel">
-                      <div className="scores-header">
-                        <div className="scores-header-title">
-                          {selectedRow.Season}
-                          {" - "}
-                          {selectedRow.SeasonName}
-                        </div>
-
-                        <button
-                          type="button"
-                          className="close-scores-btn"
-                          onClick={() => setSelectedRow(null)}
-                          aria-label="Закрыть список матчей"
-                        >
-                          ✕
-                        </button>
+                <Panel defaultSize={35} minSize={20}>
+                  <div className="scores-table-panel">
+                    <div className="scores-header">
+                      <div className="scores-header-title">
+                        {selectedRow.Season} - {selectedRow.SeasonName}
                       </div>
 
-                      <ScoresTablePanel
-                        teamId={selectedRow.ID}
-                        seasonId={selectedRow.SeasonID}
-                      />
+                      <button
+                        type="button"
+                        className="close-scores-btn"
+                        onClick={() => setSelectedRow(null)}
+                        aria-label="Закрыть список матчей"
+                      >
+                        ✕
+                      </button>
                     </div>
-                  </Panel>
-                </Group>
-              ) : (
-                <div className="teams-table-panel">
-                  <TeamHistoryTable
-                    rows={rows}
-                    onRowClick={setSelectedRow}
-                    onTournamentClick={openTournament}
-                  />
-                </div>
-              )}
-            </div>
+
+                    <ScoresTablePanel
+                      teamId={selectedRow.ID}
+                      seasonId={selectedRow.SeasonID}
+                    />
+                  </div>
+                </Panel>
+              </Group>
+            ) : (
+              <div className="teams-table-panel">
+                <TeamHistoryTable
+                  rows={rows}
+                  onRowClick={setSelectedRow}
+                  onTournamentClick={openTournament}
+                />
+              </div>
+            )}
           </div>
-        )}
-      </main>
-    </div>
-  );
+        </div>
+      )}
+    </main>
+  </div>
+);
 }

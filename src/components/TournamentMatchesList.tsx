@@ -136,8 +136,14 @@ export default function TournamentMatchesList({ data }: Props) {
 
         const opponentName =
           teamsById.get(match.opponentId) ?? String(match.opponentId);
-
-        const scoreBgClass = getScoreBackgroundClass(match.score);
+        
+          const scoreBgClass =
+          team1Filter === "all"
+            ? getScoreBackgroundClass(match.score)
+            : getScoreBackgroundClass(
+                match.score,
+                match.teamId === team1Filter ? "left" : "right",
+              );
 
         return (
           <div
