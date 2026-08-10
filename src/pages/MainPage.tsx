@@ -22,6 +22,7 @@ const MOBILE_WIDTH = 768;
 const TERRITORY_SELECTED_KEY = "territory-selected-item";
 const ACTIVE_ITEM_KEY = "active-main-item";
 const SEASON_SELECTED_KEY = "season-selected-item";
+const SEASON_SELECTED_PARENT_KEY = "season-selected-parent";
 
 type SelectedItem = {
   type: "season" | "territory";
@@ -89,24 +90,11 @@ function MainPage() {
   const [seasonNames, setSeasonNames] = useState<string[]>([]);
   const [seasonExpandedItems, setSeasonExpandedItems] = useState<string[]>(
     () => {
-      const saved = localStorage.getItem("season-expanded-items");
-      if (!saved) {
-        return [];
-      }
-      try {
-        return JSON.parse(saved) as string[];
-      } catch {
-        return [];
-      }
+      const season = localStorage.getItem(SEASON_SELECTED_PARENT_KEY);
+
+      return season ? [`season-${season}`] : [];
     },
   );
-
-  useEffect(() => {
-    localStorage.setItem(
-      "season-expanded-items",
-      JSON.stringify(seasonExpandedItems),
-    );
-  }, [seasonExpandedItems]);
 
   const [seasonSelectedItem, setSeasonSelectedItem] = useState<string | null>(
     () => localStorage.getItem(SEASON_SELECTED_KEY),
@@ -306,6 +294,8 @@ function MainPage() {
                       <div className="teams-table-panel">
                         <TeamsTable
                           rows={teams}
+                          sports={sports}
+                          selectedSports={selectedSports}
                           onRowClick={(row) => setSelectedTeamRow(row)}
                           onTeamClick={(teamId) =>
                             window.open(
@@ -348,6 +338,8 @@ function MainPage() {
                   <div className="teams-table-panel">
                     <TeamsTable
                       rows={teams}
+                      sports={sports}
+                      selectedSports={selectedSports}
                       onRowClick={(row) => setSelectedTeamRow(row)}
                       onTeamClick={(teamId) =>
                         window.open(

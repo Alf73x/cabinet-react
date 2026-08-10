@@ -130,15 +130,6 @@ export default function TournamentMatrixTable({
     return classes.filter(Boolean).join(" ");
   }
 
-  function stat(team: any, name: string) {
-    return team[name] ?? "";
-  }
-
-  function statName(prefix: string, name: string) {
-    if (!prefix) return name;
-    return prefix + name.charAt(0).toUpperCase() + name.slice(1);
-  }
-
   function getMatches(teamId: number, opponentId: number) {
     return matches
       .filter((m) => {
@@ -181,17 +172,19 @@ export default function TournamentMatrixTable({
     ));
   }
 
-  function renderStatCells(team: any, prefix: string) {
+  function renderStatCells(team: any, section?: "home" | "away") {
+    const source = section ? team[section] : team;
+
     return statFields.map((item, index) => (
       <td
-        key={`${prefix}-${item.field}`}
+        key={`${section ?? "total"}-${item.field}`}
         className={cx(
           "col-num",
           index === 0 && "band-start",
           index === statFields.length - 1 && "band-end",
         )}
       >
-        {stat(team, statName(prefix, item.field))}
+        {source?.[item.field] ?? ""}
       </td>
     ));
   }
@@ -484,7 +477,7 @@ export default function TournamentMatrixTable({
                     );
                   })}
 
-                {renderStatCells(team, "")}
+                {renderStatCells(team)}
                 {showHomeStats && renderStatCells(team, "home")}
                 {showAwayStats && renderStatCells(team, "away")}
               </tr>

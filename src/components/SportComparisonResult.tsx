@@ -10,15 +10,21 @@ import {
 
 type Props = {
   result: OpponentComparisonResponse | null;
+  selectedSports: number[];
 };
 
-export default function SportComparisonResult({ result }: Props) {
+export default function SportComparisonResult({
+  result,
+  selectedSports,
+}: Props) {
   const [selectedItem, setSelectedItem] =
     useState<OpponentComparisonItem | null>(null);
 
   const [matches, setMatches] = useState<ComparisonMatch[]>([]);
   const [matchesLoading, setMatchesLoading] = useState(false);
   const [matchesError, setMatchesError] = useState("");
+
+  const showSportColumn = selectedSports.length > 1;
 
   useEffect(() => {
     setSelectedItem(null);
@@ -102,8 +108,9 @@ export default function SportComparisonResult({ result }: Props) {
 
           <thead>
             <tr>
-              <th>Команда 1</th>
-              <th>Команда 2</th>
+              {showSportColumn && <th style={{ width: 90 }}>Спорт</th>}
+              <th style={{ width: 260 }}>Команда 1</th>
+              <th style={{ width: 260 }}>Команда 2</th>
               <th>И</th>
               <th>В</th>
               <th>ВО</th>
@@ -126,6 +133,7 @@ export default function SportComparisonResult({ result }: Props) {
                   className={selected ? "selected" : ""}
                   onClick={() => void handleRowClick(item)}
                 >
+                  {showSportColumn && <td>{item.sport_name}</td>}
                   <td>{item.team1}</td>
                   <td>{item.team2}</td>
                   <td>{item.total.games}</td>
@@ -142,6 +150,7 @@ export default function SportComparisonResult({ result }: Props) {
             })}
 
             <tr className="totals-row">
+              {showSportColumn && <td />}
               <td>Итого</td>
               <td />
               <td>{totals.games}</td>

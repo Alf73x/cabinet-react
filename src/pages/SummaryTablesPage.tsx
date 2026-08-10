@@ -14,7 +14,7 @@ import SummaryTable from "../components/SummaryTable";
 import { useSports } from "../context/SportsContext";
 
 export default function SummaryTablesPage() {
-  const { selectedSports } = useSports();
+  const { sports, selectedSports, toggleSport } = useSports();
   const [categories, setCategories] = useState<SummaryCategory[]>([]);
   const [selectedCategory, setSelectedCategory] = useState("");
 
@@ -99,7 +99,14 @@ export default function SummaryTablesPage() {
 
   return (
     <div className="app">
-      <Navbar pageTitle="Сводные таблицы" />
+      <Navbar
+        pageTitle="Сводные таблицы"
+        sports={sports}
+        selectedSports={selectedSports}
+        onToggleSport={toggleSport}
+        showTools={false}
+        showUser={false}
+      />
 
       <main className="summary-tables-page">
         <section className="summary-toolbar">
@@ -170,7 +177,14 @@ export default function SummaryTablesPage() {
             }
             onClick={() => void handleStart()}
           >
-            {summaryLoading ? "Загрузка..." : "▶ Старт"}
+            {summaryLoading ? (
+              "Загрузка..."
+            ) : (
+              <>
+                <span className="summary-start-icon">▶ </span>
+                Старт
+              </>
+            )}
           </button>
         </section>
 

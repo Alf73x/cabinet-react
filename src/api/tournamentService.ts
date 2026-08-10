@@ -2,6 +2,19 @@ import { apiGet } from "./api";
 
 export type TournamentDataType = 1 | 2 | 3;
 
+export type TournamentTeamStat = {
+  games: number;
+  points: number;
+  wins: number;
+  otWins: number;
+  draws: number;
+  otLosses: number;
+  losses: number;
+  goalsFor: number;
+  goalsAgainst: number;
+  diff: number;
+};
+
 export type TournamentMatrixTeam = {
   id: number;
   place: number;
@@ -19,6 +32,9 @@ export type TournamentMatrixTeam = {
   goalsFor: number;
   goalsAgainst: number;
   diff: number;
+  
+  home: TournamentTeamStat;
+  away: TournamentTeamStat;  
 };
 
 export type TournamentMatrixMatch = {

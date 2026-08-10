@@ -16,16 +16,18 @@ type Props = {
   sports?: SportItem[];
   selectedSports?: number[];
   onToggleSport?: (id: number) => void;
-  onOpenSummaryTables?: () => void;
   pageTitle?: string;
+  showTools?: boolean;
+  showUser?: boolean;
 };
 
 export default function Navbar({
   sports,
   selectedSports,
   onToggleSport,
-  onOpenSummaryTables,
   pageTitle,
+  showTools = true,
+  showUser = true,
 }: Props) {
   const navigate = useNavigate();
 
@@ -72,63 +74,69 @@ export default function Navbar({
             </div>
           )}
 
-          <div className="navbar-dropdown">
-            <button type="button" className="navbar-menu-button">
-              Инструменты ▾
-            </button>
-
-            <div className="navbar-dropdown-content">
-              <button
-                type="button"
-                disabled={!isAuthenticated}
-                title={isAuthenticated ? undefined : "Требуется авторизация"}
-                onClick={() =>
-                  window.open(
-                    "/opponent-comparison",
-                    "_blank",
-                    "noopener,noreferrer",
-                  )
-                }
-              >
-                Сравнение соперников
-              </button>
-
-              <button
-                type="button"
-                className="navbar-menu-item"
-                onClick={() => {
-                  window.open(
-                    "/summary-tables",
-                    "_blank",
-                    "noopener,noreferrer",
-                  );
-                }}
-              >
-                Сводные таблицы
-              </button>
-            </div>
-          </div>
-
-          {isAuthenticated ? (
+          {showTools && (
             <div className="navbar-dropdown">
               <button type="button" className="navbar-menu-button">
-                {loginName} ▾
+                Инструменты ▾
               </button>
 
-              <div className="navbar-dropdown-content navbar-dropdown-content--right">
-                <button type="button" onClick={handleLogout}>
-                  Выйти
+              <div className="navbar-dropdown-content">
+                <button
+                  type="button"
+                  disabled={!isAuthenticated}
+                  title={isAuthenticated ? undefined : "Требуется авторизация"}
+                  onClick={() =>
+                    window.open(
+                      "/opponent-comparison",
+                      "_blank",
+                      "noopener,noreferrer",
+                    )
+                  }
+                >
+                  Сравнение соперников
+                </button>
+
+                <button
+                  type="button"
+                  className="navbar-menu-item"
+                  onClick={() => {
+                    window.open(
+                      "/summary-tables",
+                      "_blank",
+                      "noopener,noreferrer",
+                    );
+                  }}
+                >
+                  Сводные таблицы
                 </button>
               </div>
             </div>
-          ) : (
-            <button
-              type="button"
-              className="navbar-menu-button"
-              onClick={() => setLoginDialogOpen(true)}
-            >
-              Войти
-            </button>
+          )}
+
+          {showUser && (
+            <>
+              {isAuthenticated ? (
+                <div className="navbar-dropdown">
+                  <button type="button" className="navbar-menu-button">
+                    {loginName} ▾
+                  </button>
+
+                  <div className="navbar-dropdown-content navbar-dropdown-content--right">
+                    <button type="button" onClick={handleLogout}>
+                      Выйти
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  className="navbar-menu-button"
+                  onClick={() => setLoginDialogOpen(true)}
+                >
+                  Войти
+                </button>
+              )}
+            </>
           )}
         </nav>
       </header>

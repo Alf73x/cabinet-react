@@ -63,6 +63,7 @@
   border-radius: 4px;
   background: #fff;
   cursor: pointer;
+  
 }
 
 .summary-start-button:hover:not(:disabled) {
@@ -73,6 +74,16 @@
   cursor: default;
   opacity: 0.6;
 }
+
+
+.summary-start-button span {
+  color: #20934b;
+  font-size: 15px;
+}
+
+
+ 
+
 
 .summary-error {
   flex: 0 0 auto;

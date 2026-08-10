@@ -12,6 +12,7 @@ import {
   type SortingState,
 } from "@tanstack/react-table";
 import type { Team } from "../api/teamsTableService";
+import type { SportItem } from "../api/sportsService";
 
 declare module "@tanstack/react-table" {
   interface ColumnMeta<TData, TValue> {
@@ -22,6 +23,8 @@ declare module "@tanstack/react-table" {
 
 type Props = {
   rows: Team[];
+  sports: SportItem[];
+  selectedSports: number[];
   onRowClick?: (row: Team) => void;
   onTeamClick?: (teamId: number, teamName: string) => void;
 };
@@ -31,58 +34,13 @@ type TeamGridRow = Team & {
   games: number;
 };
 
-const columns: ColumnDef<TeamGridRow>[] = [
-  { accessorKey: "Season", header: "Сезон", size: 80 },
-  { accessorKey: "SeasonName", header: "Турнир", size: 160 },
-  { accessorKey: "TeamName", header: "Команда", size: 120 },
-  { accessorKey: "TeamTerritory", header: "Город", size: 110 },
-  {
-    accessorKey: "LeagueRank",
-    header: "Ранг",
-    size: 55,
-    meta: { align: "center" },
-  },
-  {
-    accessorKey: "Place",
-    header: "Место",
-    size: 80,
-    meta: {
-      align: "center",
-      className: "nowrap-column",
-    },
-    enableColumnFilter: false,
-  },
-  {
-    accessorKey: "games",
-    header: "И",
-    size: 45,
-    meta: { align: "center" },
-    enableColumnFilter: false,
-  },
-  {
-    accessorKey: "wins",
-    header: "В",
-    size: 45,
-    meta: { align: "center" },
-    enableColumnFilter: false,
-  },
-  {
-    accessorKey: "draws",
-    header: "Н",
-    size: 45,
-    meta: { align: "center" },
-    enableColumnFilter: false,
-  },
-  {
-    accessorKey: "losses",
-    header: "П",
-    size: 45,
-    meta: { align: "center" },
-    enableColumnFilter: false,
-  },
-];
-
-export default function TeamsTable({ rows, onRowClick, onTeamClick }: Props) {
+export default function TeamsTable({
+  rows,
+  sports,
+  selectedSports,
+  onRowClick,
+  onTeamClick,
+}: Props) {
   const data = useMemo<TeamGridRow[]>(
     () =>
       rows.map((row, index) => ({
@@ -92,6 +50,96 @@ export default function TeamsTable({ rows, onRowClick, onTeamClick }: Props) {
       })),
     [rows],
   );
+
+  // Быстрый поиск названия спорта по ID
+  const sportsById = useMemo(
+    () => new Map(sports.map((sport) => [sport.ID, sport.Name])),
+    [sports],
+  );
+
+  // Колонка "Спорт" показывается только если выбрано больше одного спорта
+  const columns = useMemo<ColumnDef<TeamGridRow>[]>(() => {
+    const result: ColumnDef<TeamGridRow>[] = [
+      {
+        accessorKey: "Season",
+        header: "Сезон",
+        size: 80,
+      },
+    ];
+
+    if (selectedSports.length > 1) {
+      result.push({
+        id: "Sport",
+        header: "Спорт",
+        size: 90,
+        accessorFn: (row) => sportsById.get(row.SportID) ?? "",
+      });
+    }
+
+    result.push(
+      {
+        accessorKey: "SeasonName",
+        header: "Турнир",
+        size: 160,
+      },
+      {
+        accessorKey: "TeamName",
+        header: "Команда",
+        size: 120,
+      },
+      {
+        accessorKey: "TeamTerritory",
+        header: "Город",
+        size: 110,
+      },
+      {
+        accessorKey: "LeagueRank",
+        header: "Ранг",
+        size: 55,
+        meta: { align: "center" },
+      },
+      {
+        accessorKey: "Place",
+        header: "Место",
+        size: 80,
+        meta: {
+          align: "center",
+          className: "nowrap-column",
+        },
+        enableColumnFilter: false,
+      },
+      {
+        accessorKey: "games",
+        header: "И",
+        size: 45,
+        meta: { align: "center" },
+        enableColumnFilter: false,
+      },
+      {
+        accessorKey: "wins",
+        header: "В",
+        size: 45,
+        meta: { align: "center" },
+        enableColumnFilter: false,
+      },
+      {
+        accessorKey: "draws",
+        header: "Н",
+        size: 45,
+        meta: { align: "center" },
+        enableColumnFilter: false,
+      },
+      {
+        accessorKey: "losses",
+        header: "П",
+        size: 45,
+        meta: { align: "center" },
+        enableColumnFilter: false,
+      },
+    );
+
+    return result;
+  }, [selectedSports.length, sportsById]);
 
   const [pagination, setPagination] = useState({
     pageIndex: 0,

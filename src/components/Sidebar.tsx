@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import {
   getSeasonNames,
   getSeasons,
+  getSeasonRootId,
   type SeasonItem,
 } from "../api/seasonService";
 import SeasonsTree from "./SeasonsTree";
@@ -123,6 +124,13 @@ export default function Sidebar({
 
   function handleSeasonClick(id: string) {
     setSeasonSelectedItem(id);
+
+    const item = seasons.find((x) => x.id.toString() === id);
+
+    if (item) {
+      // Для восстановления после F5 достаточно знать сезон выбранного турнира
+      localStorage.setItem("season-selected-parent", item.season);
+    }
 
     onItemSelected({
       type: "season",
@@ -252,6 +260,72 @@ export default function Sidebar({
       setSeasonExpandedItems([...seasonExpandedItems, seasonId]);
     }
   }
+
+  function getSeasonExpandedPath(selectedId: string): string[] {
+    const selected = seasons.find((x) => x.id.toString() === selectedId);
+
+    if (!selected) {
+      return [];
+    }
+
+    const path: string[] = [`season-${selected.season}`];
+
+    let current = selected;
+
+    while (true) {
+      const rootId = getSeasonRootId(current.options_1);
+
+      if (rootId === null) {
+        break;
+      }
+
+      const parent = seasons.find((x) => x.id === rootId);
+
+      if (!parent) {
+        break;
+      }
+
+      // Вставляем родителя после узла сезона,
+      // сохраняя порядок от верхнего уровня к нижнему
+      path.splice(1, 0, parent.id.toString());
+
+      current = parent;
+    }
+
+    return path;
+  }
+
+  useEffect(() => {
+    if (!seasonSelectedItem) {
+      return;
+    }
+
+    // После F5 сначала загружается только выбранный сезон.
+    // Пока выбранного турнира в seasons нет — путь построить невозможно.
+    const selected = seasons.find(
+      (x) => x.id.toString() === seasonSelectedItem,
+    );
+
+    if (!selected) {
+      return;
+    }
+
+    // Теперь весь сезон загружен, поэтому можно восстановить
+    // всю цепочку Root=XYZ любой глубины.
+    const path = getSeasonExpandedPath(seasonSelectedItem);
+
+    if (path.length === 0) {
+      return;
+    }
+
+    setSeasonExpandedItems((prev) => {
+      const next = new Set(prev);
+
+      path.forEach((id) => next.add(id));
+
+      return Array.from(next);
+    });
+  }, [seasons, seasonSelectedItem, setSeasonExpandedItems]);
 
   return (
     <aside className="sidebar">

@@ -17,8 +17,6 @@ import {
 import { useSports } from "../context/SportsContext";
 
 export default function OpponentComparisonPage() {
-  const { selectedSports, sportsLoading } = useSports();
-
   const [options, setOptions] = useState<OpponentOption[]>([]);
   const [team1, setTeam1] = useState<OpponentOption | null>(null);
   const [team2, setTeam2] = useState<OpponentOption | null>(null);
@@ -40,16 +38,14 @@ export default function OpponentComparisonPage() {
   const [comparisonLoading, setComparisonLoading] = useState(false);
   const [comparisonError, setComparisonError] = useState("");
 
+  const { sports, selectedSports, toggleSport } = useSports();
+
   useEffect(() => {
     setTeam1(null);
     setTeam2(null);
 
     setComparisonResult(null);
     setComparisonError("");
-
-    if (sportsLoading) {
-      return;
-    }
 
     if (selectedSports.length === 0) {
       setOptions([]);
@@ -94,7 +90,7 @@ export default function OpponentComparisonPage() {
     return () => {
       cancelled = true;
     };
-  }, [selectedSports, sportsLoading]);
+  }, [selectedSports]);
 
   const competitionFilterLabels: Record<CompetitionFilter, string> = {
     all: "Все матчи",
@@ -187,9 +183,16 @@ export default function OpponentComparisonPage() {
 
   return (
     <div className="app">
-      <Navbar pageTitle="Сравнение соперников" />
+      <Navbar
+        pageTitle="Сравнение соперников"
+        sports={sports}
+        selectedSports={selectedSports}
+        onToggleSport={toggleSport}
+        showTools={false}
+        showUser={false}
+      />
 
-       <main className="opponent-comparison-page comparison-page">
+      <main className="opponent-comparison-page comparison-page">
         <section className="comparison-toolbar">
           <label className="comparison-field">
             <span>Соперник 1</span>
@@ -354,7 +357,10 @@ export default function OpponentComparisonPage() {
           )}
 
           {!comparisonLoading && !comparisonError && (
-            <SportComparisonResult result={comparisonResult} />
+            <SportComparisonResult
+              result={comparisonResult}
+              selectedSports={selectedSports}
+            />
           )}
         </section>
       </main>
