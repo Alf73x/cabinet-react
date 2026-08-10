@@ -47,7 +47,6 @@ export type ComparisonStats = {
 
 export type OpponentComparisonItem = {
   sport_id: number;
-  sport_name: string;
 
   team1: string;
   team2: string;

@@ -147,3 +147,12 @@
   white-space: nowrap;
   pointer-events: none;
 }
+
+.logo {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}

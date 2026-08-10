@@ -209,7 +209,18 @@ export default function SummaryTablesPage() {
             <>
               <h3 className="summary-title">{summaryData.title}</h3>
 
-              <SummaryTable rows={summaryData.rows} />
+              <SummaryTable
+                rows={summaryData.rows}
+                sports={sports}
+                selectedSports={selectedSports}
+                onTeamClick={(teamId) =>
+                  window.open(
+                    `/team/${teamId}`,
+                    "_blank",
+                    "noopener,noreferrer",
+                  )
+                }
+              />
             </>
           )}
         </section>

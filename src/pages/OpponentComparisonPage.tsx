@@ -194,8 +194,20 @@ export default function OpponentComparisonPage() {
 
       <main className="opponent-comparison-page comparison-page">
         <section className="comparison-toolbar">
-          <label className="comparison-field">
-            <span>Соперник 1</span>
+          <div className="comparison-field comparison-field-first">
+            <div className="comparison-field-header">
+              <span>Соперник 1</span>
+
+              <button
+                type="button"
+                className="comparison-swap-button comparison-swap-button-mobile"
+                onClick={handleSwapTeams}
+                disabled={team1 === null && team2 === null}
+                title="Поменять команды местами"
+              >
+                ⇄
+              </button>
+            </div>
 
             <TeamComboBox
               items={options}
@@ -206,11 +218,11 @@ export default function OpponentComparisonPage() {
               disabled={optionsLoading}
               onChange={setTeam1}
             />
-          </label>
+          </div>
 
           <button
             type="button"
-            className="comparison-swap-button"
+            className="comparison-swap-button comparison-swap-button-desktop"
             onClick={handleSwapTeams}
             disabled={team1 === null && team2 === null}
             title="Поменять команды местами"
@@ -218,7 +230,7 @@ export default function OpponentComparisonPage() {
             ⇄
           </button>
 
-          <label className="comparison-field">
+          <div className="comparison-field comparison-field-second">
             <span>Соперник 2</span>
 
             <TeamComboBox
@@ -230,7 +242,7 @@ export default function OpponentComparisonPage() {
               disabled={optionsLoading}
               onChange={setTeam2}
             />
-          </label>
+          </div>
 
           <div className="comparison-filter-dropdown">
             <button
@@ -359,6 +371,7 @@ export default function OpponentComparisonPage() {
           {!comparisonLoading && !comparisonError && (
             <SportComparisonResult
               result={comparisonResult}
+              sports={sports}
               selectedSports={selectedSports}
             />
           )}

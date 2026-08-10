@@ -8,13 +8,17 @@ import {
   type OpponentComparisonResponse,
 } from "../api/opponentComparisonService";
 
+import type { SportItem } from "../api/sportsService";
+
 type Props = {
   result: OpponentComparisonResponse | null;
+  sports: SportItem[];
   selectedSports: number[];
 };
 
 export default function SportComparisonResult({
   result,
+  sports,
   selectedSports,
 }: Props) {
   const [selectedItem, setSelectedItem] =
@@ -25,6 +29,8 @@ export default function SportComparisonResult({
   const [matchesError, setMatchesError] = useState("");
 
   const showSportColumn = selectedSports.length > 1;
+
+  const sportsById = new Map(sports.map((sport) => [sport.ID, sport.Name]));
 
   useEffect(() => {
     setSelectedItem(null);
@@ -95,22 +101,23 @@ export default function SportComparisonResult({
       <div className="comparison-table-container">
         <table className="comparison-table">
           <colgroup>
-            <col className="comparison-team-column" />
-            <col className="comparison-team-column" />
-            <col className="comparison-stat-column" />
-            <col className="comparison-stat-column" />
-            <col className="comparison-stat-column" />
-            <col className="comparison-stat-column" />
-            <col className="comparison-stat-column" />
-            <col className="comparison-stat-column" />
-            <col className="comparison-goals-column" />
+            {showSportColumn && <col style={{ width: "90px" }} />}
+            <col style={{ width: "210px" }} />
+            <col style={{ width: "210px" }} />
+            <col style={{ width: "60px" }} />
+            <col style={{ width: "60px" }} />
+            <col style={{ width: "60px" }} />
+            <col style={{ width: "60px" }} />
+            <col style={{ width: "60px" }} />
+            <col style={{ width: "60px" }} />
+            <col style={{ width: "90px" }} />
           </colgroup>
 
           <thead>
             <tr>
-              {showSportColumn && <th style={{ width: 90 }}>Спорт</th>}
-              <th style={{ width: 260 }}>Команда 1</th>
-              <th style={{ width: 260 }}>Команда 2</th>
+              {showSportColumn && <th>Спорт</th>}
+              <th className="comparison-team-column">Команда 1</th>
+              <th className="comparison-team-column">Команда 2</th>
               <th>И</th>
               <th>В</th>
               <th>ВО</th>
@@ -133,9 +140,11 @@ export default function SportComparisonResult({
                   className={selected ? "selected" : ""}
                   onClick={() => void handleRowClick(item)}
                 >
-                  {showSportColumn && <td>{item.sport_name}</td>}
-                  <td>{item.team1}</td>
-                  <td>{item.team2}</td>
+                  {showSportColumn && (
+                    <td>{sportsById.get(item.sport_id) ?? ""}</td>
+                  )}
+                  <td className="comparison-team-column">{item.team1}</td>
+                  <td className="comparison-team-column">{item.team2}</td>
                   <td>{item.total.games}</td>
                   <td>{item.total.wins}</td>
                   <td>{item.total.winsET}</td>
@@ -151,7 +160,7 @@ export default function SportComparisonResult({
 
             <tr className="totals-row">
               {showSportColumn && <td />}
-              <td>Итого</td>
+              <th className="comparison-team-column">Итого</th>
               <td />
               <td>{totals.games}</td>
               <td>{totals.wins}</td>
@@ -219,7 +228,18 @@ export default function SportComparisonResult({
                       <td>{match.teamName1}</td>
                       <td>{match.teamName2}</td>
                       <td
-                        className={getScoreClass(match, selectedItem.team1_id)}
+                        style={{
+                          backgroundColor:
+                            getScoreClass(match, selectedItem.team1_id) ===
+                            "score-win"
+                              ? "#d1fae5"
+                              : getScoreClass(match, selectedItem.team1_id) ===
+                                  "score-loss"
+                                ? "#fef2f2"
+                                : "transparent",
+                          color: "inherit",
+                          fontWeight: "normal",
+                        }}
                       >
                         {match.score}
                       </td>
@@ -229,8 +249,6 @@ export default function SportComparisonResult({
               </table>
             )}
           </div>
-          opponent_comparison/matches?team1_id=1&team2_id=1116. (Причина: в
-          заголовке CORS «Access-Control-Allow-Credentials» ожидалось «true»).
         </aside>
       )}
     </div>

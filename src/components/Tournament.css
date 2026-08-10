@@ -104,6 +104,13 @@
   font-weight: 600;
 }
 
+.matrix-wrapper .scores-table tbody td {
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: #000;
+}
+
 /* =======================
    Header bands
    ======================= */
@@ -563,9 +570,9 @@
 .match-tour,
 .match-team,
 .match-score {
-  color: #6b6375;
-  font-family: inherit;
-  font-size: inherit;
+  color: #000;
+  font-family: Arial, sans-serif;
+  font-size: 12px;
   font-weight: 400;
 }
 

@@ -32,6 +32,8 @@ export const fallbackSummaryCategories: SummaryCategory[] = [
 
 export type SummaryTableRow = {
   place: number;
+  sportId: number;
+
   teamId: number;
   teamName: string;
   territoryName: string;

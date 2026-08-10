@@ -1,6 +1,7 @@
 import "./SummaryTable.css";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import type { SportItem } from "../api/sportsService";
 
 import {
   flexRender,
@@ -23,124 +24,151 @@ declare module "@tanstack/react-table" {
   }
 }
 
-const columns: ColumnDef<SummaryTableRow>[] = [
-  {
-    id: "rowNumber",
-    header: "№",
-    size: 45,
-    meta: { align: "center" },
-    enableColumnFilter: false,
-    enableSorting: false,
-    cell: ({ row }) => row.index + 1,
-  },
-  {
-    accessorKey: "teamName",
-    header: "Команда",
-    size: 220,
-  },
-  {
-    accessorKey: "territoryName",
-    header: "Город/Регион",
-    size: 150,
-  },
-  {
-    accessorKey: "countryName",
-    header: "Страна",
-    size: 120,
-  },
-  {
-    accessorKey: "games",
-    header: "Игры",
-    size: 60,
-    meta: { align: "center" },
-    enableColumnFilter: false,
-  },
-  {
-    accessorKey: "wins",
-    header: "Победы",
-    size: 70,
-    meta: { align: "center" },
-    enableColumnFilter: false,
-  },
-  {
-    accessorKey: "winsET",
-    header: "Победы*",
-    size: 70,
-    meta: { align: "center" },
-    enableColumnFilter: false,
-  },
-  {
-    accessorKey: "draws",
-    header: "Ничьи",
-    size: 65,
-    meta: { align: "center" },
-    enableColumnFilter: false,
-  },
-  {
-    accessorKey: "lossesET",
-    header: "Поражения*",
-    size: 85,
-    meta: { align: "center" },
-    enableColumnFilter: false,
-  },
-  {
-    accessorKey: "losses",
-    header: "Поражения",
-    size: 80,
-    meta: { align: "center" },
-    enableColumnFilter: false,
-  },
-  {
-    accessorKey: "winPercent",
-    header: "Победы %",
-    size: 80,
-    meta: { align: "center" },
-    enableColumnFilter: false,
-  },
-  {
-    accessorKey: "lossPercent",
-    header: "Поражения %",
-    size: 90,
-    meta: { align: "center" },
-    enableColumnFilter: false,
-  },
-  {
-    accessorKey: "goalsFor",
-    header: "Забито",
-    size: 70,
-    meta: { align: "center" },
-    enableColumnFilter: false,
-  },
-  {
-    accessorKey: "goalsAgainst",
-    header: "Пропущено",
-    size: 85,
-    meta: { align: "center" },
-    enableColumnFilter: false,
-  },
-  {
-    accessorKey: "goalDiff",
-    header: "+/-",
-    size: 65,
-    meta: { align: "center" },
-    enableColumnFilter: false,
-  },
-];
-
 type Props = {
   rows: SummaryTableRow[];
+  sports: SportItem[];
+  selectedSports: number[];
   onTeamClick?: (teamId: number, teamName: string) => void;
 };
 
-export default function SummaryTable({ rows, onTeamClick }: Props) {
+export default function SummaryTable({
+  rows,
+  sports,
+  selectedSports,
+  onTeamClick,
+}: Props) {
+  const sportsById = useMemo(
+    () => new Map(sports.map((sport) => [sport.ID, sport.Name])),
+    [sports],
+  );
+
+  const columns = useMemo<ColumnDef<SummaryTableRow>[]>(() => {
+    const result: ColumnDef<SummaryTableRow>[] = [
+      {
+        id: "rowNumber",
+        header: "№",
+        size: 45,
+        meta: { align: "center" },
+        enableColumnFilter: false,
+        enableSorting: false,
+        cell: ({ row }) => row.index + 1,
+      },
+    ];
+
+    if (selectedSports.length > 1) {
+      result.push({
+        id: "sport",
+        header: "Спорт",
+        size: 90,
+        accessorFn: (row) => sportsById.get(row.sportId) ?? "",
+      });
+    }
+
+    result.push(
+      {
+        accessorKey: "teamName",
+        header: "Команда",
+        size: 220,
+      },
+      {
+        accessorKey: "territoryName",
+        header: "Город/Регион",
+        size: 150,
+      },
+      {
+        accessorKey: "countryName",
+        header: "Страна",
+        size: 120,
+      },
+      {
+        accessorKey: "games",
+        header: "Игры",
+        size: 60,
+        meta: { align: "center" },
+        enableColumnFilter: false,
+      },
+      {
+        accessorKey: "wins",
+        header: "Победы",
+        size: 70,
+        meta: { align: "center" },
+        enableColumnFilter: false,
+      },
+      {
+        accessorKey: "winsET",
+        header: "Победы*",
+        size: 70,
+        meta: { align: "center" },
+        enableColumnFilter: false,
+      },
+      {
+        accessorKey: "draws",
+        header: "Ничьи",
+        size: 65,
+        meta: { align: "center" },
+        enableColumnFilter: false,
+      },
+      {
+        accessorKey: "lossesET",
+        header: "Поражения*",
+        size: 85,
+        meta: { align: "center" },
+        enableColumnFilter: false,
+      },
+      {
+        accessorKey: "losses",
+        header: "Поражения",
+        size: 80,
+        meta: { align: "center" },
+        enableColumnFilter: false,
+      },
+      {
+        accessorKey: "winPercent",
+        header: "Победы %",
+        size: 80,
+        meta: { align: "center" },
+        enableColumnFilter: false,
+      },
+      {
+        accessorKey: "lossPercent",
+        header: "Поражения %",
+        size: 90,
+        meta: { align: "center" },
+        enableColumnFilter: false,
+      },
+      {
+        accessorKey: "goalsFor",
+        header: "Забито",
+        size: 70,
+        meta: { align: "center" },
+        enableColumnFilter: false,
+      },
+      {
+        accessorKey: "goalsAgainst",
+        header: "Пропущено",
+        size: 85,
+        meta: { align: "center" },
+        enableColumnFilter: false,
+      },
+      {
+        accessorKey: "goalDiff",
+        header: "+/-",
+        size: 65,
+        meta: { align: "center" },
+        enableColumnFilter: false,
+      },
+    );
+
+    return result;
+  }, [selectedSports.length, sportsById]);
+
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: rows.length || 1,
   });
 
   const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] =
-    useState<ColumnFiltersState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
   const table = useReactTable({
     data: rows,
@@ -160,8 +188,7 @@ export default function SummaryTable({ rows, onTeamClick }: Props) {
   });
 
   const filteredRowsCount = table.getFilteredRowModel().rows.length;
-  const isAllRows =
-    table.getState().pagination.pageSize >= filteredRowsCount;
+  const isAllRows = table.getState().pagination.pageSize >= filteredRowsCount;
 
   return (
     <div className="summary-table-wrap">
@@ -302,11 +329,7 @@ export default function SummaryTable({ rows, onTeamClick }: Props) {
         </button>
 
         <select
-          value={
-            isAllRows
-              ? "all"
-              : table.getState().pagination.pageSize
-          }
+          value={isAllRows ? "all" : table.getState().pagination.pageSize}
           onChange={(e) => {
             table.setPageIndex(0);
 

@@ -49,7 +49,9 @@ export default function Navbar({
   return (
     <>
       <header className="navbar">
-        <div className="logo">Cabinet</div>
+        <button type="button" className="logo" onClick={() => window.close()}>
+          Cabinet
+        </button>
         {pageTitle && <div className="navbar-page-title">{pageTitle}</div>}
         <nav>
           {sports && selectedSports && onToggleSport && (
