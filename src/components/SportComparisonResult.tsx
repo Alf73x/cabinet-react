@@ -70,12 +70,6 @@ export default function SportComparisonResult({
     }
   }
 
-  function handleCloseMatches(): void {
-    setSelectedItem(null);
-    setMatches([]);
-    setMatchesError("");
-    setMatchesLoading(false);
-  }
 
   function getScoreClass(match: ComparisonMatch, team1Id: number): string {
     const [g1, g2] = match.score.split(":").map(Number);
@@ -120,9 +114,9 @@ export default function SportComparisonResult({
               <th className="comparison-team-column">Команда 2</th>
               <th>И</th>
               <th>В</th>
-              <th>ВО</th>
+              <th>В*</th>
               <th>Н</th>
-              <th>ПО</th>
+              <th>П*</th>
               <th>П</th>
               <th>Мячи</th>
             </tr>
@@ -180,23 +174,18 @@ export default function SportComparisonResult({
         <aside className="comparison-matches-container">
           <div className="comparison-matches">
             <div className="comparison-matches-header">
-              <h3>Матчи</h3>
+              <h3 className="comparison-matches-title">
+                Матчи {selectedItem.team1} - {selectedItem.team2}
+              </h3>
 
               <button
                 type="button"
                 className="comparison-matches-close"
-                onClick={handleCloseMatches}
-                title="Закрыть"
+                onClick={() => setSelectedItem(null)}
               >
                 ×
               </button>
             </div>
-
-            <div className="comparison-match-teams">
-              <div>{selectedItem.team1}</div>
-              <div>{selectedItem.team2}</div>
-            </div>
-
             {matchesLoading && (
               <div className="comparison-hint">Загрузка матчей...</div>
             )}

@@ -11,6 +11,7 @@ import TournamentMatchesList from "./TournamentMatchesList";
 type Props = {
   tournamentId: number;
   title?: string;
+  selectedTeamId?: number;
   onTeamClick?: (team: { teamId: number; teamName: string }) => void;
 };
 
@@ -21,6 +22,7 @@ const SHOW_AWAY_MATCHES_KEY = "tournament_show_away_matches";
 export default function Tournament({
   tournamentId,
   title,
+  selectedTeamId,
   onTeamClick,
 }: Props) {
   const [data, setData] = useState<TournamentResponse | null>(
@@ -144,7 +146,6 @@ export default function Tournament({
                     {viewMode === "table1" ? "✓ " : ""}Таблица, стиль 1
                   </button>
 
-
                   <div className="view-popup-separator" />
 
                   <button onClick={() => handleShowAwayMatchesChange(true)}>
@@ -188,7 +189,11 @@ export default function Tournament({
   }
 
   if (data.datatype === 2) {
-    return <TournamentCupTable rows={data.list} />;
+    return (
+      <div className="cup-scroll-wrapper">
+        <TournamentCupTable rows={data.list} selectedTeamId={selectedTeamId} />
+      </div>
+    );
   }
 
   if (data.datatype === 3) {

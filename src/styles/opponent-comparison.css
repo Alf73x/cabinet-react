@@ -6,21 +6,20 @@
 
   overflow: visible;
 
-  color: #172033;
   background: #ffffff;
 }
+
 
 .opponent-comparison-header {
   margin-bottom: 6px;
   border-bottom: 1px solid #d6dbe3;
 }
 
+
 .opponent-comparison-header h1 {
   margin: 0 0 6px;
-
-  font-size: 21px;
-  font-weight: 500;
 }
+
 
 /* Все элементы находятся в одной строке */
 .comparison-toolbar {
@@ -32,6 +31,7 @@
     125px
     auto
     1fr;
+
   align-items: end;
   gap: 6px;
 
@@ -43,6 +43,7 @@
   border-radius: 5px;
 }
 
+
 .comparison-field {
   position: relative;
 
@@ -53,9 +54,9 @@
 
   overflow: visible;
 
-  font-size: 12px;
-  font-weight: 600;
+  font-weight: var(--font-weight-medium);
 }
+
 
 .team-combobox {
   position: relative;
@@ -64,11 +65,13 @@
   min-width: 0;
 }
 
+
 .team-combobox__input-wrapper {
   position: relative;
 
   width: 100%;
 }
+
 
 .team-combobox input {
   box-sizing: border-box;
@@ -76,14 +79,11 @@
   height: 30px;
   padding: 0 28px 0 8px;
 
-  color: #172033;
   background: #ffffff;
   border: 1px solid #aeb7c4;
   border-radius: 3px;
-
-  font: inherit;
-  font-weight: 400;
 }
+
 
 .team-combobox__clear {
   position: absolute;
@@ -105,6 +105,7 @@
   transform: translateY(-50%);
 }
 
+
 .team-combobox__dropdown {
   position: absolute;
   top: calc(100% + 2px);
@@ -113,6 +114,7 @@
   z-index: 5000;
 
   max-height: 500px;
+
   overflow-x: hidden;
   overflow-y: auto;
 
@@ -123,15 +125,16 @@
   box-shadow: 0 5px 14px rgb(0 0 0 / 18%);
 }
 
+
 .team-combobox__option {
   display: block;
+
   box-sizing: border-box;
   width: 100%;
   padding: 7px 9px;
 
   overflow: hidden;
 
-  color: #172033;
   background: #ffffff;
   border: none;
   border-bottom: 1px solid #eef2f7;
@@ -139,8 +142,10 @@
   text-align: left;
   text-overflow: ellipsis;
   white-space: nowrap;
+
   cursor: pointer;
 }
+
 
 .team-combobox__option:hover,
 .team-combobox__option:focus {
@@ -148,12 +153,13 @@
   outline: none;
 }
 
+
 .team-combobox__empty {
   padding: 10px;
 
   color: #64748b;
-  font-size: 13px;
 }
+
 
 .comparison-swap-button {
   width: 30px;
@@ -167,13 +173,16 @@
 
   font-size: 17px;
   line-height: 28px;
+
   cursor: pointer;
 }
+
 
 .comparison-swap-button:disabled {
   opacity: 0.55;
   cursor: default;
 }
+
 
 .comparison-filter-dropdown {
   position: relative;
@@ -181,6 +190,7 @@
   align-self: end;
   justify-self: start;
 }
+
 
 .comparison-filter-trigger {
   display: flex;
@@ -193,24 +203,26 @@
   height: 30px;
   padding: 0 9px;
 
-  color: #172033;
   background: #ffffff;
   border: 1px solid #aeb7c4;
   border-radius: 4px;
 
   white-space: nowrap;
-  font-size: 12px;
+
   cursor: pointer;
 }
+
 
 .comparison-filter-trigger:hover {
   background: #f8fafc;
 }
 
+
 .comparison-filter-arrow {
   color: #64748b;
   font-size: 11px;
 }
+
 
 .comparison-filter-popup {
   position: absolute;
@@ -228,6 +240,7 @@
   box-shadow: 0 6px 18px rgb(0 0 0 / 16%);
 }
 
+
 .comparison-filter-item {
   display: flex;
   align-items: center;
@@ -236,27 +249,29 @@
   width: 100%;
   padding: 7px 10px;
 
-  color: #172033;
   background: transparent;
   border: none;
 
   text-align: left;
   white-space: nowrap;
-  font-size: 12px;
+
   cursor: pointer;
 }
+
 
 .comparison-filter-item:hover {
   background: #edf6ff;
 }
+
 
 .comparison-filter-check {
   width: 14px;
   flex: 0 0 14px;
 
   color: #2563eb;
-  font-weight: 600;
+  font-weight: var(--font-weight-medium);
 }
+
 
 .comparison-start-button {
   display: flex;
@@ -270,25 +285,27 @@
   height: 30px;
   padding: 0 10px;
 
-  color: #172033;
   background: #ffffff;
   border: 1px solid #aeb7c4;
   border-radius: 3px;
 
   white-space: nowrap;
-  font-size: 12px;
+
   cursor: pointer;
 }
+
 
 .comparison-start-button span {
   color: #20934b;
   font-size: 15px;
 }
 
+
 .comparison-start-button:disabled {
   opacity: 0.55;
   cursor: default;
 }
+
 
 .comparison-error {
   margin-top: 8px;
@@ -298,9 +315,8 @@
   background: #fff1f1;
   border: 1px solid #efb7b7;
   border-radius: 4px;
-
-  font-size: 13px;
 }
+
 
 .comparison-hint {
   margin-top: 8px;
@@ -310,9 +326,8 @@
   background: #f8fafc;
   border: 1px solid #d6dbe3;
   border-radius: 4px;
-
-  font-size: 13px;
 }
+
 
 .comparison-results {
   margin-top: 10px;
@@ -323,46 +338,49 @@
   position: relative;
 }
 
+
 .comparison-league-trigger {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	gap: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
 
-	box-sizing: border-box;
-	width: 140px;
-	height: 30px;
-	padding: 0 9px;
+  box-sizing: border-box;
+  width: 140px;
+  height: 30px;
+  padding: 0 9px;
 
-	color: #172033;
-	background: #ffffff;
-	border: 1px solid #aeb7c4;
-	border-radius: 4px;
+  background: #ffffff;
+  border: 1px solid #aeb7c4;
+  border-radius: 4px;
 
-	white-space: nowrap;
-	font-size: 12px;
-	cursor: pointer;
+  white-space: nowrap;
+
+  cursor: pointer;
 }
+
 
 .comparison-league-trigger:hover {
   border-color: #7f8c9c;
   background: #f8fafc;
 }
 
+
 .comparison-league-title {
   color: #687386;
-  font-size: 12px;
 }
+
 
 .comparison-league-value {
   flex: 1;
-  font-size: 12px;
+
   overflow: hidden;
 
   text-align: left;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
 
 .comparison-league-popup {
   position: absolute;
@@ -373,11 +391,13 @@
   min-width: 140px;
   padding: 4px 0;
 
+  background: #ffffff;
   border: 1px solid #b8c2cf;
   border-radius: 4px;
-  background: #ffffff;
+
   box-shadow: 0 4px 12px rgb(0 0 0 / 15%);
 }
+
 
 .comparison-league-item {
   display: flex;
@@ -387,18 +407,19 @@
   width: 100%;
   padding: 7px 10px;
 
-  border: 0;
   background: transparent;
-  color: #1f2937;
-  font-size: 13px;
+  border: 0;
+
   text-align: left;
 
   cursor: pointer;
 }
 
+
 .comparison-league-item:hover {
   background: #edf3f9;
 }
+
 
 .comparison-league-check {
   display: inline-flex;
@@ -409,11 +430,11 @@
   min-width: 16px;
   height: 16px;
 
+  color: #087f5b;
   border: 1px solid #9aa7b5;
   border-radius: 2px;
-  color: #087f5b;
-  font-size: 12px;
 }
+
 
 /*
   На средней ширине всё ещё остаётся на одной строке.
@@ -431,20 +452,21 @@
   }
 }
 
+
 /*
   На мобильной ширине элементы переходят в одну колонку.
-  Этот блок можно удалить, если абсолютно на любой ширине
-  всё должно оставаться в одной строке.
 */
 @media (max-width: 700px) {
   .opponent-comparison-page {
     padding: 10px;
   }
 
+
   .comparison-toolbar {
     grid-template-columns: 1fr;
     align-items: stretch;
   }
+
 
   .comparison-swap-button {
     justify-self: center;
@@ -452,15 +474,18 @@
     transform: rotate(90deg);
   }
 
+
   .comparison-filter-dropdown,
   .comparison-start-button {
     justify-self: stretch;
   }
 
+
   .comparison-filter-trigger,
   .comparison-start-button {
     width: 100%;
   }
+
 
   .comparison-filter-popup {
     right: 0;
@@ -469,5 +494,3 @@
     width: auto;
   }
 }
-
-

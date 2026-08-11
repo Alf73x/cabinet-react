@@ -51,7 +51,12 @@ type GridRow = TeamHistoryItem & {
 };
 
 const columns: ColumnDef<GridRow>[] = [
-  { accessorKey: "Season", header: "Сезон", size: 70 },
+  {
+    accessorKey: "Season",
+    header: "Сезон",
+    size: 70,
+    meta: { className: "sticky-season" },
+  },
   { accessorKey: "Name", header: "Команда", size: 150 },
   { accessorKey: "SeasonName", header: "Турнир", size: 260 },
   {
@@ -65,70 +70,70 @@ const columns: ColumnDef<GridRow>[] = [
     header: "Место",
     size: 140,
     meta: { align: "center", className: "nowrap-column" },
-     enableColumnFilter: false,    
+    enableColumnFilter: false,
   },
   {
     accessorKey: "games",
     header: "И",
     size: 45,
     meta: { align: "center" },
-    enableColumnFilter: false,    
+    enableColumnFilter: false,
   },
   {
     accessorKey: "wins",
     header: "В",
     size: 45,
     meta: { align: "center" },
-    enableColumnFilter: false,    
+    enableColumnFilter: false,
   },
   {
     accessorKey: "winsET",
-    header: "ВО",
+    header: "В*",
     size: 50,
     meta: { align: "center" },
-    enableColumnFilter: false,    
+    enableColumnFilter: false,
   },
   {
     accessorKey: "draws",
     header: "Н",
     size: 45,
     meta: { align: "center" },
-    enableColumnFilter: false,    
+    enableColumnFilter: false,
   },
   {
     accessorKey: "lossesET",
-    header: "ПО",
+    header: "П*",
     size: 50,
     meta: { align: "center" },
-    enableColumnFilter: false,    
+    enableColumnFilter: false,
   },
   {
     accessorKey: "losses",
     header: "П",
     size: 45,
     meta: { align: "center" },
-    enableColumnFilter: false,    
+    enableColumnFilter: false,
   },
   {
     accessorKey: "goalsFor",
     header: "З",
     size: 50,
     meta: { align: "center" },
-    enableColumnFilter: false,    
+    enableColumnFilter: false,
   },
   {
     accessorKey: "goalsAgainst",
     header: "ПР",
     size: 50,
     meta: { align: "center" },
-    enableColumnFilter: false,    
+    enableColumnFilter: false,
   },
   {
     accessorKey: "goalDiff",
     header: "+/-",
     size: 55,
     meta: { align: "center" },
-    enableColumnFilter: false,    
+    enableColumnFilter: false,
   },
 ];
 
@@ -142,14 +147,16 @@ export default function TeamHistoryTable({
       rows.map((row, index) => ({
         ...row,
         gridId: index,
+
         games:
-          row.games ??
-          row.wins + row.winsET + row.draws + row.lossesET + row.losses,
+          row.games > 0
+            ? row.games
+            : row.wins + row.winsET + row.draws + row.lossesET + row.losses,
+
         goalDiff: row.goalsFor - row.goalsAgainst,
       })),
     [rows],
   );
-
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: rows.length || 1,

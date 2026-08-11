@@ -2,9 +2,9 @@
   --bg: #ffffff;
   --header-bg: #f3f3f3;
   --col-num-width: 40px;
+  --stage-col-width: 115px;
   --team-col-width: 180px;
 }
-
 
 
 /* =======================
@@ -18,17 +18,18 @@
   box-sizing: border-box;
 }
 
+
 /* =======================
    Matrix wrapper
    ======================= */
 
 .matrix-wrapper {
-  display: flow-root;
   width: 100%;
   min-width: 0;
   padding: 8px 0;
   box-sizing: border-box;
 }
+
 
 /* =======================
    Matrix scrolling
@@ -36,80 +37,112 @@
 
 .matrix-wrapper .table-scroll {
   position: relative;
-  overflow: auto;
   width: 100%;
   min-width: 0;
-  overflow: auto;
+  max-height: calc(100vh - 240px);
+
+  overflow-x: auto;
+  overflow-y: auto;
 
   scrollbar-width: thin;
   scrollbar-color: rgba(140, 150, 170, 0.35) transparent;
 }
+
 
 .matrix-wrapper .table-scroll::-webkit-scrollbar {
   width: 10px;
   height: 10px;
 }
 
+
 .matrix-wrapper .table-scroll::-webkit-scrollbar-track {
   background: transparent;
 }
 
+
 .matrix-wrapper .table-scroll::-webkit-scrollbar-thumb {
   background: rgba(140, 150, 170, 0.35);
+
   border: 2px solid transparent;
   border-radius: 999px;
+
   background-clip: padding-box;
+
   transition: background 0.2s ease;
 }
 
+
 .matrix-wrapper .table-scroll::-webkit-scrollbar-thumb:hover {
   background: rgba(140, 150, 170, 0.65);
+
   border: 2px solid transparent;
+
   background-clip: padding-box;
 }
+
 
 .matrix-wrapper .table-scroll::-webkit-scrollbar-corner {
   background: transparent;
 }
+
 
 /* =======================
    Matrix table
    ======================= */
 
 .matrix-wrapper .scores-table {
-  width: max-content;
-  min-width: 100%;
-
   border-collapse: separate;
   border-spacing: 0;
 
-  color: #4c4563;
-  font-size: 12px;
+  /* Width is set exactly by TournamentMatrixTable.tsx.
+     This prevents the browser from redistributing column widths. */
+  table-layout: fixed;
 }
+
 
 .matrix-wrapper .scores-table th,
 .matrix-wrapper .scores-table td {
   border-right: 1px solid #e5e7eb;
   border-bottom: 1px solid #e5e7eb;
+
   white-space: nowrap;
+
   box-sizing: border-box;
 }
+
 
 .matrix-wrapper .scores-table thead th {
   height: 24px;
   padding: 0 4px;
+
   background: var(--header-bg);
+
   text-align: center;
   vertical-align: middle;
-  font-weight: 600;
 }
 
-.matrix-wrapper .scores-table tbody td {
-  font-family: Arial, sans-serif;
-  font-size: 12px;
-  font-weight: 400;
-  color: #000;
+
+/* =======================
+   Matrix sticky header
+   ======================= */
+
+.matrix-wrapper .scores-table thead tr:first-child th {
+  position: sticky;
+  top: 0;
+  z-index: 60;
+
+  background: var(--header-bg);
 }
+
+
+.matrix-wrapper .scores-table thead tr:nth-child(2) th {
+  position: sticky;
+  top: 22px;
+  z-index: 55;
+
+  background: var(--header-bg);
+}
+
 
 /* =======================
    Header bands
@@ -122,9 +155,8 @@
 
   text-align: center;
   vertical-align: middle;
-
-  font-weight: 600;
 }
+
 
 /* =======================
    Number column
@@ -140,9 +172,11 @@
   text-align: center !important;
 }
 
+
 .matrix-wrapper .scores-table td.col-num {
   padding: 0 !important;
 }
+
 
 /* =======================
    Team column
@@ -154,19 +188,23 @@
   max-width: var(--team-col-width);
 
   padding: 2px 6px;
+
   line-height: 1.2;
 
   white-space: normal !important;
+
   overflow-wrap: break-word;
   word-break: normal;
 
   vertical-align: middle;
 }
 
+
 .matrix-wrapper .team-col:hover {
   text-decoration: underline;
   cursor: pointer;
 }
+
 
 /* =======================
    Result columns
@@ -179,6 +217,7 @@
 
   text-align: center;
 }
+
 
 .matrix-wrapper .result-col {
   width: 64px;
@@ -194,6 +233,7 @@
   z-index: auto;
 }
 
+
 /* =======================
    Score cells
    ======================= */
@@ -207,26 +247,28 @@
   padding: 0;
 
   min-height: 18px;
-  line-height: 18px;  
-  font-weight: 400;
+  line-height: 18px;
+
   text-align: center;
 }
 
+
 /*
-  Поддерживаются оба варианта:
+   Поддерживаются оба варианта:
 
-  className="score-cell score-win"
-  className="score-cell win"
+   className="score-cell score-win"
+   className="score-cell win"
 
-  Аналогично для loss и draw.
+   Аналогично для loss и draw.
 */
 
 
-
 /* Одиночный счёт заполняет всю высоту ячейки */
+
 .matrix-wrapper .result-col {
   position: relative;
 }
+
 
 .matrix-wrapper .result-col > .score-cell:only-child {
   position: absolute;
@@ -237,8 +279,10 @@
   justify-content: center;
 
   min-height: 0;
+
   line-height: normal;
 }
+
 
 /* =======================
    Matrix states
@@ -248,10 +292,12 @@
   background: #f3f3f3 !important;
 }
 
+
 .matrix-wrapper .scores-table tbody td.sticky-col-1.matrix-highlight,
 .matrix-wrapper .scores-table tbody td.sticky-col-2.matrix-highlight {
   background-color: #eef6ff !important;
 }
+
 
 /* =======================
    Sticky columns
@@ -263,54 +309,77 @@
 .matrix-wrapper .scores-table td.sticky-col-2 {
   position: sticky;
   isolation: isolate;
-  background-color: #fff;
+
+  /* Sticky cells must be fully opaque: otherwise columns moving underneath
+     remain visible through the fixed place/stage/team area. */
+  background: #fff;
+  background-clip: padding-box;
 }
+
 
 .matrix-wrapper .scores-table th.sticky-col-1,
 .matrix-wrapper .scores-table td.sticky-col-1 {
   left: 0;
 }
 
+
 .matrix-wrapper .scores-table th.sticky-col-2,
 .matrix-wrapper .scores-table td.sticky-col-2 {
   left: var(--col-num-width);
+
   box-shadow: 4px 0 6px -4px rgba(0, 0, 0, 0.22);
 }
 
+.matrix-wrapper .scores-table-with-stage th.sticky-col-2,
+.matrix-wrapper .scores-table-with-stage td.sticky-col-2 {
+  left: calc(var(--col-num-width) + var(--stage-col-width));
+}
+
 /* Ячейки тела выше прокручиваемых результатов */
+
 .matrix-wrapper .scores-table tbody td.sticky-col-1,
 .matrix-wrapper .scores-table tbody td.sticky-col-2 {
   z-index: 20;
 }
 
-/* Заголовок выше тела */
-.matrix-wrapper .scores-table thead th.sticky-col-1,
-.matrix-wrapper .scores-table thead th.sticky-col-2 {
-  z-index: 30;
-  background-color: var(--header-bg);
+
+/* Заголовки первых колонок */
+
+.matrix-wrapper .scores-table thead tr:nth-child(2) th.sticky-col-1,
+.matrix-wrapper .scores-table thead tr:nth-child(2) th.sticky-col-2 {
+  top: 22px;
+  z-index: 100;
+
+  background: var(--header-bg);
 }
 
+
 /* Непрозрачная подложка на всю площадь sticky-ячейки */
+
 .matrix-wrapper .scores-table tbody td.sticky-col-1::before,
 .matrix-wrapper .scores-table tbody td.sticky-col-2::before {
   content: "";
+
   position: absolute;
   inset: 0;
   z-index: -1;
+
   background-color: inherit;
 }
 
+
 /* Верхняя объединённая ячейка «Команда» */
-.matrix-wrapper .scores-table thead th.sticky-team-band {
+
+.matrix-wrapper .scores-table thead tr:first-child th.sticky-team-band {
   position: sticky;
+
+  top: 0;
   left: 0;
-  z-index: 40;
+  z-index: 110;
 
-  width: calc(var(--col-num-width) + var(--team-col-width));
-  min-width: calc(var(--col-num-width) + var(--team-col-width));
-  max-width: calc(var(--col-num-width) + var(--team-col-width));
+  background: var(--header-bg) !important;
+  background-clip: padding-box;
 
-  background-color: var(--header-bg) !important;
   box-shadow: 4px 0 6px -4px rgba(0, 0, 0, 0.22);
 }
 
@@ -330,6 +399,7 @@
   box-sizing: border-box;
 }
 
+
 .matrix-wrapper .round-standing-header,
 .matrix-wrapper .round-standing-cell {
   width: 28px;
@@ -344,32 +414,71 @@
   white-space: nowrap;
 }
 
+
 .matrix-wrapper .round-standing-header {
   background: var(--header-bg);
-  font-weight: 600;
 }
+
 
 /* =======================
    Cup stage column
    ======================= */
 
 .matrix-wrapper .stage-col {
-  width: 70px;
-  min-width: 70px;
-  max-width: 90px;
+  width: var(--stage-col-width);
+  min-width: var(--stage-col-width);
+  max-width: var(--stage-col-width);
+
+  padding: 2px 4px;
 
   text-align: center;
-  white-space: nowrap;
+  vertical-align: middle;
+
+  white-space: normal !important;
+  overflow-wrap: anywhere;
+  word-break: normal;
+
+  line-height: 1.2;
 }
+
+.matrix-wrapper .scores-table thead th.stage-col {
+  white-space: nowrap !important;
+}
+
+/* В таблице со стадией колонка «Стадия» тоже фиксируется */
+
+.matrix-wrapper .scores-table-with-stage th.stage-col,
+.matrix-wrapper .scores-table-with-stage td.stage-col {
+  position: sticky;
+  left: var(--col-num-width);
+
+  isolation: isolate;
+  background: #fff;
+  background-clip: padding-box;
+}
+
+
+.matrix-wrapper .scores-table-with-stage tbody td.stage-col {
+  z-index: 20;
+}
+
+
+.matrix-wrapper .scores-table-with-stage thead tr:nth-child(2) th.stage-col {
+  top: 22px;
+  z-index: 100;
+
+  background: var(--header-bg);
+}
+
 
 /* =======================
    Tooltip
    ======================= */
 
 .match-tooltip {
-  font-size: 12px;
   line-height: 1.6;
 }
+
 
 /* =======================
    Tournament header
@@ -381,8 +490,10 @@
   justify-content: space-between;
 
   gap: 12px;
+
   margin-bottom: 6px;
 }
+
 
 .tournament-header h2 {
   min-width: 0;
@@ -390,6 +501,7 @@
 
   overflow-wrap: anywhere;
 }
+
 
 /* =======================
    Tournament options
@@ -400,8 +512,10 @@
   align-items: center;
 
   flex-shrink: 0;
+
   gap: 10px;
 }
+
 
 .view-mode-select {
   height: 34px;
@@ -416,6 +530,7 @@
   font-size: 13px;
 }
 
+
 /* =======================
    View popup
    ======================= */
@@ -423,6 +538,7 @@
 .view-popup {
   position: relative;
 }
+
 
 .view-popup-button {
   height: 34px;
@@ -434,32 +550,41 @@
   background: white;
 
   cursor: pointer;
+
   font-size: 13px;
+
   white-space: nowrap;
 }
+
 
 .view-popup-button:hover {
   background: #f9fafb;
 }
 
+
 .view-popup-menu {
   position: absolute;
+
   top: 38px;
   right: 0;
   z-index: 2000;
 
   min-width: 210px;
+
   padding: 6px;
 
   border: 1px solid #d1d5db;
   border-radius: 10px;
 
   background: white;
+
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
 }
 
+
 .view-popup-menu button {
   width: 100%;
+
   padding: 8px 10px;
 
   border: 0;
@@ -469,20 +594,26 @@
   color: #4c4563;
 
   cursor: pointer;
+
   font-size: 13px;
+
   text-align: left;
 }
+
 
 .view-popup-menu button:hover {
   background: #f3f4f6;
 }
 
+
 .view-popup-separator {
   height: 1px;
+
   margin: 6px 0;
 
   background: #e5e7eb;
 }
+
 
 /* =======================
    Match mode switch
@@ -492,6 +623,7 @@
   display: inline-flex;
 
   gap: 2px;
+
   padding: 3px;
 
   border: 1px solid #e5e7eb;
@@ -499,6 +631,7 @@
 
   background: #f3f4f6;
 }
+
 
 .match-switch button {
   padding: 6px 14px;
@@ -510,6 +643,7 @@
   color: #6b6375;
 
   cursor: pointer;
+
   font-size: 13px;
   font-weight: 500;
 
@@ -519,9 +653,11 @@
     box-shadow 0.2s ease;
 }
 
+
 .match-switch button:hover {
   background: rgba(255, 255, 255, 0.5);
 }
+
 
 .match-switch button.active {
   background: white;
@@ -532,6 +668,7 @@
     0 1px 4px rgba(0, 0, 0, 0.06);
 }
 
+
 /* =======================
    Matches list
    ======================= */
@@ -541,15 +678,17 @@
   min-width: 0;
 
   box-sizing: border-box;
-  font-size: 12px;
 }
+
 
 .matches-list h3 {
   margin: 0 0 8px;
 }
 
+
 .match-row {
   display: grid;
+
   grid-template-columns:
     90px
     60px
@@ -558,52 +697,51 @@
     minmax(120px, 1fr);
 
   align-items: center;
+
   width: 100%;
   min-width: 0;
   min-height: 26px;
 
   border-bottom: 1px solid #e5e7eb;
+
   box-sizing: border-box;
 }
 
-.match-date,
-.match-tour,
-.match-team,
-.match-score {
-  color: #000;
-  font-family: Arial, sans-serif;
-  font-size: 12px;
-  font-weight: 400;
-}
 
 .match-team {
   min-width: 0;
+
   overflow: hidden;
+
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
 
 .match-score {
   padding: 2px 6px;
 
   text-align: center;
-  font-weight: 400;
 }
+
 
 .match-score.score-win,
 .match-score.win {
   color: var(--score-win-color);
 }
 
+
 .match-score.score-loss,
 .match-score.loss {
   color: var(--score-loss-color);
 }
 
+
 .match-score.score-draw,
 .match-score.draw {
   color: var(--score-draw-color);
 }
+
 
 /* =======================
    Matches list header
@@ -615,16 +753,21 @@
   justify-content: space-between;
 
   width: 100%;
+
   margin-bottom: 10px;
+
   gap: 16px;
 
   box-sizing: border-box;
 }
 
+
 .matches-list-header h3 {
   flex-shrink: 0;
+
   margin: 0;
 }
+
 
 /* =======================
    Matches filters
@@ -636,8 +779,10 @@
 
   width: 100%;
   min-width: 0;
+
   gap: 10px;
 }
+
 
 .matches-filters label {
   display: flex;
@@ -646,23 +791,25 @@
   gap: 6px;
 
   color: #555;
+
   font-size: 13px;
+
   white-space: nowrap;
 }
+
 
 .matches-filters select {
   min-width: 220px;
   height: 28px;
+
   padding: 2px 28px 2px 10px;
 
   border: 1px solid #d4dbe5;
   border-radius: 6px;
 
   background: #fff;
-  color: #333;
 
   outline: none;
-  font-size: 13px;
 
   transition:
     border-color 0.15s,
@@ -670,42 +817,172 @@
     background-color 0.15s;
 }
 
+
 .matches-filters select:hover {
   border-color: #b6c2d2;
 }
 
+
 .matches-filters select:focus {
   border-color: #7da2d6;
+
   box-shadow: 0 0 0 3px rgba(125, 162, 214, 0.15);
 }
 
-/* Верхний объединенный заголовок */
-.scores-table .sticky-team-band {
-    position: sticky;
-    left: 0;
-    z-index: 60;
 
-    background: var(--header-bg);
-    box-shadow: 4px 0 6px -4px rgba(0,0,0,.22);
+/* Верхний объединенный заголовок */
+
+.scores-table .sticky-team-band {
+  position: sticky;
+
+  left: 0;
+  z-index: 60;
+
+  background: var(--header-bg);
+
+  box-shadow: 4px 0 6px -4px rgba(0, 0, 0, 0.22);
 }
 
-/* Команды в кубковой таблице */
-.cup-table .cup-team-cell {
+
+/* =======================
+   Cup table
+   ======================= */
+
+.cup-table-wrapper {
+  flex: 1 1 auto;
+  min-height: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  width: 100%;
+}
+
+
+.cup-team-filter {
+  flex: 0 0 auto;
+
+  display: flex;
+  align-items: center;
+
+  padding: 0 0 8px;
+}
+
+
+.cup-team-filter select {
+  width: 260px;
+  max-width: 100%;
+  height: 28px;
+
+  padding: 2px 8px;
+
+  border: 1px solid #d4dbe5;
+  border-radius: 4px;
+
+  background: #fff;
+}
+
+
+.cup-scroll-wrapper {
+  flex: 1 1 auto;
+
+  min-height: 0;
+  width: 100%;
+
+  overflow: auto;
+}
+
+
+.cup-scroll-wrapper .cup-table {
+  width: 100%;
+
+  border-collapse: separate;
+  border-spacing: 0;
+
+  table-layout: fixed;
+}
+
+
+.cup-scroll-wrapper .cup-table th,
+.cup-scroll-wrapper .cup-table td {
+  border-right: 1px solid #e5e7eb;
+  border-bottom: 1px solid #e5e7eb;
+
+  box-sizing: border-box;
+}
+
+
+.cup-scroll-wrapper .cup-table thead th {
+  position: sticky;
+
+  top: 0;
+  z-index: 10;
+
+  height: 24px;
+
+  padding: 0 4px;
+
+  background: var(--header-bg);
+
+  text-align: left;
+  vertical-align: middle;
+}
+
+
+.cup-scroll-wrapper .cup-table tbody td {
+  position: static;
+
+  padding: 4px 6px;
+}
+
+
+/* Column widths */
+
+.cup-col-stage {
+  width: 20%;
+}
+
+
+.cup-col-date {
+  width: 14%;
+}
+
+
+.cup-col-team {
+  width: 26%;
+}
+
+
+.cup-col-score {
+  width: 10%;
+}
+
+
+/* Alignment */
+
+.cup-scroll-wrapper .cup-table .cup-stage-cell {
   text-align: left;
 }
 
-/* Шапка всегда поверх строк */
-.cup-table thead {
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  background: #f7f7f7;
+
+.cup-scroll-wrapper .cup-table .cup-date-cell {
+  text-align: left;
 }
 
-.cup-table thead th {
-  position: static;
-  background: #f7f7f7;
+
+.cup-scroll-wrapper .cup-table .cup-team-cell {
+  text-align: left;
 }
+
+
+.cup-scroll-wrapper .cup-table .cup-score-cell {
+  text-align: center;
+
+  color: var(--text-color);
+
+  font-weight: var(--font-weight-normal);
+}
+
 
 /* =======================
    Mobile
@@ -714,26 +991,20 @@
 @media (max-width: 700px) {
   .tournament-header {
     align-items: flex-start;
+
     gap: 8px;
   }
+
 
   .tournament-header h2 {
     font-size: 20px;
   }
 
+
   .tournament-options {
     gap: 6px;
   }
 
-  .matrix-wrapper .scores-table {
-    font-size: 11px;
-  }
-
-  .matrix-wrapper .team-col {
-    width: 150px;
-    min-width: 150px;
-    max-width: 150px;
-  }
 
   .matrix-wrapper .result-header,
   .matrix-wrapper .result-col {
@@ -742,6 +1013,7 @@
     max-width: 56px;
   }
 
+
   .matches-list {
     width: 100%;
     max-width: none;
@@ -749,26 +1021,33 @@
     overflow-x: auto;
   }
 
+
   .matches-list-header {
     align-items: stretch;
     flex-direction: column;
 
     width: 100%;
+
     gap: 8px;
   }
 
+
   .matches-filters {
     display: grid;
+
     grid-template-columns: 1fr;
 
     width: 100%;
+
     gap: 6px;
   }
+
 
   .matches-filters label {
     width: 100%;
     min-width: 0;
   }
+
 
   .matches-filters select {
     width: 100%;
@@ -777,7 +1056,7 @@
     box-sizing: border-box;
   }
 
- @media (max-width: 700px) {
+
   .match-row {
     grid-template-columns:
       76px
@@ -790,6 +1069,7 @@
     min-width: 0;
   }
 
+
   .match-date,
   .match-tour,
   .match-team,
@@ -797,20 +1077,21 @@
     min-width: 0;
   }
 
+
   .match-team {
     overflow: hidden;
+
     text-overflow: ellipsis;
     white-space: nowrap;
   }
 
+
   .match-score {
     padding: 2px 3px;
   }
-}
+
 
   .view-popup-menu {
     right: 0;
   }
 }
-
-

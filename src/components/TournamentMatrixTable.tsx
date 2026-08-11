@@ -40,6 +40,13 @@ const BASE_STAT_FIELDS = [
   { title: "+/-", field: "diff" },
 ];
 
+const COL_PLACE = 40;
+const COL_STAGE = 115;
+const COL_TEAM = 180;
+const COL_RESULT = 64;
+const COL_ROUND = 28;
+const COL_STAT = 40;
+
 function parseRoundStandings(value?: string) {
   if (!value) {
     return {
@@ -109,6 +116,7 @@ export default function TournamentMatrixTable({
   const teamsById = new Map(teams.map((t) => [t.id, t.name]));
 
   const statFields = BASE_STAT_FIELDS.filter((x) => {
+    if (x.field === "points" && resultOf > 0) return false;
     if (x.field === "otWins") return showWinsOt;
     if (x.field === "draws") return showDraws;
     if (x.field === "otLosses") return showLossesOt;
@@ -189,13 +197,88 @@ export default function TournamentMatrixTable({
     ));
   }
 
+  const fixedColumnsWidth =
+    COL_PLACE + (showStage ? COL_STAGE : 0) + COL_TEAM;
+
+  const resultColumnsWidth =
+    showResultBand ? visibleColumnTeams.length * COL_RESULT : 0;
+
+  const roundColumnsWidth =
+    showRoundStandings ? rounds.length * COL_ROUND : 0;
+
+  const statBlocksCount =
+    1 + (showHomeStats ? 1 : 0) + (showAwayStats ? 1 : 0);
+
+  const statColumnsWidth =
+    statFields.length * COL_STAT * statBlocksCount;
+
+  const tableWidth =
+    fixedColumnsWidth +
+    resultColumnsWidth +
+    roundColumnsWidth +
+    statColumnsWidth;
+
   if (teams.length === 0) {
     return <div>Нет данных</div>;
   }
 
   return (
     <div className="table-scroll">
-      <table className="scores-table">
+      <table
+        className={cx("scores-table", showStage && "scores-table-with-stage")}
+        style={{
+          width: `${tableWidth}px`,
+          minWidth: `${tableWidth}px`,
+          tableLayout: "fixed",
+        }}
+      >
+        <colgroup>
+          <col style={{ width: `${COL_PLACE}px` }} />
+
+          {showStage && <col style={{ width: `${COL_STAGE}px` }} />}
+
+          <col style={{ width: `${COL_TEAM}px` }} />
+
+          {showResultBand &&
+            visibleColumnTeams.map((team) => (
+              <col
+                key={`result-col-${team.id}`}
+                style={{ width: `${COL_RESULT}px` }}
+              />
+            ))}
+
+          {showRoundStandings &&
+            rounds.map((round) => (
+              <col
+                key={`round-col-${round}`}
+                style={{ width: `${COL_ROUND}px` }}
+              />
+            ))}
+
+          {statFields.map((item) => (
+            <col
+              key={`total-col-${item.field}`}
+              style={{ width: `${COL_STAT}px` }}
+            />
+          ))}
+
+          {showHomeStats &&
+            statFields.map((item) => (
+              <col
+                key={`home-col-${item.field}`}
+                style={{ width: `${COL_STAT}px` }}
+              />
+            ))}
+
+          {showAwayStats &&
+            statFields.map((item) => (
+              <col
+                key={`away-col-${item.field}`}
+                style={{ width: `${COL_STAT}px` }}
+              />
+            ))}
+        </colgroup>
+
         <thead>
           <tr>
             <th

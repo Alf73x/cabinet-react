@@ -1,0 +1,112 @@
+:root {
+  /* Font */
+  --font-main: Arial, sans-serif;
+
+  /* Sizes */
+  --font-size-small: 11px;
+  --font-size-normal: 12px;
+  --font-size-medium: 14px;
+  --font-size-header: 16px;
+  --font-size-big-header: 22px;
+
+  --font-size-navbar: 15px;
+  --font-size-navbar-dropdown: 14px;
+  --font-size-logo: 16px;
+
+  /* Weights */
+  --font-weight-normal: 400;
+  --font-weight-medium: 600;
+  --font-weight-bold: 700;
+
+  /* Colors */
+  --text-color: #30343b;
+  --header-color: #111827;
+}
+
+/* =======================
+   Base
+   ======================= */
+
+html,
+body,
+#root {
+  font-family: var(--font-main);
+  font-size: var(--font-size-normal);
+  font-weight: var(--font-weight-normal);
+  color: var(--text-color);
+}
+
+
+.navbar {
+  font-size: var(--font-size-navbar);
+}
+
+/* =======================
+   Controls
+   ======================= */
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+
+/* =======================
+   Tables
+   ======================= */
+
+table {
+  font: inherit;
+  color: inherit;
+}
+
+table td {
+  font-weight: var(--font-weight-normal);
+}
+
+table th {
+  font-weight: var(--font-weight-medium);
+}
+
+
+/* =======================
+   Headers
+   ======================= */
+
+h1 {
+  font-size: var(--font-size-big-header);
+  font-weight: var(--font-weight-bold);
+  color: var(--header-color);
+}
+
+h2 {
+  font-size: var(--font-size-header);
+  font-weight: var(--font-weight-bold);
+  color: var(--header-color);
+}
+
+h3 {
+  font-size: var(--font-size-medium);
+  font-weight: var(--font-weight-bold);
+  color: var(--header-color);
+}
+
+
+button,
+input,
+select,
+textarea {
+  font-family: var(--font-main);
+  font-size: var(--font-size-normal);
+  font-weight: var(--font-weight-normal);
+  color: var(--text-color);
+}
+
+select option {
+  color: var(--text-color);
+}
+
+

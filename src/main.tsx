@@ -1,3 +1,4 @@
+import "./styles/typography.css";
 import "./styles/common.css";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";

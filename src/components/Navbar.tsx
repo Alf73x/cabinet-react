@@ -85,7 +85,7 @@ export default function Navbar({
               <div className="navbar-dropdown-content">
                 <button
                   type="button"
-                  disabled={!isAuthenticated}
+                 /* disabled={!isAuthenticated} RT:later */
                   title={isAuthenticated ? undefined : "Требуется авторизация"}
                   onClick={() =>
                     window.open(
@@ -100,6 +100,7 @@ export default function Navbar({
 
                 <button
                   type="button"
+                  /* disabled={!isAuthenticated}  RT:later*/
                   className="navbar-menu-item"
                   onClick={() => {
                     window.open(

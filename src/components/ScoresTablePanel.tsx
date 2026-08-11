@@ -70,24 +70,31 @@ export default function ScoresTablePanel({ teamId, seasonId }: Props) {
         </thead>
 
         <tbody>
-          {rows.map((row, index) => (
-            <tr key={`${row.date}-${row.teamId1}-${row.teamId2}-${index}`}>
-              <td className="date-cell">{formatDate(row.date)}</td>
+          {rows.map((row, index) => {
+            const side =
+              Number(row.teamId1) === Number(teamId)
+                ? "left"
+                : Number(row.teamId2) === Number(teamId)
+                  ? "right"
+                  : null;
+            return (
+              <tr key={`${row.date}-${row.teamId1}-${row.teamId2}-${index}`}>
+                <td className="date-cell">{formatDate(row.date)}</td>
 
-              <td className="team-name-cell">{row.teamName1}</td>
+                <td className="team-name-cell">{row.teamName1}</td>
 
-              <td className="team-name-cell">{row.teamName2}</td>
+                <td className="team-name-cell">{row.teamName2}</td>
 
-              <td
-                className={`score-cell ${getScoreClass(
-                  row.score,
-                  row.teamId1 === teamId ? "left" : "right",
-                )}`}
-              >
-                {row.score}
-              </td>
-            </tr>
-          ))}
+                <td
+                  className={`score-cell ${
+                    side ? getScoreClass(row.score, side) : ""
+                  }`}
+                >
+                  {row.score}
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>

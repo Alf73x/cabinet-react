@@ -9,21 +9,40 @@
 
   color: #ffffff;
   background: #1f2937;
-}
-.logo {
-  flex-shrink: 0;
+
+  font-size: var(--font-size-navbar);
 }
 
+
+/* Cabinet */
+.logo {
+  flex-shrink: 0;
+
+  border: 0;
+  padding: 0;
+
+  background: transparent;
+  color: inherit;
+
+  font-size: var(--font-size-logo);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+}
+
+
+/* Links */
 .navbar a {
   color: white;
   text-decoration: none;
-  font-weight: 600;
+  font-weight: var(--font-weight-normal);
 }
 
 .navbar a:hover {
   text-decoration: underline;
 }
 
+
+/* Link-style buttons */
 .navbar-link-button {
   padding: 0;
 
@@ -31,8 +50,7 @@
   background: transparent;
   border: none;
 
-  font: inherit;
-  font-weight: 600;
+  font-weight: var(--font-weight-normal);
   cursor: pointer;
 }
 
@@ -40,6 +58,8 @@
   color: #cbd5e1;
 }
 
+
+/* User */
 .user-menu {
   display: flex;
   align-items: center;
@@ -48,9 +68,11 @@
 
 .user-name {
   color: white;
-  font-weight: 600;
+  font-weight: var(--font-weight-normal);
 }
 
+
+/* Navigation */
 .navbar nav {
   display: flex;
   align-items: center;
@@ -59,6 +81,8 @@
   margin-left: auto;
 }
 
+
+/* Sport / Tools / User menu buttons */
 .navbar-menu-button {
   padding: 4px 0;
 
@@ -66,8 +90,8 @@
   background: transparent;
   border: none;
 
-  font: inherit;
-  font-weight: 600;
+  font-size: inherit;
+  font-weight: var(--font-weight-normal);
   cursor: pointer;
 }
 
@@ -75,6 +99,8 @@
   color: #cbd5e1;
 }
 
+
+/* Dropdown */
 .navbar-dropdown {
   position: relative;
   display: inline-block;
@@ -120,8 +146,9 @@
   text-align: left;
   white-space: nowrap;
 
-  font: inherit;
-  font-size: 14px;
+  font-size: var(--font-size-navbar-dropdown);
+  font-weight: var(--font-weight-normal);
+
   cursor: pointer;
 }
 
@@ -134,6 +161,8 @@
   cursor: not-allowed;
 }
 
+
+/* Central page title */
 .navbar-page-title {
   position: absolute;
   left: 50%;
@@ -141,18 +170,9 @@
 
   color: #ffffff;
 
-  font-size: 22px;
-  font-weight: 500;
+  font-size: var(--font-size-big-header);
+  font-weight: var(--font-weight-medium);
 
   white-space: nowrap;
   pointer-events: none;
-}
-
-.logo {
-  border: 0;
-  padding: 0;
-  background: transparent;
-  color: inherit;
-  font: inherit;
-  cursor: pointer;
 }

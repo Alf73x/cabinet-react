@@ -219,7 +219,9 @@ body,
 }
 
 .comparison-matches h3 {
-	margin: 0;
+  margin: 0;
+  font-size: var(--font-size-normal);
+  font-weight: var(--font-weight-medium);
 }
 
 .comparison-matches-close {
@@ -298,6 +300,44 @@ body,
   display: none;
 }
 
+
+/* =======================
+   Comparison matches typography
+   ======================= */
+
+.comparison-matches {
+  font-family: var(--font-main);
+  font-size: var(--font-size-normal);
+  font-weight: var(--font-weight-normal);
+  color: var(--text-color);
+}
+
+.comparison-matches-table {
+  font-family: var(--font-main);
+  font-size: var(--font-size-normal);
+  font-weight: var(--font-weight-normal);
+  color: var(--text-color);
+}
+
+.comparison-matches-table td {
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: var(--font-weight-normal);
+  color: inherit;
+}
+
+.comparison-matches-table th {
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: var(--font-weight-medium);
+  color: var(--header-color);
+}
+
+.comparison-match-teams {
+  font-size: var(--font-size-normal);
+  font-weight: var(--font-weight-medium);
+}
+
 /*
   На узком экране правая панель переходит вниз,
   а страница снова получает обычный вертикальный скролл.
@@ -343,3 +383,4 @@ body,
     width: auto;
   }
 }
+

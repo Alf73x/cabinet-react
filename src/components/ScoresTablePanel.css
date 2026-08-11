@@ -19,7 +19,6 @@
   margin-bottom: 8px;
   flex-shrink: 0;
 
-  font-size: 14px;
   line-height: 1.35;
 }
 
@@ -27,9 +26,8 @@
   flex: 1;
   min-width: 0;
 
-  font-size: 15px;
-  font-weight: 600;
-  color: #2f3745;
+  font-size: var(--font-size-normal);
+  font-weight: var(--font-weight-medium);
 
   white-space: normal;
   overflow-wrap: anywhere;
@@ -42,7 +40,6 @@
   background: transparent;
 
   cursor: pointer;
-  font-size: 18px;
 }
 
 .close-scores-btn:hover {
@@ -64,22 +61,20 @@
 
   border-collapse: collapse;
   table-layout: fixed;
-
-  font-size: 12px;
 }
 
 /* Fixed-width columns */
 .scores-col-date {
-   width: 22%;
+  width: 22%;
 }
 
 .scores-col-score {
-    width: 16%;
+  width: 16%;
 }
 
 /* Two team columns share the remaining space */
 .scores-col-team {
-   width: auto;
+  width: auto;
 }
 
 .scores-table th,
@@ -102,8 +97,6 @@
   z-index: 2;
 
   background: #fafbfc;
-  color: #4b5563;
-  font-weight: 600;
 
   border-bottom: 1px solid #e5e9ef;
 }
@@ -133,7 +126,6 @@
   overflow-wrap: anywhere;
   word-break: break-word;
   line-height: 1.2;
-  
 }
 
 .scores-table td.score-cell {
@@ -141,11 +133,9 @@
   padding: 3px 4px !important;
   text-align: center !important;
   vertical-align: middle !important;
-  font-weight: 400;
   white-space: normal;
   word-break: break-word;
 }
-
 
 /* Modern scrollbar */
 .scores-table-content {
@@ -179,11 +169,8 @@
   background: transparent;
 }
 
-.scores-table tbody td {
-  font-family: Arial, sans-serif;
-  font-size: 12px;
-  font-weight: 400;
-  color: #444;
+.scores-table td.score-cell {
+  color: var(--text-color) !important;
 }
 
 @media (max-width: 700px) {
@@ -203,10 +190,6 @@
     width: calc((100% - 116px) / 2);
   }
 
-  .scores-table {
-    font-size: 11px;
-  }
-
   .scores-table th,
   .scores-table td {
     padding: 3px;
@@ -216,6 +199,3 @@
     line-height: 1.2;
   }
 }
-
-
-
