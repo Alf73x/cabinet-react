@@ -25,20 +25,28 @@ function parseNumericScore(score: string): [number, number] | null {
   return [Number(match[1]), Number(match[2])];
 }
 
-function getLeftSideResult(score: string): "win" | "loss" | "draw" | null {
+function getLeftSideResult(
+  score: string,
+): "win" | "loss" | "draw" | null {
   const cleanScore = normalizeScore(score);
 
   if (cleanScore === "+:-") return "win";
   if (cleanScore === "-:+") return "loss";
   if (cleanScore === "-:-" || cleanScore === "?:?") return null;
 
-  const numericScore = parseNumericScore(cleanScore);
+  const matches = [...cleanScore.matchAll(/(\d+)\s*:\s*(\d+)/g)];
 
-  if (!numericScore) {
+  if (matches.length === 0) {
     return null;
   }
 
-  const [leftScore, rightScore] = numericScore;
+  // Если есть дополнительный счёт:
+  // 0:0 (пен. 2:4) -> используем 2:4
+  // Иначе используется обычный счёт.
+  const lastMatch = matches[matches.length - 1];
+
+  const leftScore = Number(lastMatch[1]);
+  const rightScore = Number(lastMatch[2]);
 
   if (leftScore > rightScore) return "win";
   if (leftScore < rightScore) return "loss";

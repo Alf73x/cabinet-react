@@ -1,9 +1,29 @@
+.territory-tables {
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.teams-table-panel {
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+
+  display: flex;
+  flex-direction: column;
+}
+
 .teams-table-wrap {
+  flex: 1 1 auto;
+
   height: 100%;
   width: 100%;
   min-width: 0;
+  min-height: 0;
+
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 
   font-family: Arial, sans-serif;
   font-size: 12px;
@@ -12,8 +32,9 @@
 }
 
 .teams-table-scroll {
-  flex: 1;
+  flex: 1 1 auto;
   min-height: 0;
+
   overflow: auto;
   position: relative;
 }
@@ -54,18 +75,18 @@
   vertical-align: top;
 }
 
-.teams-table tbody tr:hover {
-  background: #f8f9fb;
-}
-
-.teams-table thead th {
+.teams-table thead {
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: 20;
+
   background: #f7f7f7;
 }
 
-
+.teams-table thead th {
+  position: static;
+  background: #f7f7f7;
+}
 
 .teams-table tbody tr {
   cursor: pointer;
@@ -77,11 +98,14 @@
 
 .teams-pagination {
   height: 42px;
+
   display: flex;
   align-items: center;
   gap: 8px;
-  border-top: 1px solid #ddd;
+
   padding: 0 8px;
+  border-top: 1px solid #ddd;
+
   flex-shrink: 0;
 }
 
@@ -105,10 +129,8 @@
 
 .nowrap-column {
   white-space: nowrap !important;
-
-  white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;  
+  text-overflow: ellipsis;
 }
 
 .clickable-team {

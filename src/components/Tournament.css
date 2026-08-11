@@ -689,6 +689,24 @@
     box-shadow: 4px 0 6px -4px rgba(0,0,0,.22);
 }
 
+/* Команды в кубковой таблице */
+.cup-table .cup-team-cell {
+  text-align: left;
+}
+
+/* Шапка всегда поверх строк */
+.cup-table thead {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: #f7f7f7;
+}
+
+.cup-table thead th {
+  position: static;
+  background: #f7f7f7;
+}
+
 /* =======================
    Mobile
    ======================= */

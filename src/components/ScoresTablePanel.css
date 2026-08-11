@@ -70,16 +70,16 @@
 
 /* Fixed-width columns */
 .scores-col-date {
-  width: 72px;
+   width: 22%;
 }
 
 .scores-col-score {
-  width: 50px;
+    width: 16%;
 }
 
 /* Two team columns share the remaining space */
 .scores-col-team {
-  width: calc((100% - 122px) / 2);
+   width: auto;
 }
 
 .scores-table th,
@@ -126,8 +126,13 @@
 
 .score-cell,
 .score-cell-header {
-  white-space: nowrap;
   text-align: center !important;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  line-height: 1.2;
   
 }
 
@@ -137,7 +142,8 @@
   text-align: center !important;
   vertical-align: middle !important;
   font-weight: 400;
-  white-space: nowrap;
+  white-space: normal;
+  word-break: break-word;
 }
 
 
