@@ -19,6 +19,38 @@ const tournamentCache = new Map<number, TournamentResponse>();
 const VIEW_MODE_KEY = "tournament_view_mode";
 const SHOW_AWAY_MATCHES_KEY = "tournament_show_away_matches";
 
+type ExtraTextProps = {
+  infoText?: string;
+  commentText?: string;
+};
+
+function TournamentExtraText({ infoText, commentText }: ExtraTextProps) {
+  const hasInfo = !!infoText?.trim();
+  const hasComment = !!commentText?.trim();
+
+  if (!hasInfo && !hasComment) {
+    return null;
+  }
+
+  return (
+    <div className="tournament-extra-texts">
+      {hasInfo && (
+        <div className="tournament-extra-text">
+          <div className="tournament-extra-title">Информация</div>
+          <div className="tournament-extra-content">{infoText}</div>
+        </div>
+      )}
+
+      {hasComment && (
+        <div className="tournament-extra-text">
+          <div className="tournament-extra-title">Комментарии</div>
+          <div className="tournament-extra-content">{commentText}</div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function Tournament({
   tournamentId,
   title,
@@ -176,6 +208,11 @@ export default function Tournament({
           />
         </div>
 
+        <TournamentExtraText
+          infoText={data.infoText}
+          commentText={data.commentText}
+        />
+
         <div className="matches-wrapper">
           <TournamentMatchesList
             data={{
@@ -184,20 +221,39 @@ export default function Tournament({
             }}
           />
         </div>
+
       </>
     );
   }
 
   if (data.datatype === 2) {
     return (
-      <div className="cup-scroll-wrapper">
-        <TournamentCupTable rows={data.list} selectedTeamId={selectedTeamId} />
-      </div>
+      <>
+        <div className="cup-scroll-wrapper">
+          <TournamentCupTable
+            rows={data.list}
+            selectedTeamId={selectedTeamId}
+          />
+        </div>
+
+        <TournamentExtraText
+          infoText={data.infoText}
+          commentText={data.commentText}
+        />
+      </>
     );
   }
-
   if (data.datatype === 3) {
-    return <TournamentPlainTextView rows={data.list} />;
+    return (
+      <>
+        <TournamentPlainTextView rows={data.list} />
+
+        <TournamentExtraText
+          infoText={data.infoText}
+          commentText={data.commentText}
+        />
+      </>
+    );
   }
 
   return <div>Неизвестный тип данных</div>;

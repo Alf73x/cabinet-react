@@ -14,17 +14,6 @@ function normalizeScore(score: string): string {
     .trim();
 }
 
-function parseNumericScore(score: string): [number, number] | null {
-  const cleanScore = normalizeScore(score);
-  const match = cleanScore.match(/^(\d+)\s*:\s*(\d+)$/);
-
-  if (!match) {
-    return null;
-  }
-
-  return [Number(match[1]), Number(match[2])];
-}
-
 function getLeftSideResult(
   score: string,
 ): "win" | "loss" | "draw" | null {

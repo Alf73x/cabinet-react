@@ -1,0 +1,7 @@
+services:
+  cabinet-react:
+    build: .
+    container_name: cabinet-react
+    restart: always
+    ports:
+      - "8080:80"

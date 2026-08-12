@@ -18,6 +18,8 @@ import Navbar from "../components/Navbar";
 
 import { useSports } from "../context/SportsContext";
 
+import HomePage from "./HomePage";
+
 const MOBILE_WIDTH = 768;
 const TERRITORY_SELECTED_KEY = "territory-selected-item";
 const ACTIVE_ITEM_KEY = "active-main-item";
@@ -265,7 +267,7 @@ function MainPage() {
         ← Назад
       </button>
 
-      {!selectedItem && <h5>Главная страница</h5>}
+      {!selectedItem && <HomePage />}
 
       {selectedItem?.type === "season" && (
         <Tournament
@@ -365,6 +367,10 @@ function MainPage() {
         sports={sports}
         selectedSports={selectedSports}
         onToggleSport={toggleSport}
+        onLogoClick={() => {
+          setSelectedItem(null);
+          setSelectedTeamRow(null);
+        }}
       />
 
       <div className="layout">

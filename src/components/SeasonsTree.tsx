@@ -164,49 +164,6 @@ function buildSeasonsTree(
   });
 }
 
-function findTreeItem(items: TreeItem[], itemId: string): TreeItem | null {
-  for (const item of items) {
-    if (item.id === itemId) {
-      return item; // Нужный узел найден
-    }
-
-    if (item.children) {
-      // Продолжаем поиск во вложенных элементах
-
-      const foundItem = findTreeItem(item.children, itemId);
-
-      if (foundItem) {
-        return foundItem;
-      }
-    }
-  }
-
-  return null; // Узел с таким ID не найден
-}
-
-function findFirstLeafId(item: TreeItem): string {
-  if (!item.children || item.children.length === 0) {
-    return item.id; // Это конечный турнир
-  }
-
-  return findFirstLeafId(item.children[0]); // Продолжаем идти по первому ребёнку
-}
-
-// Ищем детей по id.
-// Если узел не найден, или у него нет детей — возвращаем null
-function findFirstChildId(
-  items: TreeItem[],
-  parentId: string,
-): string | null {
-  const node = findTreeItem(items, parentId); // Ищем узел во всём дереве
-
-  if (!node || !node.children || node.children.length === 0) {
-    return null; // Узел не найден или не имеет детей
-  }
-
-  return findFirstLeafId(node.children[0]); // Ищем первый конечный турнир
-}
-
 function findParentId(
   items: TreeItem[],
   childId: string,

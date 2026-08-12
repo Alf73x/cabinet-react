@@ -6,6 +6,7 @@ import { getScoreBackgroundClass } from "../utils/scoreColor";
 
 type Props = {
   rows: TournamentCupMatch[];
+  selectedTeamId?: number;
 };
 
 function formatDate(value: string) {
@@ -15,7 +16,7 @@ function formatDate(value: string) {
 }
 
 export default function TournamentCupTable({ rows }: Props) {
-  const safeRows = rows ?? [];
+  const safeRows = rows ?? []; 
 
   const [filterTeamId, setFilterTeamId] = useState<number | null>(null);
 

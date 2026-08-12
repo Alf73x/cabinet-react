@@ -84,16 +84,22 @@ export type TournamentResponse =
       resultOf: number;
       points: TournamentPoints;
       roundStandings?: string;
+      infoText: string;
+      commentText: string;
       list: TournamentMatrix[];
     }
   | {
       status: "OK";
       datatype: 2;
+      infoText: string;
+      commentText: string;
       list: TournamentCupMatch[];
     }
   | {
       status: "OK";
       datatype: 3;
+      infoText: string;
+      commentText: string;
       list: TournamentPlainText[];
     };
 

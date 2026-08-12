@@ -19,6 +19,7 @@ type Props = {
   pageTitle?: string;
   showTools?: boolean;
   showUser?: boolean;
+  onLogoClick?: () => void;
 };
 
 export default function Navbar({
@@ -28,6 +29,7 @@ export default function Navbar({
   pageTitle,
   showTools = true,
   showUser = true,
+  onLogoClick,
 }: Props) {
   const navigate = useNavigate();
 
@@ -49,7 +51,11 @@ export default function Navbar({
   return (
     <>
       <header className="navbar">
-        <button type="button" className="logo" onClick={() => window.close()}>
+        <button
+          type="button"
+          className="logo"
+          onClick={onLogoClick ?? (() => window.close())}
+        >
           Cabinet
         </button>
         {pageTitle && <div className="navbar-page-title">{pageTitle}</div>}
@@ -85,7 +91,7 @@ export default function Navbar({
               <div className="navbar-dropdown-content">
                 <button
                   type="button"
-                 /* disabled={!isAuthenticated} RT:later */
+                  /* disabled={!isAuthenticated} RT:later */
                   title={isAuthenticated ? undefined : "Требуется авторизация"}
                   onClick={() =>
                     window.open(

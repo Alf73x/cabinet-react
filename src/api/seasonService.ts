@@ -72,14 +72,9 @@ export async function getSeasons(
 
   const query = params.toString();
 
-  const url = query
-    ? `/seasons?${query}`
-    : "/seasons";
+  const url = query ? `/seasons?${query}` : "/seasons";
 
   const data = await apiGet<ApiResponse<SeasonItem>>(url);
 
-console.log("getSeasons url:", url);
-console.log("getSeasons response:", data);
-
-  return data.list; // ВАЖНО
+  return data.list ?? [];
 }
