@@ -7,11 +7,14 @@ import TournamentMatrixTable from "./TournamentMatrixTable";
 import TournamentCupTable from "./TournamentCupTable";
 import TournamentPlainTextView from "./TournamentPlainTextView";
 import TournamentMatchesList from "./TournamentMatchesList";
+import LoadingPanel from "./LoadingPanel";
+import BackButton from "./BackButton";
 
 type Props = {
   tournamentId: number;
   title?: string;
   selectedTeamId?: number;
+  onBack?: () => void;
   onTeamClick?: (team: { teamId: number; teamName: string }) => void;
 };
 
@@ -36,15 +39,16 @@ function TournamentExtraText({ infoText, commentText }: ExtraTextProps) {
     <div className="tournament-extra-texts">
       {hasInfo && (
         <div className="tournament-extra-text">
-          <div className="tournament-extra-title">Информация</div>
           <div className="tournament-extra-content">{infoText}</div>
         </div>
       )}
 
       {hasComment && (
         <div className="tournament-extra-text">
-          <div className="tournament-extra-title">Комментарии</div>
-          <div className="tournament-extra-content">{commentText}</div>
+          <div className="tournament-extra-content tournament-comment">
+            <span className="tournament-comment-icon">⚠</span>
+            <span>{commentText}</span>
+          </div>
         </div>
       )}
     </div>
@@ -55,6 +59,7 @@ export default function Tournament({
   tournamentId,
   title,
   selectedTeamId,
+  onBack,
   onTeamClick,
 }: Props) {
   const [data, setData] = useState<TournamentResponse | null>(
@@ -99,6 +104,18 @@ export default function Tournament({
     }
   }
 
+  function renderTournamentHeader() {
+    return (
+      <div className="tournament-header">
+        <div className="tournament-title-row">
+          {onBack && <BackButton className="mobile-only" onClick={onBack} />}
+
+          <h2>{title || "Турнир"}</h2>
+        </div>
+      </div>
+    );
+  }
+
   useEffect(() => {
     const cachedData = tournamentCache.get(tournamentId);
 
@@ -137,7 +154,9 @@ export default function Tournament({
     };
   }, [tournamentId]);
 
-  if (loading) return <div>Загрузка...</div>;
+  if (loading) {
+    return <LoadingPanel />;
+  }
   if (error) return <div>Ошибка: {error}</div>;
   if (!data) return null;
 
@@ -147,7 +166,11 @@ export default function Tournament({
     return (
       <>
         <div className="tournament-header">
-          <h2>{title || "Турнир"}</h2>
+          <div className="tournament-title-row">
+            {onBack && <BackButton className="mobile-only" onClick={onBack} />}
+
+            <h2>{title || "Турнир"}</h2>
+          </div>
 
           {showViewPopup && (
             <div className="view-popup">
@@ -221,7 +244,6 @@ export default function Tournament({
             }}
           />
         </div>
-
       </>
     );
   }
@@ -229,6 +251,8 @@ export default function Tournament({
   if (data.datatype === 2) {
     return (
       <>
+        {renderTournamentHeader()}
+
         <div className="cup-scroll-wrapper">
           <TournamentCupTable
             rows={data.list}
@@ -246,6 +270,8 @@ export default function Tournament({
   if (data.datatype === 3) {
     return (
       <>
+        {renderTournamentHeader()}
+
         <TournamentPlainTextView rows={data.list} />
 
         <TournamentExtraText
@@ -255,6 +281,5 @@ export default function Tournament({
       </>
     );
   }
-
   return <div>Неизвестный тип данных</div>;
 }

@@ -11,3 +11,27 @@ body,
   overflow: hidden;
 }
 
+:root {
+  --sc-logo-s: #ffffff;
+  --sc-logo-c: #168cff;
+}
+
+[data-theme="light"] {
+  --sc-logo-s: #172033;
+  --sc-logo-c: #168cff;
+}
+
+[data-theme="dark"] {
+  --sc-logo-s: #ffffff;
+  --sc-logo-c: #2aa7ff;
+}
+
+.page-title-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.page-title-row h2 {
+  margin: 0;
+}

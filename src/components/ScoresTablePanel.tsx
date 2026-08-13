@@ -2,6 +2,7 @@ import "./ScoresTablePanel.css";
 import { useEffect, useState } from "react";
 import { getScores, type ScoreRow } from "../api/scoresService";
 import { getScoreClass } from "../utils/scoreColor";
+import LoadingPanel from "./LoadingPanel";
 
 type Props = {
   teamId: number | null;
@@ -43,7 +44,7 @@ export default function ScoresTablePanel({ teamId, seasonId }: Props) {
   }
 
   if (loading) {
-    return <div className="scores-table-content">Загрузка...</div>;
+    return <LoadingPanel />;
   }
 
   if (error) {

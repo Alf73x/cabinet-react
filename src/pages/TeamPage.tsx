@@ -14,6 +14,7 @@ import ScoresTablePanel from "../components/ScoresTablePanel";
 import TeamHistoryTable, {
   type TeamHistoryItem,
 } from "../components/TeamHistoryTable";
+import LoadingPanel from "../components/LoadingPanel";
 
 export default function TeamPage() {
   const { teamId } = useParams<{ teamId: string }>();
@@ -87,7 +88,7 @@ return (
     <main className="content team-page-content">
       <h2 className="team-page-title">{teamInfo?.name ?? ""}</h2>
 
-      {loading && <div>Загрузка...</div>}
+      {loading && <LoadingPanel />}
 
       {error && <div>Ошибка: {error}</div>}
 

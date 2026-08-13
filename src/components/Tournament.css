@@ -501,7 +501,15 @@
 
   overflow-wrap: anywhere;
 }
+.tournament-title-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
 
+.tournament-title-row h2 {
+  margin: 0;
+}
 
 /* =======================
    Tournament options
@@ -967,8 +975,9 @@
 
 .cup-scroll-wrapper .cup-table .cup-date-cell {
   text-align: left;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
-
 
 .cup-scroll-wrapper .cup-table .cup-team-cell {
   text-align: left;
@@ -983,7 +992,45 @@
   font-weight: var(--font-weight-normal);
 }
 
+.tournament-comment {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
 
+.tournament-comment-icon {
+  flex-shrink: 0;
+  margin: 0;
+
+  color: #ff9800;
+  font-family: Arial, sans-serif !important;
+  font-size: 20px !important;
+  font-weight: normal;
+  line-height: 13px;
+}
+
+.tournament-extra-content,
+.tournament-extra-content span {
+  white-space: pre-wrap;
+  overflow-wrap: normal;
+  word-break: normal;
+
+  font-family: "Courier New", monospace;
+  font-size: 13px;
+  line-height: 1.25;
+}
+
+
+.matrix-team-gap {
+  height: 4px;
+}
+
+.matrix-team-gap td {
+  height: 1px;
+  padding: 0 !important;
+  border: 0 !important;
+  background: #fff !important;
+}
 /* =======================
    Mobile
    ======================= */

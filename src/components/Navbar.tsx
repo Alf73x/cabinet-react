@@ -12,6 +12,8 @@ import type { SportItem } from "../api/sportsService";
 import LoginDialog from "./LoginDialog";
 import { clearAuth, getLoginName } from "../api/authService";
 
+import SCLogo from "./SCLogo";
+
 type Props = {
   sports?: SportItem[];
   selectedSports?: number[];
@@ -51,12 +53,9 @@ export default function Navbar({
   return (
     <>
       <header className="navbar">
-        <button
-          type="button"
-          className="logo"
-          onClick={onLogoClick ?? (() => window.close())}
-        >
-          Cabinet
+        <button type="button" className="logo" onClick={onLogoClick}>
+          <SCLogo className="navbar-logo-icon" />
+          <span className="navbar-logo-text">SportCabinet</span>
         </button>
         {pageTitle && <div className="navbar-page-title">{pageTitle}</div>}
         <nav>
@@ -117,6 +116,16 @@ export default function Navbar({
                   }}
                 >
                   Сводные таблицы
+                </button>
+
+                <div className="navbar-menu-separator" />
+
+                <button
+                  type="button"
+                  className="navbar-menu-item"
+                  onClick={() => navigate("/sources")}
+                >
+                  Источники
                 </button>
               </div>
             </div>

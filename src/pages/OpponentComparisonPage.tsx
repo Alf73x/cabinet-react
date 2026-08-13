@@ -15,6 +15,7 @@ import {
 } from "../api/opponentComparisonService";
 
 import { useSports } from "../context/SportsContext";
+import LoadingPanel from "../components/LoadingPanel";
 
 export default function OpponentComparisonPage() {
   const [options, setOptions] = useState<OpponentOption[]>([]);
@@ -359,7 +360,7 @@ export default function OpponentComparisonPage() {
 
         <section className="comparison-results">
           {comparisonLoading && (
-            <div className="comparison-hint">Выполняется сравнение...</div>
+            <LoadingPanel text="Выполняется сравнение..." />
           )}
 
           {comparisonError && (

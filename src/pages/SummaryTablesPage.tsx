@@ -12,6 +12,7 @@ import {
 } from "../api/summaryTablesService";
 import SummaryTable from "../components/SummaryTable";
 import { useSports } from "../context/SportsContext";
+import LoadingPanel from "../components/LoadingPanel";
 
 export default function SummaryTablesPage() {
   const { sports, selectedSports, toggleSport } = useSports();
@@ -193,7 +194,9 @@ export default function SummaryTablesPage() {
         )}
 
         <section className="summary-results">
-          {summaryLoading && <div className="summary-empty">Загрузка...</div>}
+          {summaryLoading && (
+            <LoadingPanel text="Загрузка сводной таблицы..." />
+          )}
 
           {!summaryLoading && summaryError && (
             <div className="summary-error">{summaryError}</div>

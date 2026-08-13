@@ -5,6 +5,7 @@ import "../styles/layout.css";
 import "../styles/navbar.css";
 import "../styles/sports-menu.css";
 import "../styles/mobile.css";
+import LoadingPanel from "../components/LoadingPanel";
 
 import Sidebar from "../components/Sidebar";
 
@@ -260,19 +261,13 @@ function MainPage() {
 
   const mainContent = (
     <main className="content">
-      <button
-        className="close-main-btn"
-        onClick={() => setMobileMainOpen(false)}
-      >
-        ← Назад
-      </button>
-
-      {!selectedItem && <HomePage />}
+      {!selectedItem && <HomePage onBack={() => setMobileMainOpen(false)} />}
 
       {selectedItem?.type === "season" && (
         <Tournament
           tournamentId={Number(selectedItem.id)}
           title={seasonTitle}
+          onBack={() => setMobileMainOpen(false)}
           onTeamClick={(team) =>
             window.open(`/team/${team.teamId}`, "_blank", "noopener,noreferrer")
           }
@@ -283,7 +278,7 @@ function MainPage() {
         <>
           <h2>{territoryTitle || "Территория"}</h2>
 
-          {teamsLoading && <div>Загрузка...</div>}
+          {teamsLoading && <LoadingPanel />}
 
           {!teamsLoading && teams.length === 0 && <div>Нет данных</div>}
 
@@ -370,9 +365,9 @@ function MainPage() {
         onLogoClick={() => {
           setSelectedItem(null);
           setSelectedTeamRow(null);
+          setMobileMainOpen(true);
         }}
       />
-
       <div className="layout">
         {isMobile ? (
           <div

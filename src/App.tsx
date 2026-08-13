@@ -4,14 +4,14 @@ import MainPage from "./pages/MainPage";
 import OpponentComparisonPage from "./pages/OpponentComparisonPage";
 import TeamPage from "./pages/TeamPage";
 import SummaryTablesPage from "./pages/SummaryTablesPage";
-
+import SourcesPage from "./pages/SourcesPage";
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/home" element={<HomePage />} />        
-        
+        <Route path="/home" element={<HomePage />} />
+
         <Route path="/" element={<MainPage />} />
 
         <Route
@@ -22,6 +22,8 @@ export default function App() {
         <Route path="/summary-tables" element={<SummaryTablesPage />} />
 
         <Route path="/team/:teamId" element={<TeamPage />} />
+
+        <Route path="/sources" element={<SourcesPage />} />
       </Routes>
     </BrowserRouter>
   );

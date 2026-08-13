@@ -1,0 +1,46 @@
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  flex: 0 0 30px;
+
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+
+  color: #344054;
+  cursor: pointer;
+
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.back-button svg {
+  display: block;
+  width: 20px;
+  height: 20px;
+}
+
+.back-button:hover {
+  background: #eef2f6;
+  color: #111827;
+}
+
+.back-button:active {
+  background: #e2e8f0;
+}
+
+.back-button.mobile-only {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .back-button.mobile-only {
+    display: inline-flex;
+  }
+}

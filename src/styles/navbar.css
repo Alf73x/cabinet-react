@@ -16,18 +16,41 @@
 
 /* Cabinet */
 .logo {
-  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
 
-  border: 0;
   padding: 0;
 
+  border: none;
   background: transparent;
-  color: inherit;
 
-  font-size: var(--font-size-logo);
-  font-weight: var(--font-weight-medium);
+  color: #fff;
   cursor: pointer;
 }
+
+.logo:hover {
+  background: transparent;
+}
+
+.navbar-logo-icon {
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+}
+
+:root {
+  --sc-logo-s: #ffffff;
+  --sc-logo-c: #168cff;
+}
+
+.navbar-logo-text {
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
 
 
 /* Links */
@@ -175,4 +198,17 @@
 
   white-space: nowrap;
   pointer-events: none;
+}
+
+
+.navbar-menu-separator {
+  height: 1px;
+  margin: 4px 8px;
+  background: #d9dde3;
+}
+
+@media (max-width: 768px) {
+  .navbar-logo-text {
+    display: none;
+  }
 }
