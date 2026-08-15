@@ -40,6 +40,49 @@
   font-size: 13px;
 }
 
+/* Источники */
+
+.sources-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.source-item {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+
+  padding: 8px 14px;
+
+  border: 1px solid #e1e4e8;
+  border-radius: 7px;
+
+  background: #f8f9fa;
+
+  text-decoration: none;
+}
+
+.source-title {
+  flex: 0 0 260px;
+
+  color: #2563eb;
+
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.source-description {
+  color: #6b7280;
+
+  font-size: 13px;
+}
+
+.source-item:hover {
+  background: #f3f6f9;
+  border-color: #cbd5e1;
+}
+
 @media (max-width: 768px) {
   .sources-page {
     padding: 10px 12px 20px;
@@ -55,5 +98,18 @@
 
   .sources-intro {
     font-size: 13px;
+  }
+
+  .source-item {
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .source-title {
+    flex: none;
+  }
+
+  .source-description {
+    font-size: 12px;
   }
 }

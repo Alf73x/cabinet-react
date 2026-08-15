@@ -132,7 +132,15 @@
 .navbar-dropdown-content {
   position: absolute;
   top: 100%;
-  left: 0;
+
+  right: 0;
+
+  min-width: 200px;
+  max-width: calc(100vw - 16px);
+
+  white-space: nowrap;
+
+  left: auto;
   z-index: 1000;
 
   display: none;

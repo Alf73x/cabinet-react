@@ -20,6 +20,9 @@ import Navbar from "../components/Navbar";
 import { useSports } from "../context/SportsContext";
 
 import HomePage from "./HomePage";
+import { useSearchParams } from "react-router-dom";
+
+import BackButton from "../components/BackButton";
 
 const MOBILE_WIDTH = 768;
 const TERRITORY_SELECTED_KEY = "territory-selected-item";
@@ -193,6 +196,19 @@ function MainPage() {
     loadTeams(territorySelectedItem);
   }, [territorySelectedItem, selectedSports]);
 
+  const [searchParams, setSearchParams] = useSearchParams();
+  useEffect(() => {
+    if (searchParams.get("home") !== "1") {
+      return;
+    }
+
+    setSelectedItem(null);
+    setSelectedTeamRow(null);
+    setMobileMainOpen(true);
+
+    setSearchParams({}, { replace: true });
+  }, [searchParams, setSearchParams]);
+
   const sidebar = (
     <Sidebar
       onOpenMain={() => setMobileMainOpen(true)}
@@ -274,9 +290,15 @@ function MainPage() {
         />
       )}
 
-      {selectedItem?.type === "territory" && (
-        <>
-          <h2>{territoryTitle || "Территория"}</h2>
+{selectedItem?.type === "territory" && (
+  <>
+    <div className="territory-title-row">
+      {isMobile && (
+        <BackButton onClick={() => setMobileMainOpen(false)} />
+      )}
+
+      <h2>{territoryTitle || "Территория"}</h2>
+    </div>
 
           {teamsLoading && <LoadingPanel />}
 
@@ -325,8 +347,8 @@ function MainPage() {
                         </div>
 
                         <ScoresTablePanel
-                          teamId={selectedTeamRow.TeamID}
-                          seasonId={selectedTeamRow.ID}
+                          teamId={selectedTeamRow.ID}
+                          seasonId={selectedTeamRow.SeasonID}
                         />
                       </div>
                     </Panel>

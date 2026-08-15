@@ -51,3 +51,13 @@
 .resize-handle:hover {
   background: #9ca3af;
 }
+
+.territory-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.territory-title-row h2 {
+  margin: 0;
+}

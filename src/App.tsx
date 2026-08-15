@@ -1,3 +1,4 @@
+import AppLayout from "./components/AppLayout";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import MainPage from "./pages/MainPage";
@@ -10,20 +11,22 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/home" element={<HomePage />} />
+        <Route element={<AppLayout />}>
+          <Route path="/home" element={<HomePage />} />
 
-        <Route path="/" element={<MainPage />} />
+          <Route path="/" element={<MainPage />} />
 
-        <Route
-          path="/opponent-comparison"
-          element={<OpponentComparisonPage />}
-        />
+          <Route
+            path="/opponent-comparison"
+            element={<OpponentComparisonPage />}
+          />
 
-        <Route path="/summary-tables" element={<SummaryTablesPage />} />
+          <Route path="/summary-tables" element={<SummaryTablesPage />} />
 
-        <Route path="/team/:teamId" element={<TeamPage />} />
+          <Route path="/team/:teamId" element={<TeamPage />} />
 
-        <Route path="/sources" element={<SourcesPage />} />
+          <Route path="/sources" element={<SourcesPage />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );

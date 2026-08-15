@@ -69,7 +69,7 @@ const columns: ColumnDef<GridRow>[] = [
     accessorKey: "Place",
     header: "Место",
     size: 140,
-    meta: { align: "center", className: "nowrap-column" },
+    meta: { align: "center"},
     enableColumnFilter: false,
   },
   {

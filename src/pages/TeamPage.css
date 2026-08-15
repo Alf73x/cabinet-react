@@ -9,7 +9,7 @@ body {
 }
 
 .app.team-page {
-  height: 100vh;
+  height: 100%;
   min-height: 0;
 
   display: flex;
@@ -20,6 +20,7 @@ body {
 
 .team-page-content {
   flex: 1;
+  height: 100%;
   min-height: 0;
 
   display: flex;

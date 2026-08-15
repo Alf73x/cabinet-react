@@ -104,7 +104,6 @@ export default function TeamsTable({
         size: 80,
         meta: {
           align: "center",
-          className: "nowrap-column",
         },
         enableColumnFilter: false,
       },
@@ -253,7 +252,7 @@ export default function TeamsTable({
                         e.stopPropagation(); // только TeamName/TeamTerritory
 
                         onTeamClick?.(
-                          row.original.TeamID,
+                          row.original.ID,
                           row.original.TeamName,
                         );
                       }}

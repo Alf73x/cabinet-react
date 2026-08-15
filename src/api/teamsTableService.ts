@@ -2,12 +2,12 @@ import { apiGet } from "./api";
 
 export interface Team {
   ID: number;
+  SeasonID: number;
   SportID: number;
   Season: string;
   SeasonName: string;
   TeamName: string;
   TeamTerritory: string;
-  TeamID: number;
   GroupID: number;
   LeagueRank: number;
   Place: number;

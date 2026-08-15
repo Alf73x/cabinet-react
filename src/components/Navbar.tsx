@@ -84,13 +84,12 @@ export default function Navbar({
           {showTools && (
             <div className="navbar-dropdown">
               <button type="button" className="navbar-menu-button">
-                Инструменты ▾
+                Сервисы ▾
               </button>
 
               <div className="navbar-dropdown-content">
                 <button
                   type="button"
-                  /* disabled={!isAuthenticated} RT:later */
                   title={isAuthenticated ? undefined : "Требуется авторизация"}
                   onClick={() =>
                     window.open(
@@ -105,15 +104,14 @@ export default function Navbar({
 
                 <button
                   type="button"
-                  /* disabled={!isAuthenticated}  RT:later*/
                   className="navbar-menu-item"
-                  onClick={() => {
+                  onClick={() =>
                     window.open(
                       "/summary-tables",
                       "_blank",
                       "noopener,noreferrer",
-                    );
-                  }}
+                    )
+                  }
                 >
                   Сводные таблицы
                 </button>
@@ -127,34 +125,44 @@ export default function Navbar({
                 >
                   Источники
                 </button>
-              </div>
-            </div>
-          )}
 
-          {showUser && (
-            <>
-              {isAuthenticated ? (
-                <div className="navbar-dropdown">
-                  <button type="button" className="navbar-menu-button">
-                    {loginName} ▾
-                  </button>
-
-                  <div className="navbar-dropdown-content navbar-dropdown-content--right">
-                    <button type="button" onClick={handleLogout}>
-                      Выйти
-                    </button>
-                  </div>
-                </div>
-              ) : (
                 <button
                   type="button"
-                  className="navbar-menu-button"
-                  onClick={() => setLoginDialogOpen(true)}
+                  className="navbar-menu-item"
+                  onClick={() => navigate("/?home=1")}
                 >
-                  Войти
+                  О проекте
                 </button>
-              )}
-            </>
+
+                {showUser && (
+                  <>
+                    <div className="navbar-menu-separator" />
+
+                    {isAuthenticated ? (
+                      <>
+                        <div className="navbar-menu-user">{loginName}</div>
+
+                        <button
+                          type="button"
+                          className="navbar-menu-item"
+                          onClick={handleLogout}
+                        >
+                          Выйти
+                        </button>
+                      </>
+                    ) : (
+                      <button
+                        type="button"
+                        className="navbar-menu-item"
+                        onClick={() => setLoginDialogOpen(true)}
+                      >
+                        Войти
+                      </button>
+                    )}
+                  </>
+                )}
+              </div>
+            </div>
           )}
         </nav>
       </header>

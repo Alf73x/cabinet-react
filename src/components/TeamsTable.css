@@ -180,3 +180,50 @@
   z-index: 30;
   background: var(--header-bg, #f3f3f3);
 }
+
+
+@media (max-width: 768px) {
+  .territory-tables {
+    height: auto;
+    min-height: 0;
+    overflow: visible;
+  }
+
+  .teams-table-panel {
+    height: auto;
+    min-height: 0;
+    overflow: visible;
+    display: block;
+  }
+
+  .teams-table-wrap {
+    height: auto;
+    min-height: 0;
+    overflow: visible;
+    display: block;
+  }
+
+  .teams-table-scroll {
+    height: auto;
+    max-height: none;
+    min-height: 0;
+
+    overflow-x: auto;
+    overflow-y: visible;
+  }
+
+  .teams-table {
+    width: max-content;
+    min-width: 100%;
+  }
+
+  .teams-pagination {
+    height: auto;
+    min-height: 42px;
+
+    margin-top: 8px;
+    margin-bottom: 45px;
+
+    flex-wrap: wrap;
+  }
+}
