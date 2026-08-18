@@ -68,9 +68,7 @@ export default function SourcesPage() {
                 rel="noreferrer"
                 className="source-item"
               >
-                <span className="source-title">
-                  Региональный футбол России
-                </span>
+                <span className="source-title">Региональный футбол России</span>
                 <span className="source-description">
                   Региональный футбол России
                 </span>
@@ -101,9 +99,7 @@ export default function SourcesPage() {
                 className="source-item"
               >
                 <span className="source-title">Хоккей в цифрах</span>
-                <span className="source-description">
-                  Хоккейная статистика
-                </span>
+                <span className="source-description">Хоккейная статистика</span>
               </a>
 
               <a
@@ -138,7 +134,7 @@ export default function SourcesPage() {
               >
                 <span className="source-title">ТамбовХоккей</span>
                 <span className="source-description">
-                  ТамбовХоккей
+                  Тамбовский хоккей: от истоков до наших дней
                 </span>
               </a>
             </div>
@@ -155,9 +151,7 @@ export default function SourcesPage() {
                 className="source-item"
               >
                 <span className="source-title">Суперлига</span>
-                <span className="source-description">
-                  Суперлига по футзалу
-                </span>
+                <span className="source-description">Суперлига по футзалу</span>
               </a>
 
               <a

@@ -290,15 +290,15 @@ function MainPage() {
         />
       )}
 
-{selectedItem?.type === "territory" && (
-  <>
-    <div className="territory-title-row">
-      {isMobile && (
-        <BackButton onClick={() => setMobileMainOpen(false)} />
-      )}
+      {selectedItem?.type === "territory" && (
+        <>
+          <div className="territory-title-row">
+            {isMobile && (
+              <BackButton onClick={() => setMobileMainOpen(false)} />
+            )}
 
-      <h2>{territoryTitle || "Территория"}</h2>
-    </div>
+            <h2>{territoryTitle || "Территория"}</h2>
+          </div>
 
           {teamsLoading && <LoadingPanel />}
 
@@ -308,51 +308,75 @@ function MainPage() {
             <div style={{ flex: 1, minHeight: 0 }}>
               <div className="territory-tables">
                 {selectedTeamRow ? (
-                  <Group orientation="horizontal">
-                    <Panel defaultSize={65} minSize={30}>
-                      <div className="teams-table-panel">
-                        <TeamsTable
-                          rows={teams}
-                          sports={sports}
-                          selectedSports={selectedSports}
-                          onRowClick={(row) => setSelectedTeamRow(row)}
-                          onTeamClick={(teamId) =>
-                            window.open(
-                              `/team/${teamId}`,
-                              "_blank",
-                              "noopener,noreferrer",
-                            )
-                          }
-                        />
-                      </div>
-                    </Panel>
-
-                    <Separator className="resize-handle" />
-
-                    <Panel defaultSize={35} minSize={20}>
-                      <div className="scores-table-panel">
-                        <div className="scores-header">
-                          <div className="scores-header-title">
-                            {selectedTeamRow.Season}
-                            {" - "}
-                            {selectedTeamRow.SeasonName}
-                          </div>
-
-                          <button
-                            className="close-scores-btn"
-                            onClick={() => setSelectedTeamRow(null)}
-                          >
-                            ✕
-                          </button>
+                  isMobile ? (
+                    <div className="scores-table-panel">
+                      <div className="scores-header">
+                        <div className="scores-header-title">
+                          {selectedTeamRow.Season}
+                          {" - "}
+                          {selectedTeamRow.SeasonName}
                         </div>
 
-                        <ScoresTablePanel
-                          teamId={selectedTeamRow.ID}
-                          seasonId={selectedTeamRow.SeasonID}
-                        />
+                        <button
+                          className="close-scores-btn"
+                          onClick={() => setSelectedTeamRow(null)}
+                        >
+                          ✕
+                        </button>
                       </div>
-                    </Panel>
-                  </Group>
+
+                      <ScoresTablePanel
+                        teamId={selectedTeamRow.ID}
+                        seasonId={selectedTeamRow.SeasonID}
+                      />
+                    </div>
+                  ) : (
+                    <Group orientation="horizontal">
+                      <Panel defaultSize={65} minSize={30}>
+                        <div className="teams-table-panel">
+                          <TeamsTable
+                            rows={teams}
+                            sports={sports}
+                            selectedSports={selectedSports}
+                            onRowClick={(row) => setSelectedTeamRow(row)}
+                            onTeamClick={(teamId) =>
+                              window.open(
+                                `/team/${teamId}`,
+                                "_blank",
+                                "noopener,noreferrer",
+                              )
+                            }
+                          />
+                        </div>
+                      </Panel>
+
+                      <Separator className="resize-handle" />
+
+                      <Panel defaultSize={35} minSize={20}>
+                        <div className="scores-table-panel">
+                          <div className="scores-header">
+                            <div className="scores-header-title">
+                              {selectedTeamRow.Season}
+                              {" - "}
+                              {selectedTeamRow.SeasonName}
+                            </div>
+
+                            <button
+                              className="close-scores-btn"
+                              onClick={() => setSelectedTeamRow(null)}
+                            >
+                              ✕
+                            </button>
+                          </div>
+
+                          <ScoresTablePanel
+                            teamId={selectedTeamRow.ID}
+                            seasonId={selectedTeamRow.SeasonID}
+                          />
+                        </div>
+                      </Panel>
+                    </Group>
+                  )
                 ) : (
                   <div className="teams-table-panel">
                     <TeamsTable

@@ -21,7 +21,8 @@ export const summaryLeagues: SummaryLeague[] = [
   { id: 2, name: "Чемпионат 2" },
   { id: 3, name: "Чемпионат 3" },
   { id: 4, name: "Чемпионат 4" },
-  { id: 100, name: "Кубок" },
+  { id: 5, name: "Чемпионат 5" },
+  { id: 0, name: "Кубок" },
 ];
 
 export const fallbackSummaryCategories: SummaryCategory[] = [

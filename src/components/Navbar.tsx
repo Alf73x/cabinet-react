@@ -121,35 +121,31 @@ export default function Navbar({
                 <button
                   type="button"
                   className="navbar-menu-item"
-                  onClick={() => navigate("/sources")}
-                >
-                  Источники
-                </button>
-
-                <button
-                  type="button"
-                  className="navbar-menu-item"
                   onClick={() => navigate("/?home=1")}
                 >
                   О проекте
                 </button>
 
+                <button
+                  type="button"
+                  className="navbar-menu-item"
+                  onClick={() =>
+                    window.open("/sources", "_blank", "noopener,noreferrer")
+                  }
+                >
+                  Источники
+                </button>
+
                 {showUser && (
                   <>
-                    <div className="navbar-menu-separator" />
-
                     {isAuthenticated ? (
-                      <>
-                        <div className="navbar-menu-user">{loginName}</div>
-
-                        <button
-                          type="button"
-                          className="navbar-menu-item"
-                          onClick={handleLogout}
-                        >
-                          Выйти
-                        </button>
-                      </>
+                      <button
+                        type="button"
+                        className="navbar-menu-item"
+                        onClick={handleLogout}
+                      >
+                        Выйти
+                      </button>
                     ) : (
                       <button
                         type="button"

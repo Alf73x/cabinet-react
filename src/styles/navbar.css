@@ -219,4 +219,8 @@
   .navbar-logo-text {
     display: none;
   }
+
+  .navbar-page-title {
+    display: none;
+  }
 }

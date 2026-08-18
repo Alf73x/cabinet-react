@@ -102,7 +102,9 @@
 }
 
 .date-cell {
-  white-space: nowrap;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: normal;
   text-align: center !important;
 }
 
@@ -175,7 +177,19 @@
 
 @media (max-width: 700px) {
   .scores-table-panel {
-    padding-left: 4px;
+    width: 100%;
+    min-width: 0;
+
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  .scores-table-content {
+    width: 100%;
+  }
+
+  .scores-table {
+    width: 100%;
   }
 
   .scores-col-date {
@@ -188,14 +202,5 @@
 
   .scores-col-team {
     width: calc((100% - 116px) / 2);
-  }
-
-  .scores-table th,
-  .scores-table td {
-    padding: 3px;
-  }
-
-  .team-name-cell {
-    line-height: 1.2;
   }
 }

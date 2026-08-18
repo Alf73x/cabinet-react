@@ -1,74 +1,117 @@
-
 .summary-tables-page {
   height: calc(100vh - 60px);
   min-height: 0;
+
   display: flex;
   flex-direction: column;
+
   padding: 8px 16px 12px;
+
   overflow: hidden;
+
   box-sizing: border-box;
 }
 
+
 .summary-toolbar {
   flex: 0 0 auto;
+
   display: flex;
   align-items: flex-end;
+
   gap: 10px;
+
   width: 100%;
+
   padding: 10px 12px;
+
   border: 1px solid #d0d7df;
   border-radius: 4px;
+
   background: #f7f9fb;
+
   box-sizing: border-box;
 }
+
 
 .summary-filter {
   display: flex;
   flex-direction: column;
+
   gap: 4px;
+
   font-size: 12px;
   font-weight: 600;
 }
+
 
 .summary-filter select,
 .summary-filter input,
 .summary-filter button {
   height: 30px;
+
   padding: 3px 8px;
+
   border: 1px solid #b8c2cf;
   border-radius: 4px;
+
   background: #fff;
+
   box-sizing: border-box;
+
   font-size: 13px;
   font-weight: 400;
 }
+
 
 .summary-filter select {
   width: 160px;
 }
 
+
 .summary-league-filter button {
   width: 170px;
+
   text-align: left;
 }
+
 
 .summary-year-filter input {
   width: 80px;
 }
 
+
+.summary-league-close-row {
+  display: flex;
+  align-items: flex-end;
+
+  gap: 6px;
+}
+
+
+.summary-close-button {
+  display: none;
+}
+
+
 .summary-start-button {
   height: 30px;
+
   padding: 3px 12px;
+
   border: 1px solid #aeb9c7;
   border-radius: 4px;
+
   background: #fff;
+
   cursor: pointer;
-  
 }
+
 
 .summary-start-button:hover:not(:disabled) {
   background: #f0f4f8;
 }
+
 
 .summary-start-button:disabled {
   cursor: default;
@@ -78,23 +121,27 @@
 
 .summary-start-button span {
   color: #20934b;
+
   font-size: 15px;
 }
 
 
- 
-
-
 .summary-error {
   flex: 0 0 auto;
+
   margin-top: 10px;
+
   padding: 8px 10px;
+
   border: 1px solid #efb3b3;
   border-radius: 4px;
+
   background: #fff1f1;
   color: #c00000;
+
   font-size: 13px;
 }
+
 
 .summary-results {
   flex: 1 1 auto;
@@ -104,82 +151,165 @@
   flex-direction: column;
 
   margin-top: 12px;
+
   overflow: hidden;
 
   border: 1px solid #d0d7df;
   border-radius: 4px;
+
   background: #fff;
 }
 
+
 .summary-title {
   flex: 0 0 auto;
+
   margin: 0;
+
   padding: 8px 10px;
 
   border-bottom: 1px solid #ddd;
+
   font-size: 14px;
   font-weight: 600;
 }
+
 
 .summary-results .summary-table-wrap {
   flex: 1 1 auto;
   min-height: 0;
 }
 
+
 .summary-empty {
   padding: 16px;
+
   color: #666;
+
   font-size: 13px;
 }
 
+
 @media (max-width: 760px) {
+  .summary-tables-page {
+    padding: 8px 10px 10px;
+  }
+
+
   .summary-toolbar {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+
+    grid-template-columns:
+      minmax(0, 1fr)
+      minmax(0, 1fr)
+      auto;
+
     gap: 8px;
+
     align-items: end;
   }
 
+
   /* Категория */
-  .summary-toolbar .summary-filter:nth-of-type(1) {
+  .summary-toolbar > .summary-filter:first-child {
     grid-column: 1 / 2;
     grid-row: 1;
+
     min-width: 0;
   }
 
-  /* Лига */
-  .summary-toolbar .summary-filter:nth-of-type(2) {
+
+  /* Лига + Close */
+  .summary-league-close-row {
     grid-column: 2 / 4;
     grid-row: 1;
+
+    display: flex;
+    align-items: flex-end;
+
+    gap: 6px;
+
     min-width: 0;
   }
+
+
+  .summary-league-close-row .summary-league-filter {
+    flex: 1;
+
+    min-width: 0;
+  }
+
+
+  .summary-close-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex: 0 0 30px;
+
+    width: 30px;
+    height: 30px;
+
+    padding: 0;
+
+    color: #64748b;
+    background: #ffffff;
+
+    border: 1px solid #aeb7c4;
+    border-radius: 3px;
+
+    font-size: 15px;
+    line-height: 1;
+
+    cursor: pointer;
+  }
+
+
+  .summary-close-button:hover {
+    background: #f1f5f9;
+  }
+
 
   /* От */
-  .summary-toolbar .summary-filter:nth-of-type(3) {
+  .summary-year-filter:nth-of-type(2) {
     grid-column: 1 / 2;
     grid-row: 2;
+
     min-width: 0;
   }
 
+
   /* До */
-  .summary-toolbar .summary-filter:nth-of-type(4) {
+  .summary-year-filter:nth-of-type(3) {
     grid-column: 2 / 3;
     grid-row: 2;
+
     min-width: 0;
   }
+
 
   /* Старт */
   .summary-start-button {
     grid-column: 3 / 4;
     grid-row: 2;
+
     width: auto;
+
     white-space: nowrap;
   }
 
+
   .summary-filter select,
-  .summary-filter input,
+  .summary-filter input {
+    width: 100%;
+
+    min-width: 0;
+  }
+
+
   .summary-league-filter > * {
     width: 100%;
+
     min-width: 0;
   }
 }

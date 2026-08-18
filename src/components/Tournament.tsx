@@ -9,6 +9,9 @@ import TournamentPlainTextView from "./TournamentPlainTextView";
 import TournamentMatchesList from "./TournamentMatchesList";
 import LoadingPanel from "./LoadingPanel";
 import BackButton from "./BackButton";
+import InfoButton from "./InfoButton";
+import {INFO_TYPE_SEASON} from "../api/info.ts";
+
 
 type Props = {
   tournamentId: number;
@@ -111,6 +114,8 @@ export default function Tournament({
           {onBack && <BackButton className="mobile-only" onClick={onBack} />}
 
           <h2>{title || "Турнир"}</h2>
+
+          <InfoButton idType={INFO_TYPE_SEASON} id={tournamentId} />
         </div>
       </div>
     );
@@ -170,6 +175,8 @@ export default function Tournament({
             {onBack && <BackButton className="mobile-only" onClick={onBack} />}
 
             <h2>{title || "Турнир"}</h2>
+
+            <InfoButton idType={INFO_TYPE_SEASON} id={tournamentId} />
           </div>
 
           {showViewPopup && (

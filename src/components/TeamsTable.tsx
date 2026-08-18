@@ -4,13 +4,13 @@ import {
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
-  getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
   type ColumnDef,
   type ColumnFiltersState,
   type SortingState,
 } from "@tanstack/react-table";
+
 import type { Team } from "../api/teamsTableService";
 import type { SportItem } from "../api/sportsService";
 
@@ -102,9 +102,7 @@ export default function TeamsTable({
         accessorKey: "Place",
         header: "Место",
         size: 80,
-        meta: {
-          align: "center",
-        },
+        meta: { align: "center" },
         enableColumnFilter: false,
       },
       {
@@ -140,11 +138,6 @@ export default function TeamsTable({
     return result;
   }, [selectedSports.length, sportsById]);
 
-  const [pagination, setPagination] = useState({
-    pageIndex: 0,
-    pageSize: rows.length || 1, // Все по умолчанию
-  });
-
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
@@ -152,21 +145,15 @@ export default function TeamsTable({
     data,
     columns,
     state: {
-      pagination,
       sorting,
       columnFilters,
     },
-    onPaginationChange: setPagination,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
   });
-
-  const filteredRowsCount = table.getFilteredRowModel().rows.length;
-  const isAllRows = table.getState().pagination.pageSize >= filteredRowsCount;
 
   return (
     <div className="teams-table-wrap">
@@ -246,10 +233,10 @@ export default function TeamsTable({
                       }
                       onClick={(e) => {
                         if (!isTeamCell) {
-                          return; // пусть сработает onRowClick у <tr>
+                          return;
                         }
 
-                        e.stopPropagation(); // только TeamName/TeamTerritory
+                        e.stopPropagation();
 
                         onTeamClick?.(
                           row.original.ID,
@@ -272,65 +259,6 @@ export default function TeamsTable({
             ))}
           </tbody>
         </table>
-      </div>
-
-      <div className="teams-pagination">
-        <button
-          onClick={() => table.setPageIndex(0)}
-          disabled={isAllRows || !table.getCanPreviousPage()}
-        >
-          {"<<"}
-        </button>
-
-        <button
-          onClick={() => table.previousPage()}
-          disabled={isAllRows || !table.getCanPreviousPage()}
-        >
-          {"<"}
-        </button>
-
-        <span>
-          {isAllRows
-            ? `Все: ${filteredRowsCount}`
-            : `Страница ${
-                table.getState().pagination.pageIndex + 1
-              } из ${table.getPageCount()}`}
-        </span>
-
-        <button
-          onClick={() => table.nextPage()}
-          disabled={isAllRows || !table.getCanNextPage()}
-        >
-          {">"}
-        </button>
-
-        <button
-          onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-          disabled={isAllRows || !table.getCanNextPage()}
-        >
-          {">>"}
-        </button>
-
-        <select
-          value={isAllRows ? "all" : table.getState().pagination.pageSize}
-          onChange={(e) => {
-            table.setPageIndex(0);
-
-            if (e.target.value === "all") {
-              table.setPageSize(filteredRowsCount || 1);
-            } else {
-              table.setPageSize(Number(e.target.value));
-            }
-          }}
-        >
-          <option value="all">Все</option>
-
-          {[25, 50, 100].map((pageSize) => (
-            <option key={pageSize} value={pageSize}>
-              {pageSize}
-            </option>
-          ))}
-        </select>
       </div>
     </div>
   );

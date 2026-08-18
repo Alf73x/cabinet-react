@@ -58,6 +58,21 @@
 }
 
 
+.comparison-field-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  min-width: 0;
+}
+
+
+.comparison-field-header > span {
+  flex: 1;
+  min-width: 0;
+}
+
+
 .team-combobox {
   position: relative;
 
@@ -181,6 +196,16 @@
 .comparison-swap-button:disabled {
   opacity: 0.55;
   cursor: default;
+}
+
+
+.comparison-swap-button-mobile {
+  display: none;
+}
+
+
+.comparison-close-button {
+  display: none;
 }
 
 
@@ -468,10 +493,44 @@
   }
 
 
-  .comparison-swap-button {
-    justify-self: center;
+  .comparison-swap-button-desktop {
+    display: none;
+  }
 
-    transform: rotate(90deg);
+
+  .comparison-swap-button-mobile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex: 0 0 30px;
+  }
+
+
+  .comparison-close-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex: 0 0 30px;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+
+    color: #64748b;
+    background: #ffffff;
+    border: 1px solid #aeb7c4;
+    border-radius: 3px;
+
+    font-size: 15px;
+    line-height: 1;
+
+    cursor: pointer;
+  }
+
+
+  .comparison-close-button:hover {
+    background: #f1f5f9;
   }
 
 

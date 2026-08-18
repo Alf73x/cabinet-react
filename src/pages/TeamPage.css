@@ -4,9 +4,11 @@ body,
   height: 100%;
 }
 
+
 body {
   margin: 0;
 }
+
 
 .app.team-page {
   height: 100%;
@@ -18,6 +20,7 @@ body {
   overflow: hidden;
 }
 
+
 .team-page-content {
   flex: 1;
   height: 100%;
@@ -27,39 +30,91 @@ body {
   flex-direction: column;
 
   overflow: hidden;
+
   padding: 24px 10px 10px;
+
   box-sizing: border-box;
 }
 
-.team-page-title {
-  flex-shrink: 0;
 
-  margin: 0 0 16px;
+.team-page-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  flex-shrink: 0;
+  min-width: 0;
+
+  margin-bottom: 16px;
+}
+
+.team-page-title {
+  min-width: 0;
+
+  margin: 0;
 
   font-size: 26px;
   font-weight: 600;
   line-height: 1.2;
+
   color: #273142;
 }
 
+.team-page-close {
+  display: none;
+
+  flex: 0 0 30px;
+
+  width: 30px;
+  height: 30px;
+
+  padding: 0;
+
+  color: #64748b;
+  background: transparent;
+
+  border: none;
+  border-radius: 3px;
+
+  font-size: 18px;
+  line-height: 1;
+
+  cursor: pointer;
+
+    margin-left: auto;
+}
+
+
+.team-page-close:hover {
+  background: #f0f0f0;
+}
+
+
 .team-page-body {
   flex: 1;
+
   min-height: 0;
+
   overflow: hidden;
 }
+
 
 .team-page .territory-tables {
   height: 100%;
   min-height: 0;
+
   overflow: hidden;
 }
+
 
 .team-page .teams-table-panel,
 .team-page .scores-table-panel {
   height: 100%;
   min-height: 0;
+
   overflow: hidden;
 }
+
 
 /* react-resizable-panels */
 .team-page [data-panel-group] {
@@ -67,21 +122,90 @@ body {
   min-height: 0;
 }
 
+
 .team-page [data-panel] {
   min-height: 0;
+
   overflow: hidden;
 }
+
 
 .team-page .scores-table-panel {
   display: flex;
   flex-direction: column;
 }
 
+
 .team-page .scores-header {
   flex-shrink: 0;
 }
 
+
 .team-page .resize-handle {
   width: 4px;
+
   cursor: col-resize;
+}
+
+
+@media (max-width: 768px) {
+  .team-page-content {
+    padding: 12px 10px 10px;
+  }
+
+
+  .team-page-title-row {
+    margin-bottom: 16px;
+  }
+
+
+  .team-page-title {
+    margin: 0;
+
+    font-size: 24px;
+  }
+
+
+  .team-page-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+
+  .team-page .mobile-scores-full {
+    width: 100%;
+    max-width: none;
+    min-width: 0;
+
+    height: 100%;
+    min-height: 0;
+  }
+
+
+  .team-page .mobile-scores-full .scores-table-panel {
+    width: 100%;
+    max-width: none;
+    min-width: 0;
+
+    height: 100%;
+    min-height: 0;
+
+    padding-left: 0;
+
+    border-left: 0;
+  }
+
+
+  .team-page .mobile-scores-full .scores-table-content {
+    width: 100%;
+    max-width: none;
+    min-width: 0;
+  }
+
+
+  .team-page .mobile-scores-full .scores-table {
+    width: 100%;
+    max-width: none;
+  }
 }

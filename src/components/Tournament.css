@@ -1035,19 +1035,48 @@
 
 @media (max-width: 700px) {
   .tournament-header {
-    align-items: flex-start;
+    flex-direction: column;
+    align-items: stretch;
 
     gap: 8px;
   }
 
 
-  .tournament-header h2 {
-    font-size: 20px;
+  .tournament-title-row {
+    width: 100%;
+    min-width: 0;
+  }
+
+
+  .tournament-header h2,
+  .tournament-title-row h2 {
+    width: 100%;
+    min-width: 0;
+
+    margin: 0;
+
+    font-size: 18px;
+    line-height: 1.2;
+
+    overflow-wrap: normal;
+    word-break: normal;
   }
 
 
   .tournament-options {
+    width: 100%;
+
     gap: 6px;
+  }
+
+
+  .view-popup {
+    width: 100%;
+  }
+
+
+  .view-popup-button {
+    width: 100%;
   }
 
 

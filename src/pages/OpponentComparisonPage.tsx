@@ -17,6 +17,10 @@ import {
 import { useSports } from "../context/SportsContext";
 import LoadingPanel from "../components/LoadingPanel";
 
+function handleBack() {
+  window.close();
+}
+
 export default function OpponentComparisonPage() {
   const [options, setOptions] = useState<OpponentOption[]>([]);
   const [team1, setTeam1] = useState<OpponentOption | null>(null);
@@ -196,19 +200,29 @@ export default function OpponentComparisonPage() {
       <main className="opponent-comparison-page comparison-page">
         <section className="comparison-toolbar">
           <div className="comparison-field comparison-field-first">
-            <div className="comparison-field-header">
-              <span>Соперник 1</span>
+<div className="comparison-field-header">
+  <span>Соперник 1</span>
 
-              <button
-                type="button"
-                className="comparison-swap-button comparison-swap-button-mobile"
-                onClick={handleSwapTeams}
-                disabled={team1 === null && team2 === null}
-                title="Поменять команды местами"
-              >
-                ⇄
-              </button>
-            </div>
+  <button
+    type="button"
+    className="comparison-swap-button comparison-swap-button-mobile"
+    onClick={handleSwapTeams}
+    disabled={team1 === null && team2 === null}
+    title="Поменять команды местами"
+  >
+    ⇄
+  </button>
+
+  <button
+    type="button"
+    className="comparison-close-button"
+    onClick={handleBack}
+    title="Закрыть"
+    aria-label="Закрыть"
+  >
+    ✕
+  </button>
+</div>
 
             <TeamComboBox
               items={options}
