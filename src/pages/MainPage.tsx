@@ -22,6 +22,7 @@ import { useSports } from "../context/SportsContext";
 import HomePage from "./HomePage";
 import { useSearchParams } from "react-router-dom";
 
+import CloseButton from "../components/CloseButton";
 import BackButton from "../components/BackButton";
 
 const MOBILE_WIDTH = 768;
@@ -293,11 +294,9 @@ function MainPage() {
       {selectedItem?.type === "territory" && (
         <>
           <div className="territory-title-row">
-            {isMobile && (
-              <BackButton onClick={() => setMobileMainOpen(false)} />
-            )}
-
             <h2>{territoryTitle || "Территория"}</h2>
+
+            <CloseButton onClick={() => setMobileMainOpen(false)} />
           </div>
 
           {teamsLoading && <LoadingPanel />}
@@ -317,12 +316,7 @@ function MainPage() {
                           {selectedTeamRow.SeasonName}
                         </div>
 
-                        <button
-                          className="close-scores-btn"
-                          onClick={() => setSelectedTeamRow(null)}
-                        >
-                          ✕
-                        </button>
+                        <BackButton onClick={() => setSelectedTeamRow(null)} />
                       </div>
 
                       <ScoresTablePanel
@@ -361,12 +355,10 @@ function MainPage() {
                               {selectedTeamRow.SeasonName}
                             </div>
 
-                            <button
-                              className="close-scores-btn"
+                            <CloseButton
+                              desktop
                               onClick={() => setSelectedTeamRow(null)}
-                            >
-                              ✕
-                            </button>
+                            />
                           </div>
 
                           <ScoresTablePanel

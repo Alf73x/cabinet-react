@@ -60,36 +60,6 @@ body {
   color: #273142;
 }
 
-.team-page-close {
-  display: none;
-
-  flex: 0 0 30px;
-
-  width: 30px;
-  height: 30px;
-
-  padding: 0;
-
-  color: #64748b;
-  background: transparent;
-
-  border: none;
-  border-radius: 3px;
-
-  font-size: 18px;
-  line-height: 1;
-
-  cursor: pointer;
-
-    margin-left: auto;
-}
-
-
-.team-page-close:hover {
-  background: #f0f0f0;
-}
-
-
 .team-page-body {
   flex: 1;
 
@@ -147,6 +117,9 @@ body {
   cursor: col-resize;
 }
 
+.mobile-only {
+  display: none !important;
+}
 
 @media (max-width: 768px) {
   .team-page-content {
@@ -166,13 +139,7 @@ body {
   }
 
 
-  .team-page-close {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-
+  
   .team-page .mobile-scores-full {
     width: 100%;
     max-width: none;

@@ -8,9 +8,9 @@ import TournamentCupTable from "./TournamentCupTable";
 import TournamentPlainTextView from "./TournamentPlainTextView";
 import TournamentMatchesList from "./TournamentMatchesList";
 import LoadingPanel from "./LoadingPanel";
-import BackButton from "./BackButton";
 import InfoButton from "./InfoButton";
-import {INFO_TYPE_SEASON} from "../api/info.ts";
+import CloseButton from "./CloseButton";
+import { INFO_TYPE_SEASON } from "../api/info.ts";
 
 
 type Props = {
@@ -21,14 +21,18 @@ type Props = {
   onTeamClick?: (team: { teamId: number; teamName: string }) => void;
 };
 
+
 const tournamentCache = new Map<number, TournamentResponse>();
+
 const VIEW_MODE_KEY = "tournament_view_mode";
 const SHOW_AWAY_MATCHES_KEY = "tournament_show_away_matches";
+
 
 type ExtraTextProps = {
   infoText?: string;
   commentText?: string;
 };
+
 
 function TournamentExtraText({ infoText, commentText }: ExtraTextProps) {
   const hasInfo = !!infoText?.trim();
@@ -58,6 +62,7 @@ function TournamentExtraText({ infoText, commentText }: ExtraTextProps) {
   );
 }
 
+
 export default function Tournament({
   tournamentId,
   title,
@@ -68,6 +73,7 @@ export default function Tournament({
   const [data, setData] = useState<TournamentResponse | null>(
     () => tournamentCache.get(tournamentId) ?? null,
   );
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -81,11 +87,13 @@ export default function Tournament({
 
   const [viewMenuOpen, setViewMenuOpen] = useState(false);
 
+
   function handleViewModeChange(value: string) {
     setViewMode(value);
     localStorage.setItem(VIEW_MODE_KEY, value);
     setViewMenuOpen(false);
   }
+
 
   function handleShowAwayMatchesChange(value: boolean) {
     setShowAwayMatches(value);
@@ -93,33 +101,47 @@ export default function Tournament({
     setViewMenuOpen(false);
   }
 
+
   function getViewModeText() {
     switch (viewMode) {
       case "short":
         return "Сокращенный вид";
+
       case "table2score":
         return "Потуровая таблица";
+
       case "table1":
         return "Таблица, стиль 1";
+
       case "full":
       default:
         return "Полный вид";
     }
   }
 
+
   function renderTournamentHeader() {
     return (
       <div className="tournament-header">
         <div className="tournament-title-row">
-          {onBack && <BackButton className="mobile-only" onClick={onBack} />}
-
           <h2>{title || "Турнир"}</h2>
 
-          <InfoButton idType={INFO_TYPE_SEASON} id={tournamentId} />
+          <InfoButton
+            idType={INFO_TYPE_SEASON}
+            id={tournamentId}
+          />
+
+          {onBack && (
+            <CloseButton
+              className="mobile-only"
+              onClick={onBack}
+            />
+          )}
         </div>
       </div>
     );
   }
+
 
   useEffect(() => {
     const cachedData = tournamentCache.get(tournamentId);
@@ -159,11 +181,19 @@ export default function Tournament({
     };
   }, [tournamentId]);
 
+
   if (loading) {
     return <LoadingPanel />;
   }
-  if (error) return <div>Ошибка: {error}</div>;
-  if (!data) return null;
+
+  if (error) {
+    return <div>Ошибка: {error}</div>;
+  }
+
+  if (!data) {
+    return null;
+  }
+
 
   if (data.datatype === 1) {
     const showViewPopup = data.resultOf === -1;
@@ -172,11 +202,19 @@ export default function Tournament({
       <>
         <div className="tournament-header">
           <div className="tournament-title-row">
-            {onBack && <BackButton className="mobile-only" onClick={onBack} />}
-
             <h2>{title || "Турнир"}</h2>
 
-            <InfoButton idType={INFO_TYPE_SEASON} id={tournamentId} />
+            <InfoButton
+              idType={INFO_TYPE_SEASON}
+              id={tournamentId}
+            />
+
+            {onBack && (
+              <CloseButton
+                className="mobile-only"
+                onClick={onBack}
+              />
+            )}
           </div>
 
           {showViewPopup && (
@@ -192,11 +230,13 @@ export default function Tournament({
               {viewMenuOpen && (
                 <div className="view-popup-menu">
                   <button onClick={() => handleViewModeChange("full")}>
-                    {viewMode === "full" ? "✓ " : ""}Полный вид
+                    {viewMode === "full" ? "✓ " : ""}
+                    Полный вид
                   </button>
 
                   <button onClick={() => handleViewModeChange("short")}>
-                    {viewMode === "short" ? "✓ " : ""}Сокращенный вид
+                    {viewMode === "short" ? "✓ " : ""}
+                    Сокращенный вид
                   </button>
 
                   <button onClick={() => handleViewModeChange("table2score")}>
@@ -205,17 +245,20 @@ export default function Tournament({
                   </button>
 
                   <button onClick={() => handleViewModeChange("table1")}>
-                    {viewMode === "table1" ? "✓ " : ""}Таблица, стиль 1
+                    {viewMode === "table1" ? "✓ " : ""}
+                    Таблица, стиль 1
                   </button>
 
                   <div className="view-popup-separator" />
 
                   <button onClick={() => handleShowAwayMatchesChange(true)}>
-                    {showAwayMatches ? "✓ " : ""}Все матчи
+                    {showAwayMatches ? "✓ " : ""}
+                    Все матчи
                   </button>
 
                   <button onClick={() => handleShowAwayMatchesChange(false)}>
-                    {!showAwayMatches ? "✓ " : ""}Домашние матчи
+                    {!showAwayMatches ? "✓ " : ""}
+                    Домашние матчи
                   </button>
                 </div>
               )}
@@ -255,6 +298,7 @@ export default function Tournament({
     );
   }
 
+
   if (data.datatype === 2) {
     return (
       <>
@@ -274,6 +318,8 @@ export default function Tournament({
       </>
     );
   }
+
+
   if (data.datatype === 3) {
     return (
       <>
@@ -288,5 +334,7 @@ export default function Tournament({
       </>
     );
   }
+
+
   return <div>Неизвестный тип данных</div>;
 }

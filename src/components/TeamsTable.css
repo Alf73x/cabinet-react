@@ -67,15 +67,14 @@
 }
 
 .teams-table thead {
-  position: sticky;
-  top: 0;
-  z-index: 20;
-
   background: #f7f7f7;
 }
 
 .teams-table thead th {
-  position: static;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+
   background: #f7f7f7;
 }
 
@@ -181,35 +180,40 @@
   background: var(--header-bg, #f3f3f3);
 }
 
-
 @media (max-width: 768px) {
   .territory-tables {
-    height: auto;
+    height: 100%;
     min-height: 0;
-    overflow: visible;
+    overflow: hidden;
   }
 
   .teams-table-panel {
-    height: auto;
+    height: 100%;
     min-height: 0;
-    overflow: visible;
-    display: block;
+
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
   }
 
   .teams-table-wrap {
-    height: auto;
+    flex: 1 1 auto;
+
+    height: 100%;
     min-height: 0;
-    overflow: visible;
-    display: block;
+
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
   }
 
   .teams-table-scroll {
-    height: auto;
-    max-height: none;
+    flex: 1 1 auto;
     min-height: 0;
 
-    overflow-x: auto;
-    overflow-y: visible;
+    overflow: auto;
   }
 
   .teams-table {

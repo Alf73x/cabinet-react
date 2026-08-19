@@ -331,6 +331,28 @@ export default function TerritoriesTree({
           fontWeight: 400,
           lineHeight: 1.25,
         },
+
+        "@media (max-width: 768px)": {
+          "& .MuiTreeItem-content": {
+            minHeight: "38px",
+            paddingTop: "3px",
+            paddingBottom: "3px",
+          },
+
+          "& .MuiTreeItem-iconContainer": {
+            width: "32px",
+            minWidth: "32px",
+            height: "32px",
+
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          },
+
+          "& .MuiTreeItem-iconContainer svg": {
+            fontSize: "22px",
+          },
+        },
       }}
     />
   );

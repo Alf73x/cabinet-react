@@ -12,10 +12,12 @@ import TeamHistoryTable, {
 } from "../components/TeamHistoryTable";
 import LoadingPanel from "../components/LoadingPanel";
 import InfoButton from "../components/InfoButton";
-import {INFO_TYPE_TEAM} from "../api/info.ts";
+import CloseButton from "../components/CloseButton";
+import { INFO_TYPE_TEAM } from "../api/info.ts";
 
 
 const MOBILE_WIDTH = 768;
+
 
 export default function TeamPage() {
   const { teamId } = useParams<{ teamId: string }>();
@@ -27,6 +29,7 @@ export default function TeamPage() {
   const [error, setError] = useState("");
   const [selectedRow, setSelectedRow] = useState<TeamHistoryItem | null>(null);
   const [teamInfo, setTeamInfo] = useState<TeamInfo | null>(null);
+
 
   useEffect(() => {
     const id = Number(teamId);
@@ -61,6 +64,7 @@ export default function TeamPage() {
     void loadTeam();
   }, [teamId]);
 
+
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= MOBILE_WIDTH);
@@ -71,6 +75,7 @@ export default function TeamPage() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+
   function openTournament(row: TeamHistoryItem) {
     const item = {
       type: "season",
@@ -78,11 +83,11 @@ export default function TeamPage() {
     };
 
     localStorage.setItem("active-main-item", JSON.stringify(item));
-
     localStorage.setItem("season-selected-item", String(row.SeasonID));
 
     window.location.href = "/";
   }
+
 
   function renderScores(row: TeamHistoryItem) {
     return (
@@ -92,14 +97,7 @@ export default function TeamPage() {
             {row.Season} - {row.SeasonName}
           </div>
 
-          <button
-            type="button"
-            className="close-scores-btn"
-            onClick={() => setSelectedRow(null)}
-            aria-label="Закрыть список матчей"
-          >
-            ✕
-          </button>
+          <CloseButton onClick={() => setSelectedRow(null)} />
         </div>
 
         <ScoresTablePanel teamId={row.ID} seasonId={row.SeasonID} />
@@ -107,9 +105,11 @@ export default function TeamPage() {
     );
   }
 
+
   function handleClose() {
     window.close();
   }
+
 
   return (
     <div className="app team-page">
@@ -117,18 +117,17 @@ export default function TeamPage() {
 
       <main className="content team-page-content">
         <div className="team-page-title-row">
-          <h2 className="team-page-title">{teamInfo?.name  ?? ""}</h2>
-         
-         <InfoButton idType={INFO_TYPE_TEAM} id={Number(teamId)} />
-         
-          <button
-            type="button"
-            className="team-page-close"
+          <h2 className="team-page-title">{teamInfo?.name ?? ""}</h2>
+
+          <InfoButton
+            idType={INFO_TYPE_TEAM}
+            id={Number(teamId)}
+          />
+
+          <CloseButton
+            className="mobile-only"
             onClick={handleClose}
-            aria-label="Закрыть"
-          >
-            ✕
-          </button>
+          />
         </div>
 
         {loading && <LoadingPanel />}

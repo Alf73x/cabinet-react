@@ -1,0 +1,55 @@
+.close-button {
+  display: none;
+}
+
+.close-button-desktop {
+  display: flex;
+  flex: 0 0 30px;
+
+  width: 30px;
+  height: 30px;
+
+  margin-left: auto;
+  padding: 0;
+
+  align-items: center;
+  justify-content: center;
+
+  color: red;
+  background: transparent;
+
+  border: none;
+  border-radius: 3px;
+
+  font-size: 18px;
+  line-height: 1;
+
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .close-button {
+    display: flex;
+    flex: 0 0 30px;
+
+    width: 30px;
+    height: 30px;
+
+    margin-left: auto;
+    padding: 0;
+
+    align-items: center;
+    justify-content: center;
+
+    color: red;
+    background: transparent;
+
+    border: none;
+    border-radius: 3px;
+
+    font-size: 18px;
+    line-height: 1;
+
+    cursor: pointer;
+  }
+}

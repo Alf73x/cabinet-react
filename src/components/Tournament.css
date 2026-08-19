@@ -1029,6 +1029,12 @@
   border: 0 !important;
   background: #fff !important;
 }
+
+/* Desktop */
+.tournament-close {
+  display: none;
+}
+
 /* =======================
    Mobile
    ======================= */
@@ -1042,15 +1048,18 @@
   }
 
 
-  .tournament-title-row {
-    width: 100%;
-    min-width: 0;
-  }
+.tournament-title-row {
+  width: 100%;
+  min-width: 0;
 
+  align-items: center;
+}
 
   .tournament-header h2,
   .tournament-title-row h2 {
-    width: 100%;
+    flex: 0 1 auto;
+
+    width: auto;
     min-width: 0;
 
     margin: 0;
@@ -1061,6 +1070,32 @@
     overflow-wrap: normal;
     word-break: normal;
   }
+
+
+.tournament-title-row .tournament-close {
+  flex: 0 0 30px;
+
+  width: 30px;
+  height: 30px;
+
+  margin-left: auto;
+  padding: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: none;
+  border-radius: 3px;
+
+  background: transparent;
+  color: #64748b;
+
+  font-size: 18px;
+  line-height: 1;
+
+  cursor: pointer;
+}
 
 
   .tournament-options {
@@ -1131,18 +1166,17 @@
   }
 
 
-  .match-row {
-    grid-template-columns:
-      76px
-      48px
-      minmax(90px, 1fr)
-      44px
-      minmax(90px, 1fr);
+.match-row {
+  grid-template-columns:
+    82px
+    52px
+    150px
+    50px
+    150px;
 
-    width: 100%;
-    min-width: 0;
-  }
-
+  width: max-content;
+  min-width: 100%;
+}
 
   .match-date,
   .match-tour,
@@ -1152,12 +1186,13 @@
   }
 
 
-  .match-team {
-    overflow: hidden;
+.match-team {
+  min-width: 0;
 
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
+  overflow: visible;
+  text-overflow: clip;
+  white-space: nowrap;
+}
 
 
   .match-score {
