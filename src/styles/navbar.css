@@ -1,5 +1,6 @@
 .navbar {
   position: relative;
+
   display: flex;
   align-items: center;
   flex-shrink: 0;
@@ -15,6 +16,7 @@
 
 
 /* Cabinet */
+
 .logo {
   display: inline-flex;
   align-items: center;
@@ -26,6 +28,7 @@
   background: transparent;
 
   color: #fff;
+
   cursor: pointer;
 }
 
@@ -46,17 +49,21 @@
 
 .navbar-logo-text {
   color: #fff;
+
   font-size: 16px;
   font-weight: 700;
+
   white-space: nowrap;
 }
 
 
-
 /* Links */
+
 .navbar a {
   color: white;
+
   text-decoration: none;
+
   font-weight: var(--font-weight-normal);
 }
 
@@ -66,14 +73,17 @@
 
 
 /* Link-style buttons */
+
 .navbar-link-button {
   padding: 0;
 
   color: white;
   background: transparent;
+
   border: none;
 
   font-weight: var(--font-weight-normal);
+
   cursor: pointer;
 }
 
@@ -83,6 +93,7 @@
 
 
 /* User */
+
 .user-menu {
   display: flex;
   align-items: center;
@@ -91,11 +102,13 @@
 
 .user-name {
   color: white;
+
   font-weight: var(--font-weight-normal);
 }
 
 
 /* Navigation */
+
 .navbar nav {
   display: flex;
   align-items: center;
@@ -106,15 +119,18 @@
 
 
 /* Sport / Tools / User menu buttons */
+
 .navbar-menu-button {
   padding: 4px 0;
 
   color: #ffffff;
   background: transparent;
+
   border: none;
 
   font-size: inherit;
   font-weight: var(--font-weight-normal);
+
   cursor: pointer;
 }
 
@@ -124,54 +140,59 @@
 
 
 /* Dropdown */
+
 .navbar-dropdown {
   position: relative;
+
   display: inline-block;
 }
 
 .navbar-dropdown-content {
   position: absolute;
+
   top: 100%;
-
   right: 0;
-
-  min-width: 200px;
-  max-width: calc(100vw - 16px);
-
-  white-space: nowrap;
-
   left: auto;
+
   z-index: 1000;
 
   display: none;
+
   min-width: 220px;
+  max-width: calc(100vw - 16px);
+
   padding: 5px 0;
 
   background: #ffffff;
+
   border: 1px solid #d1d5db;
   border-radius: 4px;
 
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
+
+  white-space: nowrap;
 }
 
 .navbar-dropdown-content--right {
   right: 0;
   left: auto;
+
   min-width: 130px;
 }
 
-.navbar-dropdown:hover .navbar-dropdown-content {
-  display: block;
-}
+
+/* Dropdown items */
 
 .navbar-dropdown-content button {
   display: block;
+
   width: 100%;
 
   padding: 9px 14px;
 
   color: #1f2937;
   background: transparent;
+
   border: none;
 
   text-align: left;
@@ -189,14 +210,34 @@
 
 .navbar-dropdown-content button:disabled {
   color: #9ca3af;
+
   cursor: not-allowed;
 }
 
 
+/* Desktop dropdown */
+
+@media (min-width: 769px) {
+  .navbar-dropdown:hover .navbar-dropdown-content {
+    display: block;
+  }
+}
+
+
+/* Dropdown opened by React state */
+
+.navbar-dropdown-content-open {
+  display: block;
+}
+
+
 /* Central page title */
+
 .navbar-page-title {
   position: absolute;
+
   left: 50%;
+
   transform: translateX(-50%);
 
   color: #ffffff;
@@ -205,15 +246,63 @@
   font-weight: var(--font-weight-medium);
 
   white-space: nowrap;
+
   pointer-events: none;
 }
 
 
+/* Menu separator */
+
 .navbar-menu-separator {
   height: 1px;
+
   margin: 4px 8px;
+
   background: #d9dde3;
 }
+
+
+/* Mobile services hamburger */
+
+.navbar-services-hamburger {
+  display: none;
+
+  width: 34px;
+  height: 34px;
+
+  padding: 7px;
+
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+
+  color: #ffffff;
+  background: transparent;
+
+  border: none;
+  border-radius: 4px;
+
+  cursor: pointer;
+}
+
+.navbar-services-hamburger span {
+  display: block;
+
+  width: 18px;
+  height: 2px;
+
+  background: currentColor;
+
+  border-radius: 2px;
+}
+
+.navbar-services-hamburger:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+
+/* Mobile */
 
 @media (max-width: 768px) {
   .navbar-logo-text {
@@ -222,5 +311,17 @@
 
   .navbar-page-title {
     display: none;
+  }
+
+  .navbar-services-text {
+    display: none;
+  }
+
+  .navbar-services-hamburger {
+    display: flex;
+  }
+
+  .navbar-dropdown-content-open {
+    display: block;
   }
 }

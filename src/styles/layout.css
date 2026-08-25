@@ -61,3 +61,32 @@
 .territory-title-row h2 {
   margin: 0;
 }
+
+.tree-filter-item {
+  box-sizing: border-box;
+
+  min-height: 25px;
+  padding: 4px 8px 4px 32px;
+
+  display: flex;
+  align-items: center;
+
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.25;
+
+  cursor: pointer;
+}
+
+.tree-filter-item:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+@media (max-width: 768px) {
+  .tree-filter-item {
+    min-height: 38px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+  }
+}

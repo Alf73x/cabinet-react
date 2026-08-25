@@ -1,5 +1,7 @@
 import "./TeamsTable.css";
-import { useMemo, useState } from "react";
+
+import { useMemo, useRef, useState } from "react";
+
 import {
   flexRender,
   getCoreRowModel,
@@ -10,6 +12,8 @@ import {
   type ColumnFiltersState,
   type SortingState,
 } from "@tanstack/react-table";
+
+import { useVirtualizer } from "@tanstack/react-virtual";
 
 import type { Team } from "../api/teamsTableService";
 import type { SportItem } from "../api/sportsService";
@@ -41,6 +45,8 @@ export default function TeamsTable({
   onRowClick,
   onTeamClick,
 }: Props) {
+  const scrollRef = useRef<HTMLDivElement>(null);
+
   const data = useMemo<TeamGridRow[]>(
     () =>
       rows.map((row, index) => ({
@@ -51,13 +57,11 @@ export default function TeamsTable({
     [rows],
   );
 
-  // Быстрый поиск названия спорта по ID
   const sportsById = useMemo(
     () => new Map(sports.map((sport) => [sport.ID, sport.Name])),
     [sports],
   );
 
-  // Колонка "Спорт" показывается только если выбрано больше одного спорта
   const columns = useMemo<ColumnDef<TeamGridRow>[]>(() => {
     const result: ColumnDef<TeamGridRow>[] = [
       {
@@ -97,6 +101,21 @@ export default function TeamsTable({
         header: "Ранг",
         size: 55,
         meta: { align: "center" },
+
+        filterFn: (row, columnId, filterValue) => {
+          const filter = String(filterValue ?? "").trim();
+
+          if (!filter) {
+            return true;
+          }
+
+          const ranks = filter
+            .split(",")
+            .map((value) => Number(value.trim()))
+            .filter((value) => !Number.isNaN(value));
+
+          return ranks.includes(Number(row.getValue(columnId)));
+        },
       },
       {
         accessorKey: "Place",
@@ -144,20 +163,44 @@ export default function TeamsTable({
   const table = useReactTable({
     data,
     columns,
+
     state: {
       sorting,
       columnFilters,
     },
+
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
+
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
   });
 
+  const tableRows = table.getRowModel().rows;
+
+  const rowVirtualizer = useVirtualizer({
+    count: tableRows.length,
+
+    getScrollElement: () => scrollRef.current,
+
+    estimateSize: () => 31,
+
+    overscan: 200,
+  });
+
+  const virtualRows = rowVirtualizer.getVirtualItems();
+
+  const paddingTop = virtualRows.length > 0 ? virtualRows[0].start : 0;
+
+  const paddingBottom =
+    virtualRows.length > 0
+      ? rowVirtualizer.getTotalSize() - virtualRows[virtualRows.length - 1].end
+      : 0;
+
   return (
     <div className="teams-table-wrap">
-      <div className="teams-table-scroll">
+      <div ref={scrollRef} className="teams-table-scroll">
         <table className="teams-table">
           <thead>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -181,6 +224,7 @@ export default function TeamsTable({
                           cursor: header.column.getCanSort()
                             ? "pointer"
                             : "default",
+
                           userSelect: "none",
                         }}
                       >
@@ -213,50 +257,79 @@ export default function TeamsTable({
           </thead>
 
           <tbody>
-            {table.getRowModel().rows.map((row) => (
-              <tr
-                key={row.original.gridId}
-                onClick={() => onRowClick?.(row.original)}
-              >
-                {row.getVisibleCells().map((cell) => {
-                  const align = cell.column.columnDef.meta?.align;
-                  const isTeamCell = cell.column.id === "TeamName";
-
-                  return (
-                    <td
-                      key={cell.id}
-                      title={String(cell.getValue() ?? "")}
-                      className={
-                        isTeamCell
-                          ? "clickable-team"
-                          : cell.column.columnDef.meta?.className
-                      }
-                      onClick={(e) => {
-                        if (!isTeamCell) {
-                          return;
-                        }
-
-                        e.stopPropagation();
-
-                        onTeamClick?.(
-                          row.original.ID,
-                          row.original.TeamName,
-                        );
-                      }}
-                      style={{
-                        width: cell.column.getSize(),
-                        textAlign: align ?? "left",
-                      }}
-                    >
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      )}
-                    </td>
-                  );
-                })}
+            {paddingTop > 0 && (
+              <tr>
+                <td
+                  colSpan={table.getVisibleLeafColumns().length}
+                  style={{
+                    height: paddingTop,
+                    padding: 0,
+                    border: 0,
+                  }}
+                />
               </tr>
-            ))}
+            )}
+
+            {virtualRows.map((virtualRow) => {
+              const row = tableRows[virtualRow.index];
+
+              return (
+                <tr
+                  key={row.original.gridId}
+                  ref={rowVirtualizer.measureElement}
+                  data-index={virtualRow.index}
+                  onClick={() => onRowClick?.(row.original)}
+                >
+                  {row.getVisibleCells().map((cell) => {
+                    const align = cell.column.columnDef.meta?.align;
+                    const isTeamCell = cell.column.id === "TeamName";
+
+                    return (
+                      <td
+                        key={cell.id}
+                        title={String(cell.getValue() ?? "")}
+                        className={
+                          isTeamCell
+                            ? "clickable-team"
+                            : cell.column.columnDef.meta?.className
+                        }
+                        onClick={(e) => {
+                          if (!isTeamCell) {
+                            return;
+                          }
+
+                          e.stopPropagation();
+
+                          onTeamClick?.(row.original.ID, row.original.TeamName);
+                        }}
+                        style={{
+                          width: cell.column.getSize(),
+                          textAlign: align ?? "left",
+                        }}
+                      >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext(),
+                        )}
+                      </td>
+                    );
+                  })}
+                </tr>
+              );
+            })}
+
+            {paddingBottom > 0 && (
+              <tr>
+                <td
+                  colSpan={table.getVisibleLeafColumns().length}
+                  style={{
+                    height: paddingBottom,
+                    padding: 0,
+                    border: 0,
+                  }}
+                />
+              </tr>
+            )}
           </tbody>
         </table>
       </div>

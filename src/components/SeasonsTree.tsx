@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { RichTreeView } from "@mui/x-tree-view/RichTreeView";
 import { TreeItem, type TreeItemProps } from "@mui/x-tree-view/TreeItem";
 import { useTreeItemModel } from "@mui/x-tree-view/hooks";
@@ -279,28 +278,6 @@ function buildSeasonsTree(
   });
 }
 
-function findParentId(items: TreeItem[], childId: string): string | null {
-  for (const item of items) {
-    // Проверяем прямых детей текущего узла
-
-    if (item.children?.some((child) => child.id === childId)) {
-      return item.id;
-    }
-
-    if (item.children) {
-      // Если у текущего узла есть дети — продолжаем поиск глубже
-
-      const parentId = findParentId(item.children, childId);
-
-      if (parentId) {
-        return parentId;
-      }
-    }
-  }
-
-  return null;
-}
-
 // Компонент
 export default function SeasonsTree({
   seasons,
@@ -329,20 +306,6 @@ export default function SeasonsTree({
   const filteredItems = searchText
     ? items.filter((item) => item.label.toLowerCase().includes(searchText))
     : items;
-
-  const selectedParentId = selectedItem
-    ? findParentId(items, selectedItem)
-    : null;
-
-  useEffect(() => {
-    if (!selectedParentId) {
-      return;
-    }
-
-    if (!expandedItems.includes(selectedParentId)) {
-      onExpandedItemsChange([...expandedItems, selectedParentId]);
-    }
-  }, [selectedParentId, expandedItems, onExpandedItemsChange]);
 
   return (
     <RichTreeView

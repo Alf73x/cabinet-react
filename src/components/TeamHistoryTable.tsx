@@ -61,14 +61,29 @@ const columns: ColumnDef<GridRow>[] = [
   {
     accessorKey: "LeagueRank",
     header: "Ранг",
-    size: 60,
+    size: 55,
     meta: { align: "center" },
+
+    filterFn: (row, columnId, filterValue) => {
+      const filter = String(filterValue ?? "").trim();
+
+      if (!filter) {
+        return true;
+      }
+
+      const ranks = filter
+        .split(",")
+        .map((value) => Number(value.trim()))
+        .filter((value) => !Number.isNaN(value));
+
+      return ranks.includes(Number(row.getValue(columnId)));
+    },
   },
   {
     accessorKey: "Place",
     header: "Место",
     size: 140,
-    meta: { align: "center"},
+    meta: { align: "center" },
     enableColumnFilter: false,
   },
   {
@@ -156,7 +171,7 @@ export default function TeamHistoryTable({
       })),
     [rows],
   );
-  
+
   const [sorting, setSorting] = useState<SortingState>([]);
 
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -175,7 +190,6 @@ export default function TeamHistoryTable({
     getSortedRowModel: getSortedRowModel(),
   });
 
-  
   return (
     <div className="teams-table-wrap">
       <div className="teams-table-scroll">
@@ -278,7 +292,6 @@ export default function TeamHistoryTable({
           </tbody>
         </table>
       </div>
-
     </div>
   );
 }

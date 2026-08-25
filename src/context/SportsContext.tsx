@@ -6,16 +6,9 @@ import {
   useState,
 } from "react";
 
-import type {
-  Dispatch,
-  ReactNode,
-  SetStateAction,
-} from "react";
+import type { Dispatch, ReactNode, SetStateAction } from "react";
 
-import {
-  getSports,
-  type SportItem,
-} from "../api/sportsService";
+import { getSports, type SportItem } from "../api/sportsService";
 
 export const SPORTS_STORAGE_KEY = "selected-sports";
 
@@ -25,20 +18,15 @@ type SportsContextValue = {
 
   selectedSports: number[];
 
-  setSelectedSports: Dispatch<
-    SetStateAction<number[]>
-  >;
+  setSelectedSports: Dispatch<SetStateAction<number[]>>;
 
   toggleSport: (id: number) => void;
 };
 
-const SportsContext =
-  createContext<SportsContextValue | null>(null);
+const SportsContext = createContext<SportsContextValue | null>(null);
 
 function readSavedSports(): number[] | null {
-  const saved = localStorage.getItem(
-    SPORTS_STORAGE_KEY,
-  );
+  const saved = localStorage.getItem(SPORTS_STORAGE_KEY);
 
   if (saved === null) {
     return null;
@@ -53,8 +41,7 @@ function readSavedSports(): number[] | null {
 
     return values.filter(
       (value): value is number =>
-        typeof value === "number" &&
-        Number.isInteger(value),
+        typeof value === "number" && Number.isInteger(value),
     );
   } catch {
     return null;
@@ -65,39 +52,27 @@ type SportsProviderProps = {
   children: ReactNode;
 };
 
-export function SportsProvider({
-  children,
-}: SportsProviderProps) {
-  const [sports, setSports] =
-    useState<SportItem[]>([]);
+export function SportsProvider({ children }: SportsProviderProps) {
+  const [sports, setSports] = useState<SportItem[]>([]);
 
-  const [sportsLoading, setSportsLoading] =
-    useState(true);
+  const [sportsLoading, setSportsLoading] = useState(true);
 
-  const [
-    selectedSports,
-    setSelectedSportsState,
-  ] = useState<number[]>(() => {
+  const [selectedSports, setSelectedSportsState] = useState<number[]>(() => {
     return readSavedSports() ?? [];
   });
 
-  const setSelectedSports: Dispatch<
-    SetStateAction<number[]>
-  > = useCallback((value) => {
-    setSelectedSportsState((current) => {
-      const next =
-        typeof value === "function"
-          ? value(current)
-          : value;
+  const setSelectedSports: Dispatch<SetStateAction<number[]>> = useCallback(
+    (value) => {
+      setSelectedSportsState((current) => {
+        const next = typeof value === "function" ? value(current) : value;
 
-      localStorage.setItem(
-        SPORTS_STORAGE_KEY,
-        JSON.stringify(next),
-      );
+        localStorage.setItem(SPORTS_STORAGE_KEY, JSON.stringify(next));
 
-      return next;
-    });
-  }, []);
+        return next;
+      });
+    },
+    [],
+  );
 
   /*
    * Загружаем список видов спорта.
@@ -120,34 +95,25 @@ export function SportsProvider({
 
         const savedSports = readSavedSports();
 
-        const validIds = new Set(
-          items.map((sport) => sport.ID),
-        );
+        const validIds = new Set(items.map((sport) => sport.ID));
 
-        const actualIds =
-          savedSports?.filter(
-            (id) => validIds.has(id),
-          ) ?? [];
+        const actualIds = savedSports?.filter((id) => validIds.has(id)) ?? [];
 
         /*
          * При первом запуске или при сохранённом []
-         * выбираем все виды спорта.
+         * выбираем все виды спорта, кроме "Футзал".
          */
         if (actualIds.length === 0) {
-          const allIds = items.map(
-            (sport) => sport.ID,
-          );
+          const defaultIds = items
+            .filter((sport) => sport.Name !== "Футзал")
+            .map((sport) => sport.ID);
 
-          setSelectedSports(allIds);
+          setSelectedSports(defaultIds);
         } else {
-
           setSelectedSports(actualIds);
         }
       } catch (error) {
-        console.error(
-          "Failed to load sports:",
-          error,
-        );
+        console.error("Failed to load sports:", error);
 
         if (!cancelled) {
           setSports([]);
@@ -170,29 +136,20 @@ export function SportsProvider({
    * Синхронизация между вкладками.
    */
   useEffect(() => {
-    const handleStorage = (
-      event: StorageEvent,
-    ) => {
+    const handleStorage = (event: StorageEvent) => {
       if (event.key !== SPORTS_STORAGE_KEY) {
         return;
       }
 
-      const savedSports =
-        readSavedSports() ?? [];
+      const savedSports = readSavedSports() ?? [];
 
       setSelectedSportsState(savedSports);
     };
 
-    window.addEventListener(
-      "storage",
-      handleStorage,
-    );
+    window.addEventListener("storage", handleStorage);
 
     return () => {
-      window.removeEventListener(
-        "storage",
-        handleStorage,
-      );
+      window.removeEventListener("storage", handleStorage);
     };
   }, []);
 
@@ -200,9 +157,7 @@ export function SportsProvider({
     (id: number) => {
       setSelectedSports((current) =>
         current.includes(id)
-          ? current.filter(
-              (sportId) => sportId !== id,
-            )
+          ? current.filter((sportId) => sportId !== id)
           : [...current, id],
       );
     },
@@ -228,9 +183,7 @@ export function useSports(): SportsContextValue {
   const context = useContext(SportsContext);
 
   if (context === null) {
-    throw new Error(
-      "useSports must be used inside SportsProvider",
-    );
+    throw new Error("useSports must be used inside SportsProvider");
   }
 
   return context;

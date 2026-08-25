@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom";
-
 import Navbar from "../components/Navbar";
-import BackButton from "../components/BackButton";
+import CloseButton from "../components/CloseButton";
 
 import "./SourcesPage.css";
 
@@ -11,7 +10,7 @@ export default function SourcesPage() {
   return (
     <div className="app">
       <Navbar
-        pageTitle="Источники"
+        pageTitle="Ссылки"
         showTools={false}
         showUser={false}
         onLogoClick={() => navigate("/")}
@@ -19,37 +18,63 @@ export default function SourcesPage() {
 
       <main className="sources-page">
         <div className="page-title-row">
-          <BackButton onClick={() => navigate("/")} />
+          <h2>Ссылки</h2>
 
-          <h2>Источники</h2>
+          <CloseButton desktop onClick={() => window.close()} />
         </div>
 
         <div className="sources-page-content">
           <p className="sources-intro">
             Для наполнения SportCabinet используются открытые интернет-ресурсы,
-            архивные материалы, статистические сайты и публикации.
+            архивные материалы, статистические сайты и публикации. Интересные ресурсы и источники представлены ниже.
           </p>
 
-          <p className="sources-intro">
-            Список источников будет постепенно дополняться.
-          </p>
+          <section className="sources-section">
+            <h3>Общее</h3>
+
+            <div className="sources-list">
+              <a
+                href="https://yandex.ru/archive/catalog/9795c63e-cb01-4dff-b519-e984fe75ddf9/years"
+                target="_blank"
+                rel="noreferrer"
+                className="source-item"
+              >
+                <span className="source-title">Советский спорт</span>
+                <span className="source-description">
+                  Архив газеты «Советский спорт»
+                </span>
+              </a>
+
+              <a
+                href="https://www.sport-express.ru/"
+                target="_blank"
+                rel="noreferrer"
+                className="source-item"
+              >
+                <span className="source-title">Спорт-Экспресс</span>
+                <span className="source-description">
+                  Российская ежедневная газета о спорте
+                </span>
+              </a>
+
+              <a
+                href="https://ru.wikipedia.org"
+                target="_blank"
+                rel="noreferrer"
+                className="source-item"
+              >
+                <span className="source-title">Википедия</span>
+                <span className="source-description">
+                  Справочная информация
+                </span>
+              </a>
+            </div>
+          </section>
 
           <section className="sources-section">
             <h3>Футбол</h3>
 
             <div className="sources-list">
-              <a
-                href="https://wildstat.ru"
-                target="_blank"
-                rel="noreferrer"
-                className="source-item"
-              >
-                <span className="source-title">WildStat</span>
-                <span className="source-description">
-                  Футбольные результаты и статистика
-                </span>
-              </a>
-
               <a
                 href="https://footballfakts.ru"
                 target="_blank"
@@ -59,6 +84,18 @@ export default function SourcesPage() {
                 <span className="source-title">FootballFacts</span>
                 <span className="source-description">
                   Футбольная статистика и не только
+                </span>
+              </a>
+
+              <a
+                href="https://wildstat.ru"
+                target="_blank"
+                rel="noreferrer"
+                className="source-item"
+              >
+                <span className="source-title">WildStat</span>
+                <span className="source-description">
+                  Футбольные результаты и статистика
                 </span>
               </a>
 
@@ -141,7 +178,7 @@ export default function SourcesPage() {
           </section>
 
           <section className="sources-section">
-            <h3>Мини-футбол</h3>
+            <h3>Футзал</h3>
 
             <div className="sources-list">
               <a
@@ -179,24 +216,6 @@ export default function SourcesPage() {
                 </span>
                 <span className="source-description">
                   Городская лига мини-футбола Новосибирска
-                </span>
-              </a>
-            </div>
-          </section>
-
-          <section className="sources-section">
-            <h3>Другие материалы</h3>
-
-            <div className="sources-list">
-              <a
-                href="https://ru.wikipedia.org"
-                target="_blank"
-                rel="noreferrer"
-                className="source-item"
-              >
-                <span className="source-title">Википедия</span>
-                <span className="source-description">
-                  Справочная информация
                 </span>
               </a>
             </div>

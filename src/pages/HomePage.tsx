@@ -1,17 +1,17 @@
-import BackButton from "../components/BackButton";
+import CloseButton from "../components/CloseButton";
 import "./HomePage.css";
 
 type Props = {
-  onBack?: () => void;
+  onClose?: () => void;
 };
 
-export default function HomePage({ onBack }: Props) {
+export default function HomePage({ onClose }: Props) {
   return (
     <div className="home-page">
       <div className="page-title-row">
-        {onBack && <BackButton className="mobile-only" onClick={onBack} />}
-
         <h2>Главная страница</h2>
+
+        {onClose && <CloseButton desktop onClick={onClose} />}
       </div>
 
       <div className="home-page-content">
@@ -26,10 +26,10 @@ export default function HomePage({ onBack }: Props) {
           <p>
             Проект содержит информацию о результатах команд мастеров советского
             и российского периодов с возможностью просмотра данных в разрезе
-            команд и территорий. Сейчас основная часть проекта посвящена футболу
+            сезонов и территорий. Сейчас основная часть проекта посвящена футболу
             и хоккею: результатам соревнований, турнирным таблицам и статистике
-            за разные годы. Также представлены некоторые данные по мини-футболу.
-            В дальнейшем этот раздел будет расширяться и дополняться.
+            за разные годы. Также представлены некоторые данные по футзалу. В
+            дальнейшем этот раздел будет расширяться и дополняться.
           </p>
         </section>
 
@@ -56,9 +56,11 @@ export default function HomePage({ onBack }: Props) {
           <h3>Источники данных</h3>
 
           <p>
-            Данные собраны из открытых источников. Полный список использованных
-            материалов и ресурсов доступен на странице{" "}
-            <a href="/sources">«Источники»</a>.
+            В SportCabinet используются сведения из открытых источников,
+            официальных публикаций, архивных материалов и общедоступных
+            интернет-ресурсов. Статистические данные систематизируются и
+            обрабатываются SportCabinet самостоятельно. Перечень интернет-ресурсов и 
+            источников приведён на странице <a href="/sources">«Ссылки»</a>.
           </p>
         </section>
 
@@ -84,6 +86,14 @@ export default function HomePage({ onBack }: Props) {
             </div>
 
             <div className="home-completeness-row">
+              <span className="home-star home-star-current">☆</span>
+              <span>
+                Незавершённый сезон. Данные будут дополнены после его
+                завершения.
+              </span>
+            </div>
+
+            <div className="home-completeness-row">
               <span className="home-star home-star-partial">☆</span>
               <span>По турниру отсутствует часть информации.</span>
             </div>
@@ -101,6 +111,14 @@ export default function HomePage({ onBack }: Props) {
             Буду благодарен за любую помощь в дополнении и проверке данных.
             Материалы, исправления и ссылки можно присылать на{" "}
             <a href="mailto:sportcabinet@mail.ru">sportcabinet@mail.ru</a>.
+          </p>
+        </section>
+
+        <section className="home-section">
+          <h3>История изменений</h3>
+
+          <p>
+            <strong>25.08.2026</strong> — первая публичная версия SportCabinet.
           </p>
         </section>
 

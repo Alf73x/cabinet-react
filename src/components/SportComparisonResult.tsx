@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import "./SportComparisonResult.css";
+import CloseButton from "./CloseButton";
 
 import {
   getComparisonMatches,
@@ -69,7 +70,6 @@ export default function SportComparisonResult({
       setMatchesLoading(false);
     }
   }
-
 
   function getScoreClass(match: ComparisonMatch, team1Id: number): string {
     const [g1, g2] = match.score.split(":").map(Number);
@@ -178,13 +178,7 @@ export default function SportComparisonResult({
                 Матчи {selectedItem.team1} - {selectedItem.team2}
               </h3>
 
-              <button
-                type="button"
-                className="comparison-matches-close"
-                onClick={() => setSelectedItem(null)}
-              >
-                ×
-              </button>
+              <CloseButton desktop onClick={() => setSelectedItem(null)} />
             </div>
             {matchesLoading && (
               <div className="comparison-hint">Загрузка матчей...</div>

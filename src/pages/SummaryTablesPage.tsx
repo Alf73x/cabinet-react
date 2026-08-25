@@ -6,6 +6,7 @@ import "./SummaryTablesPage.css";
 import MultiSelectDropdown from "../components/MultiSelectDropdown";
 import SummaryTable from "../components/SummaryTable";
 import LoadingPanel from "../components/LoadingPanel";
+import CloseButton from "../components/CloseButton";
 
 import {
   fallbackSummaryCategories,
@@ -61,11 +62,7 @@ export default function SummaryTablesPage() {
       if (loadedCategories.length > 0) {
         const firstCategory = loadedCategories[0];
 
-        setSelectedCategory(
-          firstCategory.id === 0
-            ? ""
-            : firstCategory.name,
-        );
+        setSelectedCategory(firstCategory.id === 0 ? "" : firstCategory.name);
       }
     } catch (err) {
       console.error("getSummaryCategories failed:", err);
@@ -132,9 +129,7 @@ export default function SummaryTablesPage() {
               disabled={categoriesLoading || categories.length === 0}
               onChange={(e) => setSelectedCategory(e.target.value)}
             >
-              {categoriesLoading && (
-                <option value="">Загрузка...</option>
-              )}
+              {categoriesLoading && <option value="">Загрузка...</option>}
 
               {!categoriesLoading && categories.length === 0 && (
                 <option value="">Нет категорий</option>
@@ -163,15 +158,7 @@ export default function SummaryTablesPage() {
               />
             </label>
 
-            <button
-              type="button"
-              className="summary-close-button"
-              onClick={handleClose}
-              title="Закрыть"
-              aria-label="Закрыть"
-            >
-              ✕
-            </button>
+            <CloseButton desktop onClick={handleClose} />
           </div>
 
           <label className="summary-filter summary-year-filter">
@@ -202,9 +189,7 @@ export default function SummaryTablesPage() {
             type="button"
             className="summary-start-button"
             disabled={
-              categoriesLoading ||
-              categories.length === 0 ||
-              summaryLoading
+              categoriesLoading || categories.length === 0 || summaryLoading
             }
             onClick={() => void handleStart()}
           >
@@ -220,9 +205,7 @@ export default function SummaryTablesPage() {
         </section>
 
         {categoriesError && (
-          <div className="summary-error">
-            {categoriesError}
-          </div>
+          <div className="summary-error">{categoriesError}</div>
         )}
 
         <section className="summary-results">
@@ -231,41 +214,33 @@ export default function SummaryTablesPage() {
           )}
 
           {!summaryLoading && summaryError && (
-            <div className="summary-error">
-              {summaryError}
+            <div className="summary-error">{summaryError}</div>
+          )}
+
+          {!summaryLoading && !summaryError && !summaryData && (
+            <div className="summary-empty">
+              Выберите параметры и нажмите «Старт».
             </div>
           )}
 
-          {!summaryLoading &&
-            !summaryError &&
-            !summaryData && (
-              <div className="summary-empty">
-                Выберите параметры и нажмите «Старт».
-              </div>
-            )}
+          {!summaryLoading && !summaryError && summaryData && (
+            <>
+              <h3 className="summary-title">{summaryData.title}</h3>
 
-          {!summaryLoading &&
-            !summaryError &&
-            summaryData && (
-              <>
-                <h3 className="summary-title">
-                  {summaryData.title}
-                </h3>
-
-                <SummaryTable
-                  rows={summaryData.rows}
-                  sports={sports}
-                  selectedSports={selectedSports}
-                  onTeamClick={(teamId) =>
-                    window.open(
-                      `/team/${teamId}`,
-                      "_blank",
-                      "noopener,noreferrer",
-                    )
-                  }
-                />
-              </>
-            )}
+              <SummaryTable
+                rows={summaryData.rows}
+                sports={sports}
+                selectedSports={selectedSports}
+                onTeamClick={(teamId) =>
+                  window.open(
+                    `/team/${teamId}`,
+                    "_blank",
+                    "noopener,noreferrer",
+                  )
+                }
+              />
+            </>
+          )}
         </section>
       </main>
     </div>

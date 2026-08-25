@@ -1040,6 +1040,11 @@
    ======================= */
 
 @media (max-width: 700px) {
+  :root {
+    --col-num-width: 34px;
+    --team-col-width: 130px;
+  }
+
   .tournament-header {
     flex-direction: column;
     align-items: stretch;

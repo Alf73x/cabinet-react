@@ -12,7 +12,6 @@ import InfoButton from "./InfoButton";
 import CloseButton from "./CloseButton";
 import { INFO_TYPE_SEASON } from "../api/info.ts";
 
-
 type Props = {
   tournamentId: number;
   title?: string;
@@ -21,18 +20,15 @@ type Props = {
   onTeamClick?: (team: { teamId: number; teamName: string }) => void;
 };
 
-
 const tournamentCache = new Map<number, TournamentResponse>();
 
 const VIEW_MODE_KEY = "tournament_view_mode";
 const SHOW_AWAY_MATCHES_KEY = "tournament_show_away_matches";
 
-
 type ExtraTextProps = {
   infoText?: string;
   commentText?: string;
 };
-
 
 function TournamentExtraText({ infoText, commentText }: ExtraTextProps) {
   const hasInfo = !!infoText?.trim();
@@ -62,7 +58,6 @@ function TournamentExtraText({ infoText, commentText }: ExtraTextProps) {
   );
 }
 
-
 export default function Tournament({
   tournamentId,
   title,
@@ -87,20 +82,17 @@ export default function Tournament({
 
   const [viewMenuOpen, setViewMenuOpen] = useState(false);
 
-
   function handleViewModeChange(value: string) {
     setViewMode(value);
     localStorage.setItem(VIEW_MODE_KEY, value);
     setViewMenuOpen(false);
   }
 
-
   function handleShowAwayMatchesChange(value: boolean) {
     setShowAwayMatches(value);
     localStorage.setItem(SHOW_AWAY_MATCHES_KEY, String(value));
     setViewMenuOpen(false);
   }
-
 
   function getViewModeText() {
     switch (viewMode) {
@@ -119,29 +111,17 @@ export default function Tournament({
     }
   }
 
-
   function renderTournamentHeader() {
     return (
-      <div className="tournament-header">
-        <div className="tournament-title-row">
-          <h2>{title || "Турнир"}</h2>
+      <div className="tournament-title-row">
+        <InfoButton idType={INFO_TYPE_SEASON} id={tournamentId} />
 
-          <InfoButton
-            idType={INFO_TYPE_SEASON}
-            id={tournamentId}
-          />
+        <h2>{title || "Турнир"}</h2>
 
-          {onBack && (
-            <CloseButton
-              className="mobile-only"
-              onClick={onBack}
-            />
-          )}
-        </div>
+        {onBack && <CloseButton onClick={onBack} />}
       </div>
     );
   }
-
 
   useEffect(() => {
     const cachedData = tournamentCache.get(tournamentId);
@@ -181,7 +161,6 @@ export default function Tournament({
     };
   }, [tournamentId]);
 
-
   if (loading) {
     return <LoadingPanel />;
   }
@@ -194,7 +173,6 @@ export default function Tournament({
     return null;
   }
 
-
   if (data.datatype === 1) {
     const showViewPopup = data.resultOf === -1;
 
@@ -202,19 +180,11 @@ export default function Tournament({
       <>
         <div className="tournament-header">
           <div className="tournament-title-row">
+            <InfoButton idType={INFO_TYPE_SEASON} id={tournamentId} />
+
             <h2>{title || "Турнир"}</h2>
 
-            <InfoButton
-              idType={INFO_TYPE_SEASON}
-              id={tournamentId}
-            />
-
-            {onBack && (
-              <CloseButton
-                className="mobile-only"
-                onClick={onBack}
-              />
-            )}
+            {onBack && <CloseButton onClick={onBack} />}
           </div>
 
           {showViewPopup && (
@@ -298,7 +268,6 @@ export default function Tournament({
     );
   }
 
-
   if (data.datatype === 2) {
     return (
       <>
@@ -319,7 +288,6 @@ export default function Tournament({
     );
   }
 
-
   if (data.datatype === 3) {
     return (
       <>
@@ -334,7 +302,6 @@ export default function Tournament({
       </>
     );
   }
-
 
   return <div>Неизвестный тип данных</div>;
 }

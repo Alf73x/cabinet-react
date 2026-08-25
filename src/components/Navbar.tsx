@@ -14,6 +14,7 @@ import { clearAuth, getLoginName } from "../api/authService";
 
 import SCLogo from "./SCLogo";
 
+
 type Props = {
   sports?: SportItem[];
   selectedSports?: number[];
@@ -23,6 +24,7 @@ type Props = {
   showUser?: boolean;
   onLogoClick?: () => void;
 };
+
 
 export default function Navbar({
   sports,
@@ -37,37 +39,129 @@ export default function Navbar({
 
   const [loginDialogOpen, setLoginDialogOpen] = useState(false);
 
+  const [servicesMenuOpen, setServicesMenuOpen] =
+    useState(false);
+
   const [loginName, setLoginName] = useState<string | null>(() =>
     getLoginName(),
   );
 
   const isAuthenticated = loginName !== null;
 
-  const handleLogout = () => {
+
+  function closeServicesMenu() {
+    setServicesMenuOpen(false);
+  }
+
+
+  function handleLogoClick() {
+    closeServicesMenu();
+
+    if (onLogoClick) {
+      onLogoClick();
+      return;
+    }
+
+    navigate("/");
+  }
+
+
+  function handleLogout() {
+    closeServicesMenu();
+
     clearAuth();
     setLoginName(null);
 
     navigate("/");
-  };
+  }
+
+
+  function handleOpponentComparison() {
+    closeServicesMenu();
+
+    window.open(
+      "/opponent-comparison",
+      "_blank",
+      "noopener,noreferrer",
+    );
+  }
+
+
+  function handleSummaryTables() {
+    closeServicesMenu();
+
+    window.open(
+      "/summary-tables",
+      "_blank",
+      "noopener,noreferrer",
+    );
+  }
+
+
+  function handleAbout() {
+    closeServicesMenu();
+
+    navigate("/?home=1");
+  }
+
+
+  function handleSources() {
+    closeServicesMenu();
+
+    window.open(
+      "/sources",
+      "_blank",
+      "noopener,noreferrer",
+    );
+  }
+
+
+  function handleLogin() {
+    closeServicesMenu();
+
+    setLoginDialogOpen(true);
+  }
+
 
   return (
     <>
       <header className="navbar">
-        <button type="button" className="logo" onClick={onLogoClick}>
+        <button
+          type="button"
+          className="logo"
+          onClick={handleLogoClick}
+        >
           <SCLogo className="navbar-logo-icon" />
-          <span className="navbar-logo-text">SportCabinet</span>
+
+          <span className="navbar-logo-text">
+            SportCabinet
+          </span>
         </button>
-        {pageTitle && <div className="navbar-page-title">{pageTitle}</div>}
+
+
+        {pageTitle && (
+          <div className="navbar-page-title">
+            {pageTitle}
+          </div>
+        )}
+
+
         <nav>
           {sports && selectedSports && onToggleSport && (
             <div className="sport-dropdown">
-              <button type="button" className="sport-menu-button">
+              <button
+                type="button"
+                className="sport-menu-button"
+              >
                 Спорт ▾
               </button>
 
               <div className="sport-dropdown-content">
                 {sports.map((sport) => (
-                  <label key={sport.ID} className="sport-dropdown-item">
+                  <label
+                    key={sport.ID}
+                    className="sport-dropdown-item"
+                  >
                     <input
                       type="checkbox"
                       checked={selectedSports.includes(sport.ID)}
@@ -81,60 +175,83 @@ export default function Navbar({
             </div>
           )}
 
+
           {showTools && (
             <div className="navbar-dropdown">
-              <button type="button" className="navbar-menu-button">
+              <button
+                type="button"
+                className="navbar-menu-button navbar-services-text"
+              >
                 Сервисы ▾
               </button>
 
-              <div className="navbar-dropdown-content">
+
+              <button
+                type="button"
+                className="navbar-services-hamburger"
+                aria-label="Сервисы"
+                aria-expanded={servicesMenuOpen}
+                onClick={() =>
+                  setServicesMenuOpen(
+                    (current) => !current,
+                  )
+                }
+              >
+                <span />
+                <span />
+                <span />
+              </button>
+
+
+              <div
+                className={
+                  servicesMenuOpen
+                    ? "navbar-dropdown-content navbar-dropdown-content-open"
+                    : "navbar-dropdown-content"
+                }
+              >
                 <button
                   type="button"
-                  title={isAuthenticated ? undefined : "Требуется авторизация"}
-                  onClick={() =>
-                    window.open(
-                      "/opponent-comparison",
-                      "_blank",
-                      "noopener,noreferrer",
-                    )
+                  title={
+                    isAuthenticated
+                      ? undefined
+                      : "Требуется авторизация"
                   }
+                  onClick={handleOpponentComparison}
                 >
                   Сравнение соперников
                 </button>
 
+
                 <button
                   type="button"
                   className="navbar-menu-item"
-                  onClick={() =>
-                    window.open(
-                      "/summary-tables",
-                      "_blank",
-                      "noopener,noreferrer",
-                    )
-                  }
+                  onClick={handleSummaryTables}
                 >
                   Сводные таблицы
                 </button>
 
+
                 <div className="navbar-menu-separator" />
+
 
                 <button
                   type="button"
                   className="navbar-menu-item"
-                  onClick={() => navigate("/?home=1")}
+                  onClick={handleAbout}
                 >
                   О проекте
                 </button>
 
+
                 <button
                   type="button"
                   className="navbar-menu-item"
-                  onClick={() =>
-                    window.open("/sources", "_blank", "noopener,noreferrer")
-                  }
+                  onClick={handleSources}
                 >
-                  Источники
+                  Ссылки
                 </button>
+
 
                 {showUser && (
                   <>
@@ -150,7 +267,7 @@ export default function Navbar({
                       <button
                         type="button"
                         className="navbar-menu-item"
-                        onClick={() => setLoginDialogOpen(true)}
+                        onClick={handleLogin}
                       >
                         Войти
                       </button>
@@ -163,10 +280,15 @@ export default function Navbar({
         </nav>
       </header>
 
+
       <LoginDialog
         open={loginDialogOpen}
-        onClose={() => setLoginDialogOpen(false)}
-        onLoginSuccess={(name) => setLoginName(name)}
+        onClose={() =>
+          setLoginDialogOpen(false)
+        }
+        onLoginSuccess={(name) =>
+          setLoginName(name)
+        }
       />
     </>
   );

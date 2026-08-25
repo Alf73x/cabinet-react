@@ -6,12 +6,14 @@ import { createRoot } from "react-dom/client";
 import App from "./App";
 import { SportsProvider } from "./context/SportsContext";
 
-createRoot(
-  document.getElementById("root")!,
-).render(
+import { MobileBackProvider } from "./context/MobileBackContext";
+
+createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <SportsProvider>
-      <App />
+      <MobileBackProvider>
+        <App />
+      </MobileBackProvider>
     </SportsProvider>
   </StrictMode>,
 );

@@ -285,6 +285,8 @@ export default function TerritoriesTree({
             onClick={() => {
               const id = item.ID.toString();
 
+              localStorage.setItem("territory-selected-name", item.Name);
+
               onSelectedItemChange(id);
               onItemClick(id);
             }}
