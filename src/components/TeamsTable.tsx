@@ -68,6 +68,9 @@ export default function TeamsTable({
         accessorKey: "Season",
         header: "Сезон",
         size: 80,
+        meta: {
+          className: "sticky-season",
+        },
       },
     ];
 

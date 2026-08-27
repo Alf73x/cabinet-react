@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import Navbar from "../components/Navbar";
 import "./SummaryTablesPage.css";
@@ -19,12 +20,19 @@ import {
 
 import { useSports } from "../context/SportsContext";
 
-function handleClose() {
-  window.close();
-}
-
 export default function SummaryTablesPage() {
+  const navigate = useNavigate();
+
   const { sports, selectedSports, toggleSport } = useSports();
+
+  function handleClose() {
+    if (window.innerWidth <= 768) {
+      navigate("/");
+      return;
+    }
+
+    window.close();
+  }
 
   const [categories, setCategories] = useState<SummaryCategory[]>([]);
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -159,6 +167,10 @@ export default function SummaryTablesPage() {
             </label>
 
             <CloseButton desktop onClick={handleClose} />
+
+
+
+
           </div>
 
           <label className="summary-filter summary-year-filter">

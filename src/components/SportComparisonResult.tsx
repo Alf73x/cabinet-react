@@ -96,15 +96,15 @@ export default function SportComparisonResult({
         <table className="comparison-table">
           <colgroup>
             {showSportColumn && <col style={{ width: "90px" }} />}
-            <col style={{ width: "210px" }} />
-            <col style={{ width: "210px" }} />
-            <col style={{ width: "60px" }} />
-            <col style={{ width: "60px" }} />
-            <col style={{ width: "60px" }} />
-            <col style={{ width: "60px" }} />
-            <col style={{ width: "60px" }} />
-            <col style={{ width: "60px" }} />
-            <col style={{ width: "90px" }} />
+            <col className="comparison-team-col-width" />
+            <col className="comparison-team-col-width" />
+            <col className="comparison-stat-col-width" />
+            <col className="comparison-stat-col-width" />
+            <col className="comparison-stat-col-width" />
+            <col className="comparison-stat-col-width" />
+            <col className="comparison-stat-col-width" />
+            <col className="comparison-stat-col-width" />
+            <col className="comparison-stat2-col-width" />
           </colgroup>
 
           <thead>

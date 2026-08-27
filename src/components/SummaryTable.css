@@ -95,3 +95,46 @@
 .clickable-team:hover {
   text-decoration: underline;
 }
+
+@media (max-width: 768px) {
+  .summary-table {
+    width: max-content;
+    min-width: 0;
+    table-layout: fixed;
+  }
+
+  .summary-table th.summary-col-number,
+  .summary-table td.summary-col-number {
+    width: 30px !important;
+    min-width: 30px;
+    max-width: 30px;
+  }
+
+  .summary-table th.summary-col-team,
+  .summary-table td.summary-col-team {
+    width: 150px !important;
+    min-width: 150px;
+    max-width: 150px;
+  }
+
+  .summary-table th.summary-col-territory,
+  .summary-table td.summary-col-territory {
+    width: 110px !important;
+    min-width: 110px;
+    max-width: 110px;
+  }
+
+  .summary-table th.summary-col-country,
+  .summary-table td.summary-col-country {
+    width: 90px !important;
+    min-width: 90px;
+    max-width: 90px;
+  }
+
+  .summary-table th.summary-col-stat,
+  .summary-table td.summary-col-stat {
+    width: 58px !important;
+    min-width: 58px;
+    max-width: 58px;
+  }
+}

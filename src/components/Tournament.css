@@ -1035,6 +1035,13 @@
   display: none;
 }
 
+/* Блок статистики "Дома" */
+
+.matrix-wrapper .scores-table th.home-stat,
+.matrix-wrapper .scores-table td.home-stat {
+  background: #f1f1f1 !important;
+}
+
 /* =======================
    Mobile
    ======================= */

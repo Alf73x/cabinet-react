@@ -47,7 +47,10 @@ export default function SummaryTable({
         id: "rowNumber",
         header: "№",
         size: 45,
-        meta: { align: "center" },
+        meta: {
+          align: "center",
+          className: "summary-col-number",
+        },
         enableColumnFilter: false,
         enableSorting: false,
         cell: ({ row }) => row.index + 1,
@@ -68,92 +71,134 @@ export default function SummaryTable({
         accessorKey: "teamName",
         header: "Команда",
         size: 220,
+        meta: {
+          className: "summary-col-team",
+        },
       },
       {
         accessorKey: "territoryName",
         header: "Город/Регион",
         size: 150,
+        meta: {
+          className: "summary-col-territory",
+        },
       },
       {
         accessorKey: "countryName",
         header: "Страна",
         size: 120,
+        meta: {
+          className: "summary-col-country",
+        },
       },
       {
         accessorKey: "games",
         header: "Игры",
         size: 60,
-        meta: { align: "center" },
+        meta: {
+          align: "center",
+          className: "summary-col-stat",
+        },
         enableColumnFilter: false,
       },
       {
         accessorKey: "wins",
         header: "Победы",
         size: 70,
-        meta: { align: "center" },
+        meta: {
+          align: "center",
+          className: "summary-col-stat",
+        },
         enableColumnFilter: false,
       },
       {
         accessorKey: "winsET",
         header: "Победы*",
         size: 70,
-        meta: { align: "center" },
+        meta: {
+          align: "center",
+          className: "summary-col-stat",
+        },
         enableColumnFilter: false,
       },
       {
         accessorKey: "draws",
         header: "Ничьи",
         size: 65,
-        meta: { align: "center" },
+        meta: {
+          align: "center",
+          className: "summary-col-stat",
+        },
         enableColumnFilter: false,
       },
       {
         accessorKey: "lossesET",
         header: "Поражения*",
         size: 85,
-        meta: { align: "center" },
+        meta: {
+          align: "center",
+          className: "summary-col-stat",
+        },
         enableColumnFilter: false,
       },
       {
         accessorKey: "losses",
         header: "Поражения",
         size: 80,
-        meta: { align: "center" },
+        meta: {
+          align: "center",
+          className: "summary-col-stat",
+        },
         enableColumnFilter: false,
       },
       {
         accessorKey: "winPercent",
         header: "Победы %",
         size: 80,
-        meta: { align: "center" },
+        meta: {
+          align: "center",
+          className: "summary-col-stat",
+        },
         enableColumnFilter: false,
       },
       {
         accessorKey: "lossPercent",
         header: "Поражения %",
         size: 90,
-        meta: { align: "center" },
+        meta: {
+          align: "center",
+          className: "summary-col-stat",
+        },
         enableColumnFilter: false,
       },
       {
         accessorKey: "goalsFor",
         header: "Забито",
         size: 70,
-        meta: { align: "center" },
+        meta: {
+          align: "center",
+          className: "summary-col-stat",
+        },
         enableColumnFilter: false,
       },
       {
         accessorKey: "goalsAgainst",
         header: "Пропущено",
         size: 85,
-        meta: { align: "center" },
+        meta: {
+          align: "center",
+          className: "summary-col-stat",
+        },
         enableColumnFilter: false,
       },
       {
         accessorKey: "goalDiff",
         header: "+/-",
         size: 65,
-        meta: { align: "center" },
+        meta: {
+          align: "center",
+          className: "summary-col-stat",
+        },
         enableColumnFilter: false,
       },
     );
@@ -167,12 +212,15 @@ export default function SummaryTable({
   const table = useReactTable({
     data: rows,
     columns,
+
     state: {
       sorting,
       columnFilters,
     },
+
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
+
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -242,15 +290,18 @@ export default function SummaryTable({
                   const align = cell.column.columnDef.meta?.align;
                   const isTeamCell = cell.column.id === "teamName";
 
+                  const className = [
+                    cell.column.columnDef.meta?.className,
+                    isTeamCell ? "clickable-team" : "",
+                  ]
+                    .filter(Boolean)
+                    .join(" ");
+
                   return (
                     <td
                       key={cell.id}
                       title={String(cell.getValue() ?? "")}
-                      className={
-                        isTeamCell
-                          ? "clickable-team"
-                          : cell.column.columnDef.meta?.className
-                      }
+                      className={className}
                       onClick={() => {
                         if (!isTeamCell) {
                           return;

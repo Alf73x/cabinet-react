@@ -8,15 +8,6 @@ body,
 * {
 	box-sizing: border-box;
 }
-
-.app {
-	height: 100vh;
-	min-height: 0;
-	display: flex;
-	flex-direction: column;
-	overflow: hidden;
-}
-
 /*
   Navbar занимает свою естественную высоту.
   Рабочая область получает всё оставшееся место.
@@ -338,6 +329,18 @@ body,
   font-weight: var(--font-weight-medium);
 }
 
+.comparison-team-col-width {
+  width: 210px;
+}
+
+.comparison-stat-col-width {
+  width: 60px;
+}
+
+.comparison-stat2-col-width {
+  width: 80px;
+}
+
 /*
   На узком экране правая панель переходит вниз,
   а страница снова получает обычный вертикальный скролл.
@@ -381,6 +384,24 @@ body,
     grid-column: 2;
     grid-row: 3;
     width: auto;
+  }
+
+  .comparison-table {
+    width: max-content;
+    min-width: 0;
+    table-layout: fixed;
+  }
+
+  .comparison-team-col-width {
+    width: 140px;
+  }
+
+  .comparison-stat-col-width {
+    width: 28px;
+  }
+
+  .comparison-stat2-col-width {
+    width: 42px;
   }
 }
 

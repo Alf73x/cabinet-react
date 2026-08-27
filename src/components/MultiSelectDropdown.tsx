@@ -27,10 +27,7 @@ export default function MultiSelectDropdown({
 
   useEffect(() => {
     function handleDocumentMouseDown(event: MouseEvent): void {
-      if (
-        rootRef.current &&
-        !rootRef.current.contains(event.target as Node)
-      ) {
+      if (rootRef.current && !rootRef.current.contains(event.target as Node)) {
         setOpen(false);
       }
     }
@@ -42,8 +39,7 @@ export default function MultiSelectDropdown({
     };
   }, []);
 
-  const allSelected =
-    items.length > 0 && selectedIds.length === items.length;
+  const allSelected = items.length > 0 && selectedIds.length === items.length;
 
   function toggleAll(): void {
     if (allSelected) {
@@ -66,16 +62,12 @@ export default function MultiSelectDropdown({
       return allText;
     }
 
-    if (selectedIds.length === 1) {
-      return (
-        items.find((item) => item.id === selectedIds[0])?.name ??
-        allText
-      );
-    }
-
-    return `Выбрано: ${selectedIds.length}`;
+    return items
+      .filter((item) => selectedIds.includes(item.id))
+      .map((item) => item.name)
+      .join(", ");
   }
-
+  
   return (
     <div className="multi-select" ref={rootRef}>
       <button
@@ -91,11 +83,7 @@ export default function MultiSelectDropdown({
       {open && !disabled && (
         <div className="multi-select-menu">
           <label className="multi-select-item multi-select-all">
-            <input
-              type="checkbox"
-              checked={allSelected}
-              onChange={toggleAll}
-            />
+            <input type="checkbox" checked={allSelected} onChange={toggleAll} />
 
             <span>{allText}</span>
           </label>
