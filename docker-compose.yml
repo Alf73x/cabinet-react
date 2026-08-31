@@ -1,7 +1,10 @@
 services:
   cabinet-react:
-    build: .
+    image: ghcr.io/alf73x/cabinet-react:${IMAGE_TAG:-latest}
+
     container_name: cabinet-react
+
     restart: always
+
     ports:
       - "127.0.0.1:8080:80"
