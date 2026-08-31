@@ -87,5 +87,21 @@ jobs:
           ssh -i ~/.ssh/id_ed25519 "$VPS_USER@$VPS_HOST" "
             cd /root/Programs/CabinetReact &&
             docker compose pull &&
-            docker compose up -d
+            docker compose up -d &&
+
+            echo 'Waiting for React...' &&
+
+            for i in \$(seq 1 15); do
+              if curl -fsS http://127.0.0.1:8080 > /dev/null; then
+                echo 'React health check OK'
+                exit 0
+              fi
+
+              echo 'React is not ready yet...'
+              sleep 2
+            done
+
+            echo 'React health check FAILED'
+            docker logs --tail 100 cabinet-react
+            exit 1
           "
