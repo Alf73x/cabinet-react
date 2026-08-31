@@ -167,10 +167,6 @@ export default function SummaryTablesPage() {
             </label>
 
             <CloseButton desktop onClick={handleClose} />
-
-
-
-
           </div>
 
           <label className="summary-filter summary-year-filter">
