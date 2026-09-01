@@ -58,7 +58,6 @@ export default function CloseButton({
     unregister,
   ]);
 
-
   function handleClick() {
     /*
      * На desktop CloseButton работает

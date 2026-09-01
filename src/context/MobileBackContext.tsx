@@ -41,9 +41,16 @@ export function MobileBackProvider({
     Map<string, BackHandler>
   >(new Map());
 
-  const historyIdRef = useRef<string | null>(
-    null,
-  );
+
+  /*
+   * true означает:
+   *
+   * history.back() был вызван кнопкой X.
+   *
+   * Поэтому следующий popstate не должен
+   * повторно вызывать CloseButton handler.
+   */
+  const ignoreNextPopStateRef = useRef(false);
 
 
   const register = useCallback(
@@ -51,23 +58,40 @@ export function MobileBackProvider({
       id: string,
       handler: BackHandler,
     ) => {
+      /*
+       * Последний зарегистрированный handler
+       * считаем актуальным.
+       */
       handlersRef.current.delete(id);
       handlersRef.current.set(id, handler);
+
 
       if (window.innerWidth > MOBILE_WIDTH) {
         return;
       }
 
+
       /*
-       * Если для текущего CloseButton history entry
-       * уже создана — второй раз её не создаём.
+       * Если history entry для этого CloseButton
+       * уже существует, новую не создаём.
        *
-       * Это также важно для React StrictMode.
+       * В частности, это защищает от повторного
+       * useEffect в React StrictMode.
        */
-      if (historyIdRef.current === id) {
+      if (
+        window.history.state
+          ?.sportCabinetMobileBackId === id
+      ) {
         return;
       }
 
+
+      /*
+       * Добавляем служебную history entry.
+       *
+       * Android Back / edge swipe удалит её,
+       * после чего возникнет popstate.
+       */
       window.history.pushState(
         {
           ...window.history.state,
@@ -78,8 +102,6 @@ export function MobileBackProvider({
         "",
         window.location.href,
       );
-
-      historyIdRef.current = id;
     },
     [],
   );
@@ -88,17 +110,6 @@ export function MobileBackProvider({
   const unregister = useCallback(
     (id: string) => {
       handlersRef.current.delete(id);
-
-      /*
-       * Здесь history.back() специально
-       * не вызываем.
-       *
-       * Если закрытие произошло через Back,
-       * history уже была изменена браузером.
-       */
-      if (historyIdRef.current === id) {
-        historyIdRef.current = null;
-      }
     },
     [],
   );
@@ -109,46 +120,50 @@ export function MobileBackProvider({
       const handler =
         handlersRef.current.get(id);
 
+
       if (!handler) {
         return;
       }
 
+
       /*
        * Desktop:
-       * никакая дополнительная history
-       * нам не нужна.
+       * history-механизм не нужен.
        */
       if (window.innerWidth > MOBILE_WIDTH) {
         handler();
         return;
       }
 
+
       /*
-       * Если мы сейчас на искусственной
-       * history entry этого CloseButton,
-       * двигаемся назад.
+       * ВАЖНО:
        *
-       * handler будет вызван в popstate.
+       * X закрывает экран СРАЗУ.
+       *
+       * Мы больше не ждём popstate,
+       * чтобы выполнить handler.
+       */
+      handler();
+
+
+      /*
+       * Если сейчас находимся на нашей
+       * служебной history entry,
+       * удаляем её через history.back().
+       *
+       * Возникший после этого popstate
+       * нужно проигнорировать, потому что
+       * handler уже был выполнен выше.
        */
       if (
         window.history.state
           ?.sportCabinetMobileBackId === id
       ) {
+        ignoreNextPopStateRef.current = true;
+
         window.history.back();
-        return;
       }
-
-      /*
-       * На всякий случай, если history entry
-       * уже отсутствует.
-       */
-      handlersRef.current.delete(id);
-
-      if (historyIdRef.current === id) {
-        historyIdRef.current = null;
-      }
-
-      handler();
     },
     [],
   );
@@ -160,27 +175,40 @@ export function MobileBackProvider({
         return;
       }
 
+
+      /*
+       * history.back() был вызван кнопкой X.
+       *
+       * Экран уже закрыт непосредственно
+       * в requestClose(), поэтому ничего
+       * повторно не делаем.
+       */
+      if (ignoreNextPopStateRef.current) {
+        ignoreNextPopStateRef.current = false;
+        return;
+      }
+
+
+      /*
+       * Здесь мы пришли именно от системного
+       * Back / Android edge swipe.
+       *
+       * Последний зарегистрированный
+       * CloseButton считаем верхним экраном.
+       */
       const handlers = Array.from(
         handlersRef.current.entries(),
       );
 
+
       if (handlers.length === 0) {
-        historyIdRef.current = null;
         return;
       }
 
-      /*
-       * Последний зарегистрированный CloseButton
-       * считаем верхним экраном.
-       */
-      const [id, handler] =
+
+      const [, handler] =
         handlers[handlers.length - 1];
 
-      handlersRef.current.delete(id);
-
-      if (historyIdRef.current === id) {
-        historyIdRef.current = null;
-      }
 
       handler();
     }
@@ -190,6 +218,7 @@ export function MobileBackProvider({
       "popstate",
       handlePopState,
     );
+
 
     return () => {
       window.removeEventListener(
@@ -218,11 +247,13 @@ export function useMobileBack() {
   const context =
     useContext(MobileBackContext);
 
+
   if (!context) {
     throw new Error(
       "useMobileBack must be used inside MobileBackProvider",
     );
   }
+
 
   return context;
 }
