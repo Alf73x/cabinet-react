@@ -1,20 +1,24 @@
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import "./Footer.css";
 
 export default function Footer() {
-  const navigate = useNavigate();
-
   return (
     <footer className="app-footer">
-<button type="button" onClick={() => navigate("/?home=1")}>
-  О проекте
-</button>
+      <Link className="footer-about" to="/?home=1">
+        О проекте
+      </Link>
+
+      <span className="footer-about-separator">·</span>
+
+      <Link to="/privacy">Политика конфиденциальности</Link>
 
       <span>·</span>
 
       <span>
-        Контакты: <a href="mailto:sportcabinet@mail.ru">sportcabinet@mail.ru</a>
+        <span className="footer-contacts-label">Контакты: </span>
+
+        <a href="mailto:sportcabinet@mail.ru">sportcabinet@mail.ru</a>
       </span>
     </footer>
   );

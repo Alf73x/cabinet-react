@@ -44,6 +44,27 @@
 
 @media (max-width: 768px) {
   .app-footer {
+    display: flex;
+
+    flex: 0 0 32px;
+    height: 32px;
+
+    justify-content: flex-end;
+    flex-wrap: nowrap;
+
+    gap: 6px;
+    padding: 0 12px 0 8px;
+    
+    font-size: 12px;
+    white-space: nowrap;
+  }
+
+  .footer-about,
+  .footer-about-separator {
     display: none;
   }
+
+  .footer-contacts-label {
+    display: none;
+  }  
 }

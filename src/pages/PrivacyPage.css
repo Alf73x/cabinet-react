@@ -1,0 +1,10 @@
+.privacy-page {
+  height: 100%;
+  min-height: 0;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  box-sizing: border-box;
+  padding: 16px 24px 32px;
+}

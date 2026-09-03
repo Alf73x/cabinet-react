@@ -14,6 +14,8 @@ import OpponentComparisonPage from "./pages/OpponentComparisonPage";
 import TeamPage from "./pages/TeamPage";
 import SummaryTablesPage from "./pages/SummaryTablesPage";
 import SourcesPage from "./pages/SourcesPage";
+import CookieConsent from "./components/CookieConsent";
+import PrivacyPage from "./pages/PrivacyPage";
 
 function CanonicalUrl() {
   const location = useLocation();
@@ -76,8 +78,11 @@ export default function App() {
           <Route path="/team/:teamId" element={<TeamPage />} />
 
           <Route path="/sources" element={<SourcesPage />} />
+
+          <Route path="/privacy" element={<PrivacyPage />} />
         </Route>
       </Routes>
+      <CookieConsent />
     </BrowserRouter>
   );
 }
